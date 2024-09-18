@@ -8,7 +8,7 @@ This browser based web application to ...
 List team members and/or short bio's here... 
 * Name's James Lacsamana, here to learn!
 * ...Dominic
-* Hi! My name is Aaron! I am here to suffer! 
+* Hi! My name is Aaron! I am a former consultant, former chef, current CST student. 
 	
 ## 3. Technologies and Resources Used
 List technologies (with version numbers), API's, icons, fonts, images, media or data sources, and other resources that were used.
