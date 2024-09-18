@@ -7,7 +7,7 @@ This browser based web application to ...
 ## 2. Names of Contributors
 List team members and/or short bio's here... 
 * Name's James Lacsamana, here to learn!
-* ...Dominic
+* Hello, my name is Dominic Cheang and I am excited to learn!
 * Hi! My name is Aaron! I am here to suffer! 
 	
 ## 3. Technologies and Resources Used
