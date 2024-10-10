@@ -1,1 +1,26 @@
+.top-navbar-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: right;
+}
 
+.bx.bxs-inbox, .bx.bxs-user-circle {
+    font-size: 150%;
+}
+
+.bottom-navbar-icons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-left: 9%;
+    margin-right: 9%;
+    gap: 8px;
+    height: 80px;
+    width: 100%;
+}
+
+.bx.bxs-home, .bx.bxs-map-alt, .bx.bxs-plus-square, .bx.bxs-user-plus, .bx.bxs-chat {
+    font-size: 250%;
+}
