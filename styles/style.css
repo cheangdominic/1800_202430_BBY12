@@ -51,3 +51,23 @@
     position: relative;
     z-index: 2;
 }
+
+.featurebox {
+    position:relative;
+    right: 0px;
+}
+
+.callactioncontainer {
+    position: relative;
+    align-content: center;
+}
+
+.callactionimage {
+   position:relative;
+   width: 100%;
+   height: auto;
+}
+
+.callactiontext {
+    text-align:center;
+}
