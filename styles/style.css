@@ -12,17 +12,19 @@
 }
 
 .bottom-navbar-icons {
+    background-color: rgb(242, 241, 241);
+    border: 3px solid rgb(225, 225, 225);
     position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    margin-left: 1%;
+    margin-left: -5%;
     margin-right: 1%;
-    margin-top: -5%;
+    margin-top: -3%;
     gap: 8px;
     height: 80px;
-    width: 100%;
+    width: 110%;
 }
 
 .bx.bxs-home, .bx.bxs-map-alt, .bx.bxs-plus-square, .bx.bxs-user-plus, .bx.bxs-chat {
