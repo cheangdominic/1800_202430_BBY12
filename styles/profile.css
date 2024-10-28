@@ -1,0 +1,306 @@
+/* General */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f4f4f4;
+}
+
+.container {
+    width: 100%;
+    max-width: 400px;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    overflow: hidden;
+    position: relative; 
+}
+
+
+
+/* Header Section */
+.header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 10px;
+    background-color: #f4f4f4;
+    position: relative;
+}
+
+.pet-icons {
+    display: flex;
+    gap: 5px;
+    position: absolute;
+    top: 25px;
+}
+
+.pet-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: auto;
+    background-repeat: no-repeat;
+    border: 2px solid #fff;
+    
+}
+
+.pet-icon:hover {
+    transform: scale(1.1);
+    cursor: pointer;
+}
+
+/* Dog Profiles */
+.pet-icons a:nth-child(1) {
+    background-image: url('./images/pexels-vanserline-vandenberg-759843-1619690.jpg'); 
+}
+
+/* Add dog profile button here */
+.pet-icons a:nth-child(2) {
+    background-image: url('./images/plus-icon-21715.png'); 
+}
+
+/* Profile Section */
+.profile-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ccc;
+    background-image: url('./images/User-Profile-PNG-Free-Download.png'); 
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 10px;
+}
+
+.profile-info h2 {
+    margin-bottom: 10px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 5px;
+    text-decoration: none; 
+    color: white;
+    background-color: #999;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #777;
+}
+
+/* Hobbies & Interests Section */
+.hobbies-section {
+    padding: 20px;
+    margin: 20px;
+    margin-right: 60px;
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hobbies-section h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.hobbies-section p {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #333;
+}
+
+/* Post Gallery */
+.post-gallery {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+/* Post Structure */
+.post {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px;
+    width: 100%;
+    height: auto;
+    min-height: 150px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Post Image Box */
+.post-image {
+    width: 40%;
+    height: 100px;
+    background-color: #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+    background-size: cover;
+    background-position: center;
+    background-image: url('./images/image-placeholder-icon-16.jpg'); 
+}
+
+/* Post Text Box */
+.post-text {
+    flex-grow: 1;
+}
+
+.post-text textarea {
+    width: 100%;
+    height: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    resize: none;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.post:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Container for Edit Profile Page */
+.edit-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+/* Edit Profile Picture */
+.edit-profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #ccc;
+    background-size: cover;
+    background-position: center;
+    margin: 20px auto;
+    border: 2px solid #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Edit Profile Info Sections */
+.edit-info-section, .edit-bio-section {
+    width: 100%;
+    padding: 20px;
+    margin: 20px 0;
+    background-color: #f9f9f9;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-info-section h3, .edit-bio-section h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.edit-info-section form, .edit-bio-section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.edit-info-section label, .edit-bio-section label {
+    margin-top: 10px;
+    font-size: 14px;
+}
+
+.edit-info-section input, .edit-bio-section textarea {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.edit-bio-section textarea {
+    resize: none;
+    height: 100px;
+}
+
+/* Save Changes Button */
+.edit-btn {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    text-decoration: none;
+    color: white;
+    background-color: #999;
+    border-radius: 5px;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #777;
+}
+
+.edit-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Save Changes Button */
+.save-btn {
+    background-color: green; 
+}
+
+.save-btn:hover {
+    background-color: darkgreen; 
+}
+
+/* Discard Changes Button */
+.discard-btn {
+    background-color: red; 
+}
+
+.discard-btn:hover {
+    background-color: darkred; 
+}
+
+/* Responsive Styles */
+/* TODO: Add media queries here */

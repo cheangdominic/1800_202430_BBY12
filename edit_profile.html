@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="./styles/profile.css">
+</head>
+<body>
+    <div class="edit-container">
+        <h2>Edit Profile</h2>
+
+        <!-- Edit Profile Picture Circle -->
+         <!-- TODO: Add Edit/Add Profile Picture -->
+        <div class="edit-profile-picture" style="background-image: url('./assets/User-Profile-PNG-Free-Download.png');"></div>
+
+        <!-- Edit General Information Section -->
+        <div class="edit-info-section">
+            <h3>General Information</h3>
+            <form>
+                <label for="edit-name">Name:</label>
+                <input type="text" id="edit-name" name="name" placeholder="Enter your name">
+                
+                <label for="edit-age">Age:</label>
+                <input type="number" id="edit-age" name="age" placeholder="Enter your age" min="18" max="120">
+            </form>
+        </div>
+
+        <!-- Edit Bio Section -->
+        <!-- Add another div to separate? -->
+        <div class="edit-bio-section">
+            <h3>Bio/Interests&Hobbies</h3>
+            <form>
+                <label for="edit-bio">Write a short bio:</label>
+                <textarea id="edit-bio" name="bio" rows="4" placeholder="Write something about yourself..."></textarea>
+            </form>
+        </div>
+
+         <!-- Save and Discard Buttons -->
+         <div class="edit-buttons">
+            <button type="submit" class="edit-btn save-btn">Save Changes</button>
+            <button type="button" class="edit-btn discard-btn">Discard Changes</button>
+        </div>
+    </div>
+</body>
+</html>
