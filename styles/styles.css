@@ -4,7 +4,15 @@
     flex-direction: row;
     justify-content: right;
     align-items: right;
-    width: 100%;
+    width: 99%;
+}
+
+.navbar.navbar-expand-lg {
+    border: 3px solid rgb(220, 220, 220);
+}
+
+.custom-background {
+    margin-top: 3%;
 }
 
 .bx.bxs-inbox, .bx.bxs-user-circle {
@@ -13,7 +21,7 @@
 
 .bottom-navbar-icons {
     background-color: rgb(242, 241, 241);
-    border: 3px solid rgb(225, 225, 225);
+    border: 3px solid rgb(220, 220, 220);
     position: absolute;
     display: flex;
     flex-direction: row;

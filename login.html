@@ -35,6 +35,8 @@
     <!-- Other libraries and styles of your own -->
     <!-------------------------------------------->
     <link rel="stylesheet" href="./styles/loginpage.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
 
@@ -49,6 +51,64 @@
     <nav id="navbarPlaceholder"></nav>
 
     <!-- the body of your page goes here -->
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                <li class="nav-item dropdown">
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </li>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Features</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Pricing</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="top-navbar-icons">
+                <div class="inbox-icon">
+                    <a class="navbar-brand" href="#"><i class='bx bxs-inbox'></i></a>
+                </div>
+                <div class="profile-icon">
+                    <a class="navbar-brand" href="#"><i class='bx bxs-user-circle'></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <nav class="navbar fixed-bottom bg-body-tertiary">
+        <div class="bottom-navbar-icons">
+            <div class="home">
+                <a class="navbar-brand" href="#"><i class='bx bxs-home'></i></a>
+            </div>
+            <div class="map-icon">
+                <a class="navbar-brand" href="#"><i class='bx bxs-map-alt'></i></a>
+            </div>
+            <div class="post-icon">
+                <a class="navbar-brand" href="#"><i class='bx bxs-plus-square'></i></a>
+            </div>
+            <div class="people-icon">
+                <a class="navbar-brand" href="#"><i class='bx bxs-user-plus'></i></a>
+            </div>
+            <div class="chat-icon">
+                <a class="navbar-brand" href="#"><i class='bx bxs-chat'></i></a>
+            </div>
+        </div>
+    </nav>
+
     <div class="login">
         <div class="welcoming-text">
             <h1>Login to Your Account!</h1>
