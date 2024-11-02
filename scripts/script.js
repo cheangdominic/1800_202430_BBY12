@@ -19,3 +19,7 @@ function logout() {
         // An error happened.
       });
 }
+
+function redirectToPage(page) {
+  window.location.href = page;
+}
