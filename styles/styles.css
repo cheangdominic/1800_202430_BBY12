@@ -4,7 +4,7 @@
     flex-direction: row;
     justify-content: right;
     align-items: right;
-    width: 99%;
+    width: 94%;
 }
 
 .navbar.navbar-expand-lg {
@@ -61,22 +61,14 @@
     z-index: 2;
 }
 
-.featurebox {
-    position:relative;
-    right: 0px;
+.cards {
+    display: flex;
+    margin-left: 5%;
+    gap: 2%;
 }
 
-.callactioncontainer {
-    position: relative;
-    align-content: center;
-}
-
-.callactionimage {
-   position:relative;
-   width: 100%;
-   height: auto;
-}
-
-.callactiontext {
-    text-align:center;
+.card {
+    width: 85%;
+    height: 85%;
+    margin-top: 5%;
 }
