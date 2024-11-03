@@ -9,8 +9,9 @@
 }
 
 #logout-button {
-    margin-left: 94%;
+    margin-left: auto;
     margin-top: -2.5%;
+    margin-right: 1%;
 }
 
 .bottom-navbar-icons {
