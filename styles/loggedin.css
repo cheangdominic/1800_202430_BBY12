@@ -49,17 +49,12 @@
 
 .alert.alert-warning {
     position: sticky;
-    top: 58.5px;
+    top: 65px;
     z-index: 999;  
 }
 
 .cards {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 2%;
-    margin-top: -3%;
+    padding: 0% 10%;
 }
 
 .card {
