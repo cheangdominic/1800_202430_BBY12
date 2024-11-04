@@ -4,6 +4,7 @@
     flex-direction: row;
     justify-content: left;
     align-items: left;
+    margin:auto;
     margin-left: 1%;
 }
 
@@ -20,7 +21,7 @@
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    margin-left: -4.5%;
+    margin-left: -4.5vw;
     margin-top: -3.5%;
     gap: 3px;
     height: 550%;
@@ -45,8 +46,8 @@
 
 .alert.alert-warning {
     position: sticky;
-    top: 75.5px;
-    z-index: 1000;  
+    top: 58.5px;
+    z-index: 999;  
 }
 
 .cards {
@@ -69,7 +70,9 @@
 }
 
 .brand-text{
-    margin-left: auto;
+    position: absolute;
+    text-align: center;
+    width: 100%;
     margin-top: 0.5%;
     font-size: 130%;
 }
