@@ -29,15 +29,3 @@
     position: relative;
     z-index: 2;
 }
-
-.cards {
-    display: flex;
-    margin-left: 5%;
-    gap: 2%;
-}
-
-.card {
-    width: 85%;
-    height: 85%;
-    margin-top: 5%;
-}

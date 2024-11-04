@@ -1,0 +1,15 @@
+.cards {
+    display: flex;
+    margin-left: 5%;
+    gap: 2%;
+}
+
+.card {
+    width: 85%;
+    height: 85%;
+    margin-top: 5%;
+}
+
+.card-img-top {
+    height: 22vw;
+}
