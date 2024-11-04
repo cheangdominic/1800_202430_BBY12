@@ -40,7 +40,8 @@
     <!------------------------------>
     <!-- Your HTML Layout go here -->
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+     <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">UpDog</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -48,108 +49,88 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Pricing</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">About</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
 
-    <!------------------------------>
-    <!-- Stuff for body goes here -->
+    <!-- Welcome Banner -->
     <div class="custom-background">
         <div class="landing-image">
             <img src="./styles/images/paw-print-trail-on-white-background-cat-or-dog-and-man-pawprint-walk-line-path-pattern-background-vector.jpg"
                 alt="Background Image">
         </div>
-        <div class="container-fluid">
-            <h1 class="display-5 fw-bold lh-1 mb-3">What's UpDog!</h1>
-            <p class="col-md-8 fs-4">Let's connect you and your pal with others!</p>
+        <div class="container text-center py-5">
+            <h1 class="display-5 fw-bold">What's UpDog!</h1>
+            <p class="fs-4">Let's connect you and your pal with others!</p>
             <a href="login.html" class="btn btn-warning" role="button">Login/Register</a>
         </div>
     </div>
 
-    <!-- Line break as placeholder -->
-    <br>
-
-    <div class="cards">
-        <div class="card-row-1">
-            <div class="card">
-                <span class="border border-warning-subtle">
-                    <img src="./styles/images/groupdogowners.jpeg" class="card-img-top" alt="...">
+    <!-- Cards Section -->
+    <div class="cards container my-5">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-warning-subtle shadow-sm">
+                    <img src="./styles/images/groupdogowners.jpeg" class="card-img-top" alt="Group of dog owners">
                     <div class="card-body">
                         <h5 class="card-title">Socializing with Dog Owners</h5>
                         <p class="card-text">Designed to help dog owners connect with each other and enhance their
                             experience of owning a pet.</p>
                         <a href="#" class="btn btn-warning">Learn More</a>
                     </div>
-                </span>
+                </div>
             </div>
-
-            <div class="card">
-                <span class="border border-warning-subtle">
-                    <img src="./styles/images/playdatesdogs.webp" class="card-img-top" alt="...">
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-warning-subtle shadow-sm">
+                    <img src="./styles/images/playdatesdogs.webp" class="card-img-top" alt="Dog playdates">
                     <div class="card-body">
                         <h5 class="card-title">Playdates For Pets</h5>
-                        <p class="card-text">A new way to socialize! Our app lets you to create and join a playdate allowing
-                            you and your pets to meet new companions.</p>
+                        <p class="card-text">Our app lets you create and join playdates allowing you and your pets to meet new companions.</p>
                         <a href="#" class="btn btn-warning">Learn More</a>
+                    </div>
                 </div>
-                </span>
             </div>
-        </div>
-
-        <div class="card-row-2">
-            <div class="card">
-                <span class="border border-warning-subtle">
-                    <img src="./styles/images/groupdogowners.jpeg" class="card-img-top" alt="...">
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-warning-subtle shadow-sm">
+                    <img src="./styles/images/groupdogowners.jpeg" class="card-img-top" alt="Group of dog owners">
                     <div class="card-body">
                         <h5 class="card-title">Socializing with Dog Owners</h5>
                         <p class="card-text">Designed to help dog owners connect with each other and enhance their
                             experience of owning a pet.</p>
                         <a href="#" class="btn btn-warning">Learn More</a>
                     </div>
-                </span>
+                </div>
             </div>
-
-            <div class="card">
-                <span class="border border-warning-subtle">
-                    <img src="./styles/images/playdatesdogs.webp" class="card-img-top" alt="...">
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-warning-subtle shadow-sm">
+                    <img src="./styles/images/playdatesdogs.webp" class="card-img-top" alt="Dog playdates">
                     <div class="card-body">
                         <h5 class="card-title">Playdates For Pets</h5>
-                        <p class="card-text">A new way to socialize! Our app lets you to create and join a playdate allowing
-                            you and your pets to meet new companions.</p>
+                        <p class="card-text">A new way to socialize! Our app lets you create and join a playdate allowing you and your pets to meet new companions.</p>
                         <a href="#" class="btn btn-warning">Learn More</a>
+                    </div>
                 </div>
-                </span>
             </div>
         </div>
     </div>
 
-
-    <div class="container">
-        <footer class="py-3 my-4">
-            <ul class="nav justify-content-center border-bottom pb-3 mb-3">
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
-                <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
-            </ul>
-        </footer>
-    </div>
+    <!-- Footer -->
+    <footer class="py-4 bg-light border-top">
+        <ul class="nav justify-content-center">
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Features</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Pricing</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">FAQs</a></li>
+            <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">About</a></li>
+        </ul>
+    </footer>
 
 
     <!---------------------------------------------->

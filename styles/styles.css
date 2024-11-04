@@ -1,31 +1,128 @@
+/* Navbar */
 .navbar.navbar-expand-lg {
-    border: 3px solid rgb(220, 220, 220);
+    border-bottom: 3px solid rgb(220, 220, 220); /* Divider line below header */
 }
 
-.custom-background {
-    margin-top: 3%;
-}
-
-/* Background Style */
+/* Welcome Banner */
 .custom-background {
     position: relative;
-    padding: 5rem;
+    padding: 3rem 0; /* Adjust the top and bottom padding a little smaller */
     width: 100%;
-    min-height: 50vh; 
+    min-height: 50vh;
+    margin: 0;
+    overflow: hidden; /* Prevent background images from protruding */
 }
 
-.custom-background img {
+/* Background Image */
+.custom-background .landing-image img {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    object-fit: cover; 
-    opacity: 0.5; 
-    z-index: 1;
+    object-fit: cover;
+    opacity: 0.5;
+    z-index: -1; /* Place background image behind other content */
 }
 
-.custom-background .container-fluid {
+/* Welcome Banner Text */
+.custom-background .container {
     position: relative;
     z-index: 2;
+    color: #333;
+    text-align: center;
+}
+
+/* Cards Section */
+.cards {
+    margin-top: 3rem; /* Change in Gap between Welcome Banner and Cards */
+}
+
+/* Individual Card Style */
+.card {
+    border: 1px solid #ffedc2; /* foft orange border */
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* soft shadow */
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    width: 100%;
+    height: 250px; /* change in card image size */
+    object-fit: cover;
+}
+
+/* Card Body */
+.card-body {
+    padding: 20px;
+    text-align: center; /* align center */
+}
+
+.card-title {
+    font-size: 1.5rem; /* Title size */
+    font-weight: bold;
+    color: #333;
+}
+
+.card-text {
+    font-size: 1rem; 
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* Button Style */
+.btn-warning {
+    background-color: #f8c146;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.btn-warning:hover {
+    background-color: #e0a735;
+}
+
+/* Footer */
+footer {
+    background-color: #f8f9fa;
+    padding: 2rem 0;
+    border-top: 1px solid #e9ecef; 
+    text-align: center;
+}
+
+footer .nav {
+    justify-content: center;
+    gap: 1rem;
+}
+
+footer .nav-link {
+    font-size: 0.9rem;
+    color: #6c757d;
+    transition: color 0.3s;
+}
+
+footer .nav-link:hover {
+    color: #333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .card-row-1, .card-row-2 {
+        flex-direction: column; /* make the cards sindway on mobile */
+    }
+
+    .card {
+        max-width: none; /* make no width limit */
+    }
+
+    .custom-background .container {
+        padding: 1rem; /* Reduce margins on mobile */
+    }
 }
