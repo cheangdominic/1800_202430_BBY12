@@ -39,17 +39,16 @@
     font-size: 170%;
 }
 
-.navbar.navbar-expand-lg {
+#navbarPlaceholder {
     position: sticky;
     width: 100%;
     top: 0;
-    border: 3px solid rgb(220, 220, 220);
     z-index: 1000;
 }
 
 .alert.alert-warning {
     position: sticky;
-    top: 65px;
+    top: 62.4px;
     z-index: 999;  
 }
 

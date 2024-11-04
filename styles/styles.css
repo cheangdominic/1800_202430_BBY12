@@ -3,36 +3,6 @@
     border-bottom: 3px solid rgb(220, 220, 220); /* Divider line below header */
 }
 
-/* Welcome Banner */
-.custom-background {
-    position: relative;
-    padding: 3rem 0; /* Adjust the top and bottom padding a little smaller */
-    width: 100%;
-    min-height: 50vh;
-    margin: 0;
-    overflow: hidden; /* Prevent background images from protruding */
-}
-
-/* Background Image */
-.custom-background .landing-image img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.5;
-    z-index: -1; /* Place background image behind other content */
-}
-
-/* Welcome Banner Text */
-.custom-background .container {
-    position: relative;
-    z-index: 2;
-    color: #333;
-    text-align: center;
-}
-
 /* Cards Section */
 .cards {
     margin-top: 3rem; /* Change in Gap between Welcome Banner and Cards */

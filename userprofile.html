@@ -5,8 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pet Profile</title>
     <link rel="stylesheet" href="./styles/profile.css">
+
+    <!-------------------------------------------------------->
+    <!-- Firebase 8 Library related CSS, JS, JQuery go here -->
+    <!-------------------------------------------------------->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script> 
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 </head>
 <body>
+    
     <div class="container">
         <!-- Header Section -->
         <div class="header">
@@ -20,7 +32,7 @@
         <div class="profile-section">
             <div class="profile-picture"></div>
             <div class="profile-info">
-                <h2>Name, age</h2>
+                <p><span id="name-goes-here"></span>, age</p>
                 <a href="edit_profile.html" class="btn">Edit Profile</a>
                 <a href="manage_posts.html" class="btn">Manage My Posts</a>
             </div>
@@ -56,5 +68,16 @@
             <!-- More Posts go Here -->
         </div>
     </div>
+
+    <!-- our own footer goes here-->
+    <nav id="footerPlaceholder"></nav>
+
+    <!---------------------------------------------->
+    <!-- Your own JavaScript functions go here    -->
+    <!---------------------------------------------->
+    <script src="./scripts/firebaseAPI_UpDog.js"></script>
+    <script src="./scripts/skeleton.js"></script>
+    <script src="./scripts/script.js"></script>
+    <script src="./scripts/main.js"></script>
 </body>
 </html>
