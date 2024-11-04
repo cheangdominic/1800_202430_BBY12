@@ -4,13 +4,11 @@
     flex-direction: row;
     justify-content: left;
     align-items: left;
-    margin-top: -2%;
     margin-left: 1%;
 }
 
 #logout-button {
     margin-left: auto;
-    margin-top: -2.5%;
     margin-right: 1%;
 }
 
@@ -22,8 +20,8 @@
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    margin-left: -5%;
-    margin-top: -3%;
+    margin-left: -4.5%;
+    margin-top: -3.5%;
     gap: 3px;
     height: 550%;
     width: 110%;
@@ -38,6 +36,40 @@
 }
 
 .navbar.navbar-expand-lg {
-    padding-top: 3%;
+    position: sticky;
+    width: 100%;
+    top: 0;
     border: 3px solid rgb(220, 220, 220);
+    z-index: 1000;
+}
+
+.alert.alert-warning {
+    position: sticky;
+    top: 75.5px;
+    z-index: 1000;  
+}
+
+.cards {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2%;
+    margin-top: -3%;
+}
+
+.card {
+    width: 80%;
+    height: 50%;
+    margin-top: 5%;
+}
+
+.card-img-top {
+    height: 40vw;
+}
+
+.brand-text{
+    margin-left: auto;
+    margin-top: 0.5%;
+    font-size: 130%;
 }
