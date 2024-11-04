@@ -6,11 +6,14 @@
     align-items: left;
     margin:auto;
     margin-left: 1%;
+    width: 16.6%;
+    z-index: 999;
 }
 
 #logout-button {
     margin-left: auto;
     margin-right: 1%;
+    z-index: 999;
 }
 
 .bottom-navbar-icons {
