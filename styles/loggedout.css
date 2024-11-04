@@ -13,3 +13,7 @@
 .card-img-top {
     height: 22vw;
 }
+
+.landing-image {
+    opacity: 60%;
+}

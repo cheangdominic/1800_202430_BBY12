@@ -6,10 +6,12 @@ function getNameFromAuth() {
             console.log(user.uid); //print the uid in the browser console
             console.log(user.displayName);  //print the user name in the browser console
             userName = user.displayName;
+            userEmail = user.Email
 
             //method #1:  insert with JS
             document.getElementById("name-goes-here").innerText = userName;    
-
+            document.getElementById("email-goes-here").innerText = userEmail; 
+            
             //method #2:  insert using jquery
             //$("#name-goes-here").text(userName); //using jquery
 
