@@ -1,14 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Doggo</title>
+    <meta name="comp1800 template" content="My 1800 App">
+
+    <!------------------------>
+    <!-- Required meta tags -->
+    <!------------------------>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!------------------------------------------>
+    <!-- Bootstrap Library CSS JS CDN go here -->
+    <!------------------------------------------>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+    </script>
+
+    <!-------------------------------------------------------->
+    <!-- Firebase 8 Library related CSS, JS, JQuery go here -->
+    <!-------------------------------------------------------->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script> 
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+    <!-------------------------------------------->
+    <!-- Other libraries and styles of your own -->
+    <!-------------------------------------------->
+       <!-- Link to styles of your own -->
+       <link rel="stylesheet" href="./styles/loggedin.css">
+       <link rel="stylesheet" href="./styles/styles.css">
+       <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="./styles/style.css"> -->
     <link rel="stylesheet" href="./styles/profile.css">
-</head>
+
+
 <body>
     <div class="container">
-        <h2>Create Doggo</h2>
-        <h3>Work in progress</h3>
+        <!-- Header Section -->
+        <div class="header-wrapper">
+            <div class="header">Add New Dog</div>
+        </div>
+
+        <div class="profile-pic">
+            <img id="dog-profile-picture" src="https://via.placeholder.com/100" alt="Dog Profile Picture">
+            <button class="change-picture-button">Upload Image</button>
+        </div>
+
+        <!-- Dog Information Form -->
+        <div class="dog-info-form">
+            <form id="add-dog-form">
+                <div class="form-group">
+                    <label for="dog-name">Name</label>
+                    <input type="text" id="dog-name" placeholder="Enter your dog's name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dog-age">Age</label>
+                    <input type="text" id="dog-age" placeholder="Enter your dog's age" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dog-breed">Breed</label>
+                    <input type="text" id="dog-breed" placeholder="Enter your dog's breed" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dog-size">Size</label>
+                    <select id="dog-size" required>
+                        <option value="">Select size</option>
+                        <option value="Small">Small</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Large">Large</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dog-description">Description</label>
+                    <textarea id="dog-description" placeholder="Enter a brief description for your dog" rows="3" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="submit-button">Add Dog</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <nav class="navbar fixed-bottom bg-body-tertiary">
+            <div class="bottom-navbar-icons">
+                <div class="home">
+                    <a class="navbar-brand" href="main.html"><i class='bx bxs-home'></i></a>
+                </div>
+                <div class="map-icon">
+                    <a class="navbar-brand" href="maps.html"><i class='bx bxs-map-alt'></i></a>
+                </div>
+                <div class="post-icon">
+                    <a class="navbar-brand" href="postcreate.html"><i class='bx bxs-plus-square'></i></a>
+                </div>
+                <div class="people-icon">
+                    <a class="navbar-brand" href="friends.html"><i class='bx bxs-user-plus'></i></a>
+                </div>
+                <div class="chat-icon">
+                    <a class="navbar-brand" href="chat.html"><i class='bx bxs-chat'></i></a>
+                </div>
+            </div>
+        </nav>
+    
+        <!-- our own footer goes here-->
+        <nav id="footerPlaceholder"></nav>
+
+        <script src="./scripts/profile.js"></script>
 </body>
 </html>

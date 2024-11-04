@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Doggo Profile</title>
+    <meta name="comp1800 template" content="My 1800 App">
+
+    <!------------------------>
+    <!-- Required meta tags -->
+    <!------------------------>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!------------------------------------------>
+    <!-- Bootstrap Library CSS JS CDN go here -->
+    <!------------------------------------------>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+        </script>
+
+    <!-------------------------------------------------------->
+    <!-- Firebase 8 Library related CSS, JS, JQuery go here -->
+    <!-------------------------------------------------------->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+
+    <!-------------------------------------------->
+    <!-- Other libraries and styles of your own -->
+    <!-------------------------------------------->
+    <!-- Link to styles of your own -->
+    <link rel="stylesheet" href="./styles/loggedin.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
+    <!-- <link rel="stylesheet" href="./styles/style.css"> -->
+    <link rel="stylesheet" href="./styles/profile.css">
+
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div class="header-wrapper">
+            <div class="header">Manage Dog Profile</div>
+        </div>
+
+        <!-- Dog Profile Picture Section -->
+         <!-- TODO: Add JS Functionality to Add Images -->
+          <!-- TODO: Add JS Functionality to Swap between Dogs -->
+         <div class="dog-profile-pic-container">
+            <button class="arrow-button" onclick="previousDog()">&#9664;</button>
+            <div class="profile-pic">
+                <img id="dog-profile-picture" src="./styles/images/pexels-vanserline-vandenberg-759843-1619690.jpg" alt="Dog Profile Picture">
+            </div>
+            <button class="arrow-button" onclick="nextDog()">&#9654;</button>
+            <input type="file" id="dog-profile-upload" accept="image/*" style="display: none;" onchange="uploadDogProfilePicture()" />
+        </div>
+
+        <!-- Dog Information Section -->
+        <div class="dog-info-section">
+            <div class="dog-info-item">
+                <h3>Name</h3>
+                <p>Doggo</p>
+            </div>
+            <div class="dog-info-item">
+                <h3>Age</h3>
+                <p>1 years</p>
+            </div>
+            <div class="dog-info-item">
+                <h3>Size</h3>
+                <p>Small</p>
+            </div>
+            <div class="dog-info-item">
+                <h3>Breed</h3>
+                <p>DogDog</p>
+            </div>
+        </div>
+
+        <!--TODO: Add Edit/Delete/ManagePosts Section-->
+
+        <!-- Image Gallery Section -->
+        <div class="gallery-section">
+            <h3>Image Gallery</h3>
+            <div class="image-gallery" id="image-gallery">
+                <!-- Placeholder images -->
+                <img src="./styles/images/c5449395800625fbadc90940801d3d6a.jpg" alt="Dog Image 1">
+                <img src="./styles/images/Pomeranian-6.jpg" alt="Dog Image 2">
+                <img src="./styles/images/pomeranian-u8.jpg" alt="Dog Image 3">
+            </div>
+            <div class="upload-button">
+                <input type="file" id="image-upload" accept="image/*" style="display: none;" onchange="uploadImage()">
+                <button onclick="document.getElementById('image-upload').click()">Upload Image</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Link to the JavaScript file for handling image uploads -->
+    <script src="profile.js"></script>
+
+
+    <nav class="navbar fixed-bottom bg-body-tertiary">
+        <div class="bottom-navbar-icons">
+            <div class="home">
+                <a class="navbar-brand" href="main.html"><i class='bx bxs-home'></i></a>
+            </div>
+            <div class="map-icon">
+                <a class="navbar-brand" href="maps.html"><i class='bx bxs-map-alt'></i></a>
+            </div>
+            <div class="post-icon">
+                <a class="navbar-brand" href="postcreate.html"><i class='bx bxs-plus-square'></i></a>
+            </div>
+            <div class="people-icon">
+                <a class="navbar-brand" href="friends.html"><i class='bx bxs-user-plus'></i></a>
+            </div>
+            <div class="chat-icon">
+                <a class="navbar-brand" href="chat.html"><i class='bx bxs-chat'></i></a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- our own footer goes here-->
+    <nav id="footerPlaceholder"></nav>
+</body>
+
+</html>
