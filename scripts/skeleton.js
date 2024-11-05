@@ -11,6 +11,7 @@ function loadSkeleton() {
             // Do something for the user here.
             console.log($('#navbarPlaceholder').load('./text/nav_after_login.html'));
             console.log($('#footerPlaceholder').load('./text/footer.html'));
+            console.log($('#bottomNavbarPlaceholder').load('./text/bottom_nav_after_login.html'));
         } else {
             // No user is signed in.
             console.log($('#navbarPlaceholder').load('./text/nav_before_login.html'));
