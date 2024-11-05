@@ -19,7 +19,7 @@ body {
     overflow-y: auto;
     padding: 1em;
     display: flex;
-    flex-direction: column-reverse; /* Messages appear at the bottom */
+    flex-direction: column-reverse; 
 }
 
 .message {
