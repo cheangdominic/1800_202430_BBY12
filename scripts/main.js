@@ -1,27 +1,45 @@
+let userId;
+
 function getNameFromAuth() {
     firebase.auth().onAuthStateChanged(user => {
-        // Check if a user is signed in:
         if (user) {
-            // Do something for the currently logged-in user here: 
-            console.log(user.uid); //print the uid in the browser console
-            console.log(user.displayName);  //print the user name in the browser console
-            userName = user.displayName;
-            userEmail = user.Email
+            userId = user.uid;
+            document.getElementById("name-goes-here").innerText = user.displayName;    
+            document.getElementById("email-goes-here").innerText = user.email; 
 
-            //method #1:  insert with JS
-            document.getElementById("name-goes-here").innerText = userName;    
-            document.getElementById("email-goes-here").innerText = userEmail; 
-            
-            //method #2:  insert using jquery
-            //$("#name-goes-here").text(userName); //using jquery
-
-            //method #3:  insert using querySelector
-            //document.querySelector("#name-goes-here").innerText = userName
-
+            document.querySelector(".btn-secondary").onclick = () => savePlaydate(userId);
         } else {
-            // No user is signed in.
-            console.log ("No user is logged in");
+            console.log("No user is logged in");
+            document.querySelector(".btn-secondary").disabled = true;
         }
     });
 }
-getNameFromAuth(); //run the function
+
+function savePlaydate() {
+    const playdateTitle = document.querySelector('.form-control[placeholder="Playdate Title"]').value;
+    const playdateDescription = document.querySelector('.form-control[aria-label="With textarea"]').value;
+
+    if (userId) {
+        if (playdateTitle.trim() !== "") {
+            db.collection("users").doc(userId).collection("playdates").add({
+                title: playdateTitle,
+                description: playdateDescription || "",
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            })
+            .then(() => {
+                console.log("Playdate saved successfully!");
+                document.querySelector('.form-control[placeholder="Playdate Title"]').value = "";
+                document.querySelector('.form-control[aria-label="With textarea"]').value = "";
+            })
+            .catch(error => {
+                console.error("Error saving playdate: ", error);
+            });
+        } else {
+            console.error("Playdate title cannot be empty.");
+        }
+    } else {
+        console.error("User ID is not defined. Please log in.");
+    }
+}
+
+getNameFromAuth();

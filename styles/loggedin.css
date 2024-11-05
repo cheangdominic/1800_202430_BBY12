@@ -71,3 +71,21 @@
     margin-top: 0.5%;
     font-size: 130%;
 }
+
+.input-group{
+    margin-top: 2%;
+    padding: 0% 5%;
+}
+
+.form{
+    margin-top: 3%;
+}
+
+.d-grid{
+    margin-top: 2%;
+    padding: 0% 5%;
+}
+
+.form h1{
+    text-align: center;
+}

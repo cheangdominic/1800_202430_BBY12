@@ -23,3 +23,13 @@ function logout() {
 function redirectToPage(page) {
   window.location.href = page;
 }
+
+function logoutRedirect() {
+  firebase.auth().signOut().then(() => {
+    // Sign-out successful.
+    console.log("logging out user");
+    redirectToPage('index.html');
+  }).catch((error) => {
+    // An error happened.
+  });
+}
