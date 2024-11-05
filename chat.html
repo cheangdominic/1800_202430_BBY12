@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>UpDog</title>
+    <title>Chat</title>
     <meta name="comp1800 template" content="My 1800 App">
 
     <!------------------------>
@@ -30,11 +30,12 @@
     <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script> 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
-
+    <script> src="scripts/chat.js"</script>
     <!-------------------------------------------->
     <!-- Other libraries and styles of your own -->
     <!-------------------------------------------->
        <!-- Link to styles of your own -->
+       <link rel="stylesheet" href="./styles/chat.css">
        <link rel="stylesheet" href="./styles/loggedin.css">
        <link rel="stylesheet" href="./styles/styles.css">
        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
@@ -54,6 +55,20 @@
 
     <!-- the body of your page goes here -->
     <nav id="bottomNavbarPlaceholder"></nav>
+    <div class="header">
+        <h1>Messaging - UpDog</h1>
+    </div>
+    
+    <div class="message-container" id="messageContainer">
+        <!-- Messages will be dynamically added here -->
+        <div class="message received">Hello! Welcome to UpDog's chat feature!</div>
+        <div class="message sent">Thank you! Looking forward to connecting with others.</div>
+    </div>
+    
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
     
     <!-- stuff -->
 
