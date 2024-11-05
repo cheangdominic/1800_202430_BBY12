@@ -19,17 +19,15 @@ function savePlaydate() {
     const playdateTitle = document.querySelector('.form-control[placeholder="Playdate Title"]').value;
     const playdateDescription = document.querySelector('.form-control[aria-label="With textarea"]').value;
     const playdateAddress = document.querySelector('.form-control[aria-label="Park Address"]').value;
+    const playdateDatetime = document.getElementById("playdate-datetime").value;
 
     if (userId) {
-        if (playdateTitle.trim() !== "" && playdateAddress.trim() !== "") {
+        if (playdateTitle.trim() !== "" && playdateAddress.trim() !== "" && playdateDatetime.trim() !== "") {
             db.collection("users").doc(userId).collection("playdates").add({
                 title: playdateTitle,
                 description: playdateDescription || "",
                 address: playdateAddress,
-                month: playdateMonth,
-                day: playdateDay,
-                hour: playdateHours,
-                minute: playdateMinutes,
+                datetime: playdateDatetime,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp()
             })
             .then(() => {
@@ -47,12 +45,9 @@ function savePlaydate() {
                 console.error("Error saving playdate: ", error);
             });
         } else {
-            console.error("Playdate title cannot be empty.");
+            console.error("Playdate title, address, or date and time cannot be empty.");
             if (playdateTitle.trim() === "") {
-                alert("Please enter a playdate title.");
-            }
-            if (playdateAddress.trim() === "") {
-                alert("Please enter a park address.");
+                alert("Please enter a title, address, and/or date for the playdate.");
             }
         }
     } else {

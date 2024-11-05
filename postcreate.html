@@ -65,14 +65,8 @@
 
       <div class="input-group">
         <span class="input-group-text">Start Date</span>
-        <input
-        type="datetime-local"
-        id="meeting-time"
-        name="meeting-time"
-        value="2018-06-12T19:30"
-        min="2018-06-07T00:00"
-        max="2018-06-14T00:00" />
-      </div>
+        <input type="datetime-local" id="playdate-datetime"/>
+    </div>
 
       <div class="input-group mb-3">
         <input type="file" class="form-control" id="inputGroupFile02">
@@ -85,7 +79,7 @@
       </div>
 
       <div class="d-grid gap-2">
-        <button class="btn btn-secondary" type="button" onclick="savePlaydate()">Submit</button>
+        <button class="btn btn-warning" type="button" onclick="savePlaydate()">Submit</button>
       </div>
     </div>
     
@@ -106,6 +100,7 @@
     <script src="./scripts/skeleton.js"></script>
     <script src="./scripts/script.js"></script>
     <script src="./scripts/main.js"></script>
+    <script src="./scripts/dateofplaydate.js"></script>
 
 </body>
 
