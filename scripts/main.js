@@ -1,5 +1,3 @@
-let userId;
-
 function getNameFromAuth() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
