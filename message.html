@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en"></html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>
+        Message
+    </title>
+    <link rel="stylesheet" href="./styles/message.css">
+    <script> src="scripts/message.js"</script>
+</head>
+<body>
+    <div class="header">
+        <h1>Messaging - UpDog</h1>
+    </div>
+    
+    <div class="message-container" id="messageContainer">
+        <!-- Messages will be dynamically added here -->
+        <div class="message received">Hello! Welcome to UpDog's chat feature!</div>
+        <div class="message sent">Thank you! Looking forward to connecting with others.</div>
+    </div>
+    
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+</body>
