@@ -9,12 +9,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const minutes = String(now.getMinutes()).padStart(2, '0');
     const currentDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
 
-    const maxDate = new Date(now);
-    maxDate.setFullYear(now.getFullYear() + 1);
-    const maxYear = maxDate.getFullYear();
-    const maxMonth = String(maxDate.getMonth() + 1).padStart(2, '0');
-    const maxDay = String(maxDate.getDate()).padStart(2, '0');
-    const maxDateTime = `${maxYear}-${maxMonth}-${maxDay}T${hours}:${minutes}`;
+    const maxYear = now.getFullYear() + 1;
+    const maxDateTime = `${maxYear}-${month}-${day}T${hours}:${minutes}`;
 
     startDateInput.value = currentDateTime;
     startDateInput.min = currentDateTime;
