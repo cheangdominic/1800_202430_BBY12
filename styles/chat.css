@@ -20,6 +20,7 @@ body {
     padding: 1em;
     display: flex;
     flex-direction: column-reverse; 
+    background-color: rgb(217, 219, 93);
 }
 
 .message {
@@ -42,9 +43,11 @@ body {
 
 .input-container {
     display: flex;
-    padding: 0.5em;
-    border-top: 1px solid #ddd;
-    background-color: #fff;
+    align-items: center;
+    margin-bottom: 1em;
+    padding: 4em;
+    
+    background-color: #cfc1c1;
 }
 
 .input-container input {

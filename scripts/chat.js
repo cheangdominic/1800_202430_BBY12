@@ -1,4 +1,6 @@
-function sendMessage() {
+const db = firebase.firestore();
+
+function displayMessage() {
     const messageContainer = document.getElementById('messageContainer');
     const messageInput = document.getElementById('messageInput');
     const messageText = messageInput.value.trim();
@@ -11,3 +13,42 @@ function sendMessage() {
         messageInput.value = ''; 
     }
 }
+function sendMessage(senderId, receiverId, messageContent){
+    const chatId = `${senderID}_${receiverID}`;
+    const newMessage = {
+        sender: senderId,
+        receiver: receiverId,
+        content: messageContent,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+};
+}
+db.collection("messages").doc(chatId).get().then((doc)({
+    if(doc.exits){
+}).catch((error) => {
+    if (error.code === "not-found") {
+        // If the chat document doesn't exist, create it with initial message
+        db.collection("messages").doc(chatId).set({
+            user0: senderId,
+            user1: receiverId,
+            messages: [newMessage]
+        });
+    } else {
+        console.error("Error adding message: ", error);
+    };
+}.
+
+function getMessages(user0, user1){
+    const chatId = `${user0}_${user1}`;
+    db.collection("messages").doc(chatId).get().then((doc) => {
+        if (doc.exists) {
+            const chatData = doc.data();
+            console.log("Messages:", chatData.messages);
+            // Display messages in the UI as needed
+        } else {
+            console.log("No messages found between these users.");
+        }
+    }).catch((error) => {
+        console.error("Error retrieving messages: ", error);
+    });
+}     
+
