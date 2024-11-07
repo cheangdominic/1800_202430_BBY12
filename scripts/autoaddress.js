@@ -1,14 +1,15 @@
 mapboxgl.accessToken = 'pk.eyJ1IjoiZGNoZWFuZyIsImEiOiJjbTM3aXVka3YwZ2lpMmlwd2VndTN0NWw4In0.UNRVJNRE_fuqrK5LtRYHKg';
 
+let selectedAddress = "";
+
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    type: 'poi,place'
+    types: 'poi,place'
 });
 
 geocoder.addTo('#geocoder');
 
-const results = document.getElementById('result');
+geocoder.on('result', function (e) {
 
-geocoder.on('clear', () => {
-    results.innerText = '';
+    selectedAddress = e.result.place_name;
 });
