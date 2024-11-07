@@ -20,7 +20,7 @@ body {
     overflow: hidden;
     padding-bottom: 20px;
     margin: 0 auto;
-    overflow: auto;
+    overflow-y: auto;
 }
 
 /* Header Section */
