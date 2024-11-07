@@ -22,10 +22,12 @@ function sendMessage(senderId, receiverId, messageContent){
         timestamp: firebase.firestore.FieldValue.serverTimestamp()
 };
 }
-db.collection("messages").doc(chatId).get().then((doc)({
+db.collection("messages").doc(chatId).get().then((doc) => {
     if(doc.exits){
-}).catch((error) => {
-    if (error.code === "not-found") {
+        db.collection("messages").doc(chatId).update({
+            messages: firebase.firestore.FieldValue.arrayUnion(newMessage)
+        }
+    else{
         // If the chat document doesn't exist, create it with initial message
         db.collection("messages").doc(chatId).set({
             user0: senderId,

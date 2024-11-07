@@ -6,14 +6,17 @@ body {
     flex-direction: column;
     height: 100vh;
 }
-
 .header {
     background-color: #333;
     color: white;
-    padding: 1em;
+    padding: 0em;
     text-align: center;
 }
-
+.messageContainer{
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+}
 .message-container {
     flex: 1;
     overflow-y: auto;
@@ -21,6 +24,27 @@ body {
     display: flex;
     flex-direction: column-reverse; 
     background-color: rgb(217, 219, 93);
+}
+.sidebar-container{
+    grid-template-columns: auto;
+    display: flex;
+    height: 100vh;
+    background-color: #f0f2f5;
+    font-family: Arial, sans-serif;
+}
+.sidebar{
+    width: 300px;
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+.sidebar h2{
+    width: 300px;
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+    overflow-y: auto;
+
 }
 
 .message {
@@ -70,5 +94,5 @@ body {
 }
 
 .input-container button:hover {
-    background-color: #e59400;
+    background-color: #e55f00;
 }
