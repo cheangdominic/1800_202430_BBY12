@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
                 <div class="card-body">
                     <h5 class="card-title">${playdate.title}</h5>
-                    <p class="card-text">${playdate.address}</p>
                     <p class="card-text">${playdate.description}</p>
+                    <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
                     <button type="button" class="btn btn-warning">Join</button>
                 </div>`;
