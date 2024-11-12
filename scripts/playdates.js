@@ -19,15 +19,23 @@ function savePlaydate() {
             }
 
             playdateTitle = capitalizeEachWord(playdateTitle.trim());
+                    db.collection("playdates").add({
+                        title: playdateTitle,
+                        description: playdateDescription || "",
+                        address: selectedAddress,
+                        datetime: playdateDatetime,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        userId: userId
+                    })
 
-            db.collection("playdates").add({
-                title: playdateTitle,
-                description: playdateDescription || "",
-                address: selectedAddress,
-                datetime: playdateDatetime,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                userId: userId
-            })
+                db.collection("users").doc(userId).collection("userPlaydates").add({
+                    title: playdateTitle,
+                    description: playdateDescription || "",
+                    address: selectedAddress,
+                    datetime: playdateDatetime,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userId: userId
+                })
                 .then(() => {
                     console.log("Playdate saved globally!");
                     alert("Playdate saved successfully!");

@@ -7,6 +7,7 @@ const userProfilePicture = document.getElementById("user-profile-image");
 const dogIcon = document.getElementById("dog-icon");
 
 // Load Profile Contents
+
 function loadProfile(userId) {
     db.collection("profiles")
         .doc(userId)
@@ -53,6 +54,7 @@ function loadProfile(userId) {
         });
 }
 
+
 // Load Dog Icon
 function loadDogIcon() {
     const savedPicture = localStorage.getItem("dogProfilePicture");
@@ -77,38 +79,45 @@ window.onload = function () {
     });
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-        const postContainer = document.querySelector(".post-gallery");
-        postContainer.innerHTML = "";
 
-        snapshot.forEach(doc => {
-            const playdate = doc.data();
-            const currentTime = new Date();
-            const playdateTime = new Date(playdate.datetime);
-            const post = document.createElement("div");
-            if (currentTime < playdateTime) {
-                post.classList.add("post");
-                post.innerHTML = `
-                <div class="post">
-                    <div class="post-image">
-                        <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
-                    </div>
-                    <div class="post-text">
-                        <h3>${playdate.title}</h3>
-                        <p>${playdate.description}</p>
-                        <p>${playdate.address}</p>
-                        <p>${new Date(playdate.datetime).toLocaleString()}>
-                    </div>
-                </div>`;
-                    postContainer.appendChild(post);
-            }
-            else {
-                db.collection("playdates").doc(doc.id).delete()
-                    .catch((error) => {
-                        console.error("Error removing expired playdate: ", error);
-                    });
-            }
-        });
+document.addEventListener("DOMContentLoaded", function () {
+    auth.onAuthStateChanged((user) => {
+        if (user) {
+            const userId = user.uid;
+            db.collection("users").doc(userId).collection("userPlaydates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+                const postContainer = document.querySelector(".post-gallery");
+                postContainer.innerHTML = "";
+
+                snapshot.forEach(doc => {
+                    const playdate = doc.data();
+                    const currentTime = new Date();
+                    const playdateTime = new Date(playdate.datetime);
+                    const post = document.createElement("div");
+                    if (currentTime < playdateTime) {
+                        post.classList.add("post");
+                        post.innerHTML = `
+                        <div class="post">
+                            <div class="post-image">
+                                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
+                            </div>
+                            <div class="post-text">
+                                <h3>${playdate.title}</h3>
+                                <p>${playdate.description}</p>
+                                <p>${playdate.address}</p>
+                                <p>${new Date(playdate.datetime).toLocaleString()}</p>
+                            </div>
+                        </div>`;
+                        postContainer.appendChild(post);
+                    } else {
+                        db.collection("playdates").doc(doc.id).delete()
+                            .catch((error) => {
+                                console.error("Error removing expired playdate: ", error);
+                            });
+                    }
+                });
+            });
+        } else {
+            console.log("No user is signed in");
+        }
     });
 });
