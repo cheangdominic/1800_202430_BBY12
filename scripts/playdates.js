@@ -8,15 +8,16 @@ function savePlaydate() {
             if (playdateTitle.trim() === "") {
                 playdateTitle = userDisplayName + "'s Playdate";
             }
-            db.collection("users").doc(userId).collection("playdates").add({
+            db.collection("playdates").add({
                 title: playdateTitle,
                 description: playdateDescription || "",
                 address: selectedAddress,
                 datetime: playdateDatetime,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                userId: userId
             })
             .then(() => {
-                console.log("Playdate saved successfully!");
+                console.log("Playdate saved globally!");
                 alert("Playdate saved successfully!");
                 document.querySelector('.form-control[placeholder="Playdate Title"]').value = "";
                 document.querySelector('.form-control[aria-label="With textarea"]').value = "";

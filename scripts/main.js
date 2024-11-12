@@ -13,3 +13,27 @@ function getNameFromAuth() {
 }
 
 getNameFromAuth();
+
+document.addEventListener("DOMContentLoaded", function() {
+    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+        const postContainer = document.querySelector(".postTemplate");
+        postContainer.innerHTML = "";
+
+        snapshot.forEach(doc => {
+            const playdate = doc.data();
+            const post = document.createElement("div");
+            post.classList.add("card", "mb-3");
+            post.innerHTML = `
+                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
+                <div class="card-body">
+                    <h5 class="card-title">${playdate.title}</h5>
+                    <p class="card-text">${playdate.address}</p>
+                    <p class="card-text">${playdate.description}</p>
+                    <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
+                    <button type="button" class="btn btn-warning">Join</button>
+                </div>`;
+            postContainer.appendChild(post);
+        });
+    });
+});
+

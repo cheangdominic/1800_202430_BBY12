@@ -101,3 +101,7 @@
     text-align: center;
     font-size:large;
 }
+
+.postTemplate {
+    padding-bottom: 100px; /* Adjust this value based on your navbar's height */
+}
