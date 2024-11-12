@@ -21,27 +21,23 @@ window.onload = function () {
 };
 
 function loadDogProfile(userId) {
-    db.collection("users")
+    db.collection('users')
         .doc(userId)
-        .collection("dogprofiles")
-        .doc("dog") 
+        .collection('dogprofiles')
+        .doc('dog') 
         .get()
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
 
-                // Retrieve and set the profile picture
+                // Determine which picture to use
                 const savedPicture = localStorage.getItem("dogProfilePicture");
-                if (savedPicture) {
-                    document.getElementById("dog-profile-picture").src = savedPicture;
-                    console.log("Using profile picture from localStorage.");
-                } else {
-                    // default image
-                    document.getElementById("dog-profile-picture").src = "./styles/images/defaultdog.jpg";
-                    console.log("Using default profile picture.");
-                }
+                const profilePicture = savedPicture || data.profilePicture || "./styles/images/defaultdog.jpg";
 
-                // Populate the profile fields with data from Firestore
+                // Assign the determined picture
+                document.getElementById("dog-profile-picture").src = profilePicture;
+
+                // Populate text fields
                 document.getElementById("dog-name").textContent = data.dogname || "Unknown";
                 document.getElementById("dog-age").textContent = data.age || "Unknown";
                 document.getElementById("dog-size").textContent = data.size || "Unknown";
@@ -49,10 +45,8 @@ function loadDogProfile(userId) {
 
                 console.log("Dog profile loaded:", data);
             } else {
-                console.log("No dog profile found in Firestore.");
+                console.log("No dog profile found in Firestore. Using defaults.");
+                document.getElementById("dog-profile-picture").src = "./styles/images/defaultdog.jpg";
             }
         })
-        .catch((error) => {
-            console.error("Error loading dog profile:", error);
-        });
 }

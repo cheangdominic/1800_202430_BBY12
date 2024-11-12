@@ -60,7 +60,7 @@ function loadDogIcon() {
         dogIcon.src = savedPicture;
         console.log("Dog icon updated from localStorage:", savedPicture);
     } else {
-        dogIcon.src = "./styles/images/defaultdog.png";
+        dogIcon.src = "./styles/images/defaultdog.jpg";
         console.log("Using default dog profile picture.");
     }
 }
