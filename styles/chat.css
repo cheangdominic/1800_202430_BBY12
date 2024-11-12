@@ -1,3 +1,4 @@
+
 /* Container for both message container and input container */
 body {
     display: flex;
@@ -7,10 +8,9 @@ body {
 
 .header {
     text-align: center;
-    padding: 1.2rem;
+    padding: 0.4rem;
     background: linear-gradient(135deg, #deee4a 0%, #52c0ff 100%);
     color: white;
-    position: fixed;
     top: 0;
     width: 100%;
     z-index: 1000;
@@ -26,7 +26,7 @@ body {
 
 .message-container {
     margin: 1.5rem auto;
-    margin-top: 90px;
+    margin-top: 10px;
     padding: 25px;
     padding-bottom: 100px; 
     background-color: white;
