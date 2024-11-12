@@ -28,7 +28,7 @@ body {
     margin: 1.5rem auto;
     margin-top: 90px;
     padding: 25px;
-    padding-bottom: 100px; /* 入力バーの高さ分の余白を追加 */
+    padding-bottom: 100px; 
     background-color: white;
     border-radius: 20px;
     height: calc(100vh - 280px);
@@ -607,7 +607,7 @@ button:disabled {
         margin: 1rem auto;
         margin-top: 70px;
         padding: 15px;
-        padding-bottom: 90px; /* モバイル用に調整 */
+        padding-bottom: 90px; 
         height: calc(100vh - 220px);
     }
 
