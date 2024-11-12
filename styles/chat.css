@@ -149,7 +149,7 @@ body {
     left: 50%;
     transform: translateX(-50%);
     border-radius: 20px;
-    z-index: 100; /* 重なり順を制御 */
+    z-index: 100; 
 }
 
 #messageInput {
@@ -176,7 +176,6 @@ body {
     display: inline-block;
 }
 
-/* アップロードボタンのスタイル */
 .upload-btn {
     width: 38px;
     height: 38px;
@@ -216,13 +215,10 @@ body {
     display: none;
     min-width: 180px;
     z-index: 1000;
-    /* ホバー時のギャップを埋めるための余白 */
     padding-bottom: 20px;
-    /* メニューとボタンの間の見えないギャップ */
     margin-bottom: -5px;
 }
 
-/* ホバー時のメニュー表示 */
 .upload-options:hover .upload-menu {
     display: block;
 }
@@ -251,7 +247,6 @@ body {
     font-size: 14px;
 }
 
-/* ボタンとメニューの間の見えない橋を作成 */
 .upload-menu::after {
     content: '';
     position: absolute;
