@@ -1,12 +1,14 @@
 console.log("editProfile.js loaded");
 
 
-// Profile Editing //
+// DOM Elements for User Details, Update Details, Profile Picture(s)
 const nameInput = document.getElementById('username');
 const ageInput = document.getElementById('age');
 const locationInput = document.getElementById('location');
 const interestsInput = document.getElementById('interests');
 const updateButton = document.getElementById('updateProfileBtn');
+const profilePictureInput = document.getElementById('userProfilePictureInput');
+const profilePicturePreview = document.getElementById('userProfilePicturePreview');
 
 auth.onAuthStateChanged((user) => {
     if (user) {
@@ -17,26 +19,47 @@ auth.onAuthStateChanged((user) => {
     }
 });
 
+// Load profile details from Firestore and local storage (for images)
 function loadProfile(userId) {
     db.collection('profiles').doc(userId).get()
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
 
-                nameInput.value = data.name || '';
-                ageInput.value = data.age || '';
-                locationInput.value = data.location || '';
-                interestsInput.value = data.interests || '';
-                console.log("Profile data loaded:", data);
+                // Check for profile picture
+                const savedPicture = localStorage.getItem("userProfilePicture");
+                const profilePicture = savedPicture || data.profilePicture || "./styles/images/defaultprofile.png";
+                document.getElementById("userProfilePicturePreview").src = profilePicture;
+
+                // Populate other fields
+                document.getElementById('username').value = data.name || '';
+                document.getElementById('age').value = data.age || '';
+                document.getElementById('location').value = data.location || '';
+                document.getElementById('interests').value = data.interests || '';
             } else {
-                console.log("No profile data found for this user.");
+                console.log("Default loaded.");
+                document.getElementById("userProfilePicturePreview").src = "./styles/images/defaultprofile.png";
             }
         })
-        .catch((error) => {
-            console.error("Error loading profile data:", error);
-        });
 }
 
+
+// Event listener for file input from user
+profilePictureInput.addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        // Reader object created to parse the image as base64 string
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            profilePicturePreview.src = e.target.result;
+            localStorage.setItem("userProfilePicture", e.target.result);
+            console.log("Profile picture saved to localStorage.");
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Function to update user information to firestore
 async function updateProfile() {
     const userId = auth.currentUser ? auth.currentUser.uid : null;
 

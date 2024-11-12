@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>EditProfile</title>
+    <title>Edit Dog Profile</title>
     <meta name="comp1800 template" content="My 1800 App">
 
     <!------------------------>
@@ -45,28 +45,40 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">Edit Profile</div>
+        <div class="header">Edit Dog Profile</div>
+
+        <!-- Profile Picture Section -->
         <div class="profile-pic">
-            <img id="userProfilePicturePreview" src="./styles/images/default-user.png" alt="Profile Picture">
-            <input type="file" id="userProfilePictureInput" accept="image/*" style="display:none;">
-            <button class="change-picture-button" onclick="document.getElementById('userProfilePictureInput').click()">Change Picture</button>
+            <img id="dogProfilePicturePreview" src="/styles/images/defaultdog.jpg" alt="Selected Dog" class="preview-large">
+            <button class="change-picture-button">
+                <label for="dogProfilePictureInput">Change Picture</label>
+            </button>
+            <input type="file" id="dogProfilePictureInput" accept="image/*" style="display: none;">
         </div>
+
+        <!-- Form Section -->
         <div class="form">
-            <label for="username">Name</label>
-            <input type="text" id="username" value="">
+            <h3>Edit Dog Profile</h3>
             
-            <label for="age">Age</label>
-            <input type="number" id="age" min="18" placeholder="Enter your age">
-            
-            <label for="location">Location</label>
-            <input type="text" id="location" placeholder="Update your location">
-            
-            <label for="interests">Interests</label>
-            <textarea id="interests" placeholder="Describe your interests, hobbies, and what you and your dog enjoy"></textarea>
-            
+            <!-- Dog Name -->
+            <label for="dogNameInput">Name</label>
+            <input type="text" id="dogNameInput" placeholder="Enter your dog's name">
+        
+            <!-- Dog Age -->
+            <label for="dogAgeInput">Age</label>
+            <input type="text" id="dogAgeInput" placeholder="Enter your dog's age">
+        
+            <!-- Dog Size -->
+            <label for="dogSizeInput">Size</label>
+            <input type="text" id="dogSizeInput" placeholder="Enter your dog's size">
+        
+            <!-- Dog Breed -->
+            <label for="dogBreedInput">Breed</label>
+            <input type="text" id="dogBreedInput" placeholder="Enter your dog's breed">
+
             <div class="update-button">
-                <button id="updateProfileBtn">Update</button>
-                <a href="profile.html" class="btn">Back to Profile</a>
+                <button id="updateDogProfileBtn" class="btn btn-dark">Update</button>
+                <a href="dog_profile.html" class="btn">Return to Profile</a>
             </div>
         </div>
     </div>
@@ -82,7 +94,6 @@
     <script src="./scripts/firebaseAPI_UpDog.js"></script>
     <script src="./scripts/skeleton.js"></script>
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/main.js"></script>
-    <script src="./scripts/editProfile.js"></script>
+    <script src="./scripts/editdogprofile.js"></script>
 </body>
 </html>

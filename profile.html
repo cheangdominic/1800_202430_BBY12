@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>UpDog</title>
+    <title>User Profile</title>
     <meta name="comp1800 template" content="My 1800 App">
 
     <!------------------------>
@@ -18,7 +18,7 @@
         integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
-    </script>
+        </script>
 
     <!-------------------------------------------------------->
     <!-- Firebase 8 Library related CSS, JS, JQuery go here -->
@@ -27,19 +27,20 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script> 
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
     <!-------------------------------------------->
     <!-- Other libraries and styles of your own -->
     <!-------------------------------------------->
-       <!-- Link to styles of your own -->
-       <link rel="stylesheet" href="./styles/loggedin.css">
-       <link rel="stylesheet" href="./styles/styles.css">
-       <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
+    <!-- Link to styles of your own -->
+    <link rel="stylesheet" href="./styles/loggedin.css">
+    <link rel="stylesheet" href="./styles/styles.css">
+    <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
+    <link rel="stylesheet" href="./styles/profile.css">
 
 </head>
 
@@ -47,27 +48,102 @@
 
     <!------------------------------>
     <!-- Your HTML Layout go here -->
-    
-    <!-- our own navbar goes here -->
-    <nav id="navbarPlaceholder"></nav>
 
 
-    <!-- the body of your page goes here -->
-    <nav id="bottomNavbarPlaceholder"></nav>
-    
-    <!-- stuff -->
+    <div class="container">
+        <!-- Top Section -->
+        <div class="header">Profile
+            <div class="pet-icons">
+                <a href="dog_profile.html" class="pet-icon" title="Pet 1 Profile">
+                    <img id="dog-icon" src="/styles/images/defaultdog.jpg" alt="Small Dog Profile Icon">
+                </a>
+                <a href="create_doggo.html" class="pet-icon" title="Add a Dog?">
+                    <img src="./styles/images/plus-icon-21715.png">
+                </a>
+            </div>
+        </div>
 
-    <!-- our own footer goes here-->
-    <nav id="footerPlaceholder"></nav>
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <div class="profile-picture">
+                <img id="user-profile-image" src="/styles/images/defaultprofile.png" alt="User Profile Picture">
+            </div>
+            <div class="profile-info">
+            </div>
+            <div class="profile-info">
+                <h2 id="profile-name-age-location">Name, age, location</h2>
+                <a href="edit_profile.html" class="btn">Edit Profile</a>
+                <a href="manage_posts.html" class="btn">Manage My Posts</a>
+            </div>
+        </div>
 
-    <!---------------------------------------------->
-    <!-- Your own JavaScript functions go here    -->
-    <!---------------------------------------------->
-    <script src="./scripts/firebaseAPI_UpDog.js"></script>
-    <script src="./scripts/skeleton.js"></script>
-    <script src="./scripts/script.js"></script>
-    <script src="./scripts/main.js"></script>
+        <!-- Hobbies & Interests Section -->
+        <div class="hobbies-section">
+            <h3>Hobbies & Interests</h3>
+            <p id="profile-interests">Placeholder text.</p>
+        </div>
 
+        <!-- Post Gallery -->
+        <!-- TODO: JS Function to dynamically update posts -->
+        <div class="post-gallery">
+            <div class="post">
+                <div class="post-image">
+                    <img src="https://via.placeholder.com/100" alt="Post Image 1">
+                </div>
+                <div class="post-text">
+                    <p>Placeholder text. This is a read-only area displaying user content.</p>
+                </div>
+            </div>
+            <div class="post">
+                <div class="post-image">
+                    <img src="https://via.placeholder.com/100" alt="Post Image 2">
+                </div>
+                <div class="post-text">
+                    <p>Another sample post content displayed here as read-only text.</p>
+                </div>
+            </div>
+            <div class="post">
+                <div class="post-image">
+                    <img src="https://via.placeholder.com/100" alt="Post Image 3">
+                </div>
+                <div class="post-text">
+                    <p>Will dynamically update amount of posts based on user input.</p>
+                </div>
+                <!-- More Posts go Here -->
+            </div>
+        </div>
+
+        <nav class="navbar fixed-bottom bg-body-tertiary">
+            <div class="bottom-navbar-icons">
+                <div class="home">
+                    <a class="navbar-brand" href="main.html"><i class='bx bxs-home'></i></a>
+                </div>
+                <div class="map-icon">
+                    <a class="navbar-brand" href="maps.html"><i class='bx bxs-map-alt'></i></a>
+                </div>
+                <div class="post-icon">
+                    <a class="navbar-brand" href="postcreate.html"><i class='bx bxs-plus-square'></i></a>
+                </div>
+                <div class="people-icon">
+                    <a class="navbar-brand" href="friends.html"><i class='bx bxs-user-plus'></i></a>
+                </div>
+                <div class="chat-icon">
+                    <a class="navbar-brand" href="chat.html"><i class='bx bxs-chat'></i></a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- our own footer goes here-->
+        <nav id="footerPlaceholder"></nav>
+
+        <!---------------------------------------------->
+        <!-- Your own JavaScript functions go here    -->
+        <!---------------------------------------------->
+        <script src="./scripts/firebaseAPI_UpDog.js"></script>
+        <script src="./scripts/skeleton.js"></script>
+        <script src="./scripts/script.js"></script>
+        <script src="./scripts/main.js"></script>
+        <script src="./scripts/profile.js"></script>
 </body>
 
 </html>
