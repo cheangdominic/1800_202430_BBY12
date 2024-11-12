@@ -36,6 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             .catch((error) => {
                                 console.error("Error removing expired playdate: ", error);
                             });
+                        db.collection("users").doc(userId).collection("userPlaydates").doc(doc.id).delete()
+                        .catch((error) => {
+                            console.error("Error removing expired playdate: ", error);
+                        });
                     }
                 });
             });
