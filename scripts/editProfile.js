@@ -25,22 +25,24 @@ function loadProfile(userId) {
         .then((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                // Populates data from firebase
-                nameInput.value = data.name || '';
-                ageInput.value = data.age || '';
-                locationInput.value = data.location || '';
-                interestsInput.value = data.interests || '';
-                // Loads picture from local storage or defaults
+
+                // Check for profile picture
                 const savedPicture = localStorage.getItem("userProfilePicture");
-                profilePicturePreview.src = savedPicture || data.profilePicture || "./styles/images/defaultprofile.png";
+                const profilePicture = savedPicture || data.profilePicture || "./styles/images/defaultprofile.png";
+                document.getElementById("userProfilePicturePreview").src = profilePicture;
 
-
-                console.log("Profile data loaded:", data);
+                // Populate other fields
+                document.getElementById('username').value = data.name || '';
+                document.getElementById('age').value = data.age || '';
+                document.getElementById('location').value = data.location || '';
+                document.getElementById('interests').value = data.interests || '';
             } else {
-                console.log("No profile data found for this user.");
+                console.log("Default loaded.");
+                document.getElementById("userProfilePicturePreview").src = "./styles/images/defaultprofile.png";
             }
         })
 }
+
 
 // Event listener for file input from user
 profilePictureInput.addEventListener("change", (event) => {
