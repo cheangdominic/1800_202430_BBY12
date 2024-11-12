@@ -16,7 +16,6 @@ const geolocate = new mapboxgl.GeolocateControl({
 });
 map.addControl(geolocate, 'bottom-right');
 
-
 const coordinatesGeocoder = function (query) {
     const matches = query.match(
         /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
@@ -72,31 +71,31 @@ map.addControl(
 
 let currentMarker;
 
-currentMarker = new mapboxgl.Marker({
-    color: "FFFFFF",
-    draggable: true
-})
-
-map.on('click', (event) => {
+map.on('click', async (event) => {
     const coordinates = event.lngLat;
     
-    if(currentMarker) {
+    if (currentMarker) {
         currentMarker.remove();
     }
 
-    currentMarker = new mapboxgl.Marker()
-      .setLngLat(coordinates)
-      .addTo(map);
-      map.flyTo({
+    const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${coordinates.lng},${coordinates.lat}.json?access_token=${mapboxgl.accessToken}`);
+    const data = await response.json();
+
+    const address = data.features[0] ? data.features[0].place_name : "Unknown location";
+
+    currentMarker = new mapboxgl.Marker({
+        color: "#00008B",
+        draggable: true
+    })
+    .setLngLat(coordinates)
+    .setPopup(new mapboxgl.Popup().setText(address))
+    .addTo(map);
+
+    map.flyTo({
         center: coordinates,
         zoom: 14,
         speed: 0.8,
-        easing: function (t) { return t; }
-      });
-
-      const geocoderInput = document.querySelector('.mapboxgl-ctrl-geocoder input');
-      if (geocoderInput) {
-          // Set the new value as a Lat, Lng format
-          geocoderInput.value = `Lat: ${coordinates.lat.toFixed(2)}, Lng: ${coordinates.lng.toFixed(2)}`;
-      }
-  });
+        easing: (t) => t
+    });
+    currentMarker.togglePopup();
+});
