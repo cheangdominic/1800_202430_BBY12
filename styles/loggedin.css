@@ -48,11 +48,11 @@
 
 .alert.alert-warning {
     position: sticky;
-    top: 62.4px;
+    top: 58.4px;
     z-index: 999;  
 }
 
-.cards {
+.postTemplate {
     padding: 0% 10%;
 }
 
@@ -88,4 +88,20 @@
 
 .form h1{
     text-align: center;
+}
+
+.about-title{
+    margin-top: 2%;
+    text-align: center;
+}
+
+.about-body{
+    margin-top: 2%;
+    padding: 0% 5%;
+    text-align: center;
+    font-size:large;
+}
+
+.postTemplate {
+    padding-bottom: 100px; /* Adjust this value based on your navbar's height */
 }

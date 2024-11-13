@@ -47,8 +47,9 @@
     <div class="container">
         <div class="header">Edit Profile</div>
         <div class="profile-pic">
-            <img src="https://via.placeholder.com/100" alt="Profile Picture">
-            <button class="change-picture-button">Change Picture</button>
+            <img id="userProfilePicturePreview" src="./styles/images/default-user.png" alt="Profile Picture">
+            <input type="file" id="userProfilePictureInput" accept="image/*" style="display:none;">
+            <button class="change-picture-button" onclick="document.getElementById('userProfilePictureInput').click()">Change Picture</button>
         </div>
         <div class="form">
             <label for="username">Name</label>
@@ -65,7 +66,7 @@
             
             <div class="update-button">
                 <button id="updateProfileBtn">Update</button>
-                <a href="userprofile.html" class="btn">Back to Profile</a>
+                <a href="profile.html" class="btn">Back to Profile</a>
             </div>
         </div>
     </div>

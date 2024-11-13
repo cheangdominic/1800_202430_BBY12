@@ -47,12 +47,8 @@
 
 <body>
 
-    <!------------------------------>
-    <!-- Your HTML Layout go here -->
-    
     <!-- our own navbar goes here -->
     <nav id="navbarPlaceholder"></nav>
-
 
     <!-- the body of your page goes here -->
     <nav id="bottomNavbarPlaceholder"></nav>
@@ -61,26 +57,49 @@
     </div>
     
     <div class="message-container" id="messageContainer">
-        <!-- Messages will be dynamically added here -->
-        <div class="message received">Hello! Welcome to UpDog's chat feature!</div>
-        <div class="message sent">Thank you! Looking forward to connecting with others.</div>
+        <!-- Messages will be dynamically inserted here -->
     </div>
     
     <div class="input-container">
-        <input type="text" id="messageInput" placeholder="Type a message...">
-        <button onclick="sendMessage()">Send</button>
+        <div class="upload-options">
+            <button type="button" class="upload-btn" title="Add files">
+                <i class='bx bx-plus'></i>
+            </button>
+            <div class="upload-menu">
+                <label class="upload-option">
+                    <i class='bx bx-image'></i>
+                    <span>Image</span>
+                    <input type="file" accept="image/*" id="imageUpload" onchange="handleFileUpload(event)" style="display: none;">
+                </label>
+                <label class="upload-option">
+                    <i class='bx bx-file'></i>
+                    <span>Document</span>
+                    <input type="file" accept=".pdf,.doc,.docx,.txt" id="documentUpload" onchange="handleFileUpload(event)" style="display: none;">
+                </label>
+            </div>
+        </div>
+        
+        <!-- Emoji Picker Button -->
+        <button type="button" class="emoji-btn" id="emojiButton" title="Add emoji">
+            <i class='bx bx-smile'></i>
+        </button>
+        
+        <input type="text" id="messageInput" placeholder="Message...">
+        
+        <button onclick="sendMessage()" id="sendButton">
+            <i class='bx bxs-send'></i>
+        </button>
     </div>
     
-    <div class="message-container">
-        <div class ="sidebar">
-            <img src="./styles/images/image-placeholder-icon-16.jpg" alt="Profile picture">
-            <h2> chat with...</h2>
-            <p> last seen 10 mins ago</p>
-            ></div>
+    <!-- Emoji Picker Container -->
+    <div class="emoji-picker" id="emojiPicker" style="display: none;">
+        <!-- Emojis will be populated here -->
     </div>
     
-    <!-- stuff -->
-
+    <div class="image-preview-modal" id="imagePreviewModal">
+        <img class="image-preview-content" id="previewImage" src="" alt="Preview">
+    </div>
+    
     <!-- our own footer goes here-->
     <nav id="footerPlaceholder"></nav>
 
@@ -91,7 +110,9 @@
     <script src="./scripts/skeleton.js"></script>
     <script src="./scripts/script.js"></script>
     <script src="./scripts/main.js"></script>
+    <script src="./scripts/chat.js"></script>
 
 </body>
+
 
 </html>

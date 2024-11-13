@@ -1,13 +1,10 @@
-let userId;
-
 function getNameFromAuth() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
+            userDisplayName = user.displayName;
             userId = user.uid;
-            document.getElementById("name-goes-here").innerText = user.displayName;    
-            document.getElementById("email-goes-here").innerText = user.email; 
-
-            document.querySelector(".btn-secondary").onclick = () => savePlaydate(userId);
+            document.getElementById("name-goes-here").innerText = user.displayName;
+            document.getElementById("email-goes-here").innerText = user.email;
         } else {
             console.log("No user is logged in");
             document.querySelector(".btn-secondary").disabled = true;
@@ -15,49 +12,42 @@ function getNameFromAuth() {
     });
 }
 
-function savePlaydate() {
-    const playdateTitle = document.querySelector('.form-control[placeholder="Playdate Title"]').value;
-    const playdateDescription = document.querySelector('.form-control[aria-label="With textarea"]').value;
-    const playdateAddress = document.querySelector('.form-control[aria-label="Park Address"]').value;
-
-    if (userId) {
-        if (playdateTitle.trim() !== "" && playdateAddress.trim() !== "") {
-            db.collection("users").doc(userId).collection("playdates").add({
-                title: playdateTitle,
-                description: playdateDescription || "",
-                address: playdateAddress,
-                month: playdateMonth,
-                day: playdateDay,
-                hour: playdateHours,
-                minute: playdateMinutes,
-                createdAt: firebase.firestore.FieldValue.serverTimestamp()
-            })
-            .then(() => {
-                console.log("Playdate saved successfully!");
-                alert("Playdate saved successfully!");
-                document.querySelector('.form-control[placeholder="Playdate Title"]').value = "";
-                document.querySelector('.form-control[aria-label="With textarea"]').value = "";
-                document.querySelector('.form-control[aria-label="Park Address"]').value = "";
-                document.querySelector('.form-control[aria-label="Month"]').value = "";
-                document.querySelector('.form-control[aria-label="Day"]').value = "";
-                document.querySelector('.form-control[aria-label="Hours"]').value = "";
-                document.querySelector('.form-control[aria-label="Minutes"]').value = "";
-            })
-            .catch(error => {
-                console.error("Error saving playdate: ", error);
-            });
-        } else {
-            console.error("Playdate title cannot be empty.");
-            if (playdateTitle.trim() === "") {
-                alert("Please enter a playdate title.");
-            }
-            if (playdateAddress.trim() === "") {
-                alert("Please enter a park address.");
-            }
-        }
-    } else {
-        console.error("User ID is not defined. Please log in.");
-    }
-}
-
 getNameFromAuth();
+
+document.addEventListener("DOMContentLoaded", function () {
+    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+        const postContainer = document.querySelector(".postTemplate");
+        postContainer.innerHTML = "";
+
+        snapshot.forEach(doc => {
+            const playdate = doc.data();
+            const currentTime = new Date();
+            const playdateTime = new Date(playdate.datetime);
+            const post = document.createElement("div");
+            if (currentTime < playdateTime) {
+                post.classList.add("card", "mb-3");
+                post.innerHTML = `
+                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
+                <div class="card-body">
+                    <h5 class="card-title">${playdate.title}</h5>
+                    <p class="card-text">${playdate.description}</p>
+                    <p class="card-text">${playdate.address}</p>
+                    <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
+                    <button type="button" class="btn btn-warning">Join</button>
+                </div>`;
+                postContainer.appendChild(post);
+            }
+            else {
+                db.collection("playdates").doc(doc.id).delete()
+                    .catch((error) => {
+                        console.error("Error removing expired playdate: ", error);
+                    });
+                db.collection("users").doc(userId).collection("userPlaydates").doc(doc.id).delete()
+                .catch((error) => {
+                    console.error("Error removing expired playdate: ", error);
+                });
+            }
+        });
+    });
+});
+
