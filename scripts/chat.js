@@ -156,7 +156,6 @@ firebase.auth().onAuthStateChanged((user) => {
     }
 });
 
-// Function to load messages
 function loadMessages() {
     db.collection("messages")
         .orderBy("timestamp")
@@ -164,8 +163,29 @@ function loadMessages() {
             const messageContainer = document.getElementById("messageContainer");
             messageContainer.innerHTML = '';
             
+            let currentDate = null;
+            
             querySnapshot.forEach((doc) => {
                 const message = doc.data();
+                const timestamp = message.timestamp?.toDate();
+                
+                // add line when the date changes
+                if (timestamp) {
+                    const messageDate = timestamp.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    if (messageDate !== currentDate) {
+                        const dateDiv = document.createElement('div');
+                        dateDiv.className = 'message-date-divider';
+                        dateDiv.innerHTML = `<span>${messageDate}</span>`;
+                        messageContainer.appendChild(dateDiv);
+                        currentDate = messageDate;
+                    }
+                }
+
                 const messageDiv = document.createElement("div");
                 const isOwnMessage = message.userId === firebase.auth().currentUser.uid;
                 
@@ -178,6 +198,27 @@ function loadMessages() {
                     if (savedPicture) {
                         profilePicture = savedPicture;
                     }
+                } else {
+                    // Get other user's profile picture
+                    db.collection("profiles")
+                        .doc(message.userId)
+                        .get()
+                        .then((doc) => {
+                            if (doc.exists) {
+                                const userData = doc.data();
+                                const userImg = document.querySelector(`[data-user-id="${message.userId}"]`);
+                                if (userImg) {
+                                    if (userData.profilePicture === "localStorage") {
+                                        const localImage = localStorage.getItem(`userProfilePicture_${message.userId}`);
+                                        if (localImage) {
+                                            userImg.src = localImage;
+                                        }
+                                    } else if (userData.profilePicture) {
+                                        userImg.src = userData.profilePicture;
+                                    }
+                                }
+                            }
+                        });
                 }
 
                 // Handle file attachments
@@ -200,15 +241,17 @@ function loadMessages() {
                     }
                 }
                 
-                const timestamp = message.timestamp?.toDate();
-                const timeString = timestamp ? new Date(timestamp).toLocaleString('en-US', {
+                // show time for the message
+                const timeString = timestamp ? timestamp.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
                     hour12: true
                 }) : '';
                 
                 messageDiv.innerHTML = `
-                    <img src="${profilePicture}" alt="User Icon" class="user_icon" onerror="this.src='./styles/images/defaultprofile.png';">
+                    <img src="${profilePicture}" alt="User Icon" class="user_icon" 
+                         data-user-id="${message.userId}"
+                         onerror="this.src='./styles/images/defaultprofile.png';">
                     <div class="message_box">
                         <div class="message_content">
                             ${message.text ? escapeHtml(message.text) : ''}
