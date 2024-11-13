@@ -51,8 +51,22 @@
 
     <!-- the body of your page goes here -->
     <nav id="bottomNavbarPlaceholder"></nav>
-    <div class="header">
-        <h1>Messaging - UpDog</h1>
+    <div class="chat-header">
+        <div class="chat-header-info">
+            <img src="./styles/images/defaultprofile.png" alt="Chat Icon" class="chat-header-icon">
+            <div class="chat-header-details">
+                <h2>Dog Community Chat</h2>
+                <span class="online-status">5 members online</span>
+            </div>
+        </div>
+        <div class="chat-header-actions">
+            <button class="header-action-btn">
+                <i class='bx bx-search'></i>
+            </button>
+            <button class="header-action-btn">
+                <i class='bx bx-info-circle'></i>
+            </button>
+        </div>
     </div>
     
     <div class="message-container" id="messageContainer">
@@ -68,12 +82,12 @@
                 <label class="upload-option">
                     <i class='bx bx-image'></i>
                     <span>Image</span>
-                    <input type="file" accept="image/*" id="imageUpload" onchange="handleFileUpload(event)" style="display: none;">
+                    <input type="file" accept="image/*" id="imageUpload" onchange="handleFileUpload(event)">
                 </label>
                 <label class="upload-option">
                     <i class='bx bx-file'></i>
                     <span>Document</span>
-                    <input type="file" accept=".pdf,.doc,.docx,.txt" id="documentUpload" onchange="handleFileUpload(event)" style="display: none;">
+                    <input type="file" accept=".pdf,.doc,.docx,.txt" id="documentUpload" onchange="handleFileUpload(event)">
                 </label>
             </div>
         </div>

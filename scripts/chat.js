@@ -12,14 +12,14 @@ let typingTimeout;
 let isTyping = false;
 const TYPING_TIMER = 3000; // 3 seconds
 
-// Emoji data - add at the top after existing variables
+// Emoji data
 const emojiCategories = {
     smileys: ['😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '😉', '😌', '😍', '🥰', '😘'],
     animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸'],
     hearts: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💕', '💞', '💓', '💗', '💖']
 };
 
-// Initialize emoji picker - add after loadSkeleton function
+// Initialize emoji picker
 function initializeEmojiPicker() {
     const emojiPicker = document.getElementById('emojiPicker');
     if (!emojiPicker) return;
@@ -49,7 +49,7 @@ function initializeEmojiPicker() {
     });
 }
 
-// Add emoji to message - add after initializeEmojiPicker
+// Add emoji to message
 function addEmojiToMessage(emoji) {
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
@@ -58,7 +58,7 @@ function addEmojiToMessage(emoji) {
     }
 }
 
-// Update typing status - add before loadMessages
+// Update typing status
 async function updateTypingStatus(isTyping) {
     if (!currentUser) return;
     
@@ -74,7 +74,7 @@ async function updateTypingStatus(isTyping) {
     }
 }
 
-// Listen for typing status - add after updateTypingStatus
+// Listen for typing status
 function listenToTypingStatus() {
     db.collection('typing').onSnapshot((snapshot) => {
         const typingUsers = [];
@@ -100,7 +100,122 @@ function listenToTypingStatus() {
     });
 }
 
-// Add these event listeners after existing event listeners
+// Function to load messages
+function loadMessages() {
+    db.collection("messages")
+        .orderBy("timestamp")
+        .onSnapshot((querySnapshot) => {
+            const messageContainer = document.getElementById("messageContainer");
+            messageContainer.innerHTML = '';
+            
+            let currentDate = null;
+            
+            querySnapshot.forEach((doc) => {
+                const message = doc.data();
+                const timestamp = message.timestamp?.toDate();
+                
+                // add line when the date change
+                if (timestamp) {
+                    const messageDate = timestamp.toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                    });
+                    if (messageDate !== currentDate) {
+                        const dateDiv = document.createElement('div');
+                        dateDiv.className = 'message-date-divider';
+                        dateDiv.innerHTML = `<span>${messageDate}</span>`;
+                        messageContainer.appendChild(dateDiv);
+                        currentDate = messageDate;
+                    }
+                }
+
+                const messageDiv = document.createElement("div");
+                const isOwnMessage = message.userId === firebase.auth().currentUser.uid;
+                
+                messageDiv.className = `message ${isOwnMessage ? 'message_right' : 'message_left'}`;
+                
+                // Get profile picture
+                let profilePicture = './styles/images/defaultprofile.png';
+                if (isOwnMessage) {
+                    const savedPicture = localStorage.getItem("userProfilePicture");
+                    if (savedPicture) {
+                        profilePicture = savedPicture;
+                    }
+                } else {
+                    // Get other user's profile picture
+                    db.collection("profiles")
+                        .doc(message.userId)
+                        .get()
+                        .then((doc) => {
+                            if (doc.exists) {
+                                const userData = doc.data();
+                                const userImg = document.querySelector(`[data-user-id="${message.userId}"]`);
+                                if (userImg) {
+                                    if (userData.profilePicture === "localStorage") {
+                                        const localImage = localStorage.getItem(`userProfilePicture_${message.userId}`);
+                                        if (localImage) {
+                                            userImg.src = localImage;
+                                        }
+                                    } else if (userData.profilePicture) {
+                                        userImg.src = userData.profilePicture;
+                                    }
+                                }
+                            }
+                        });
+                }
+
+                // Handle file attachments
+                let attachmentHTML = '';
+                if (message.fileUrl) {
+                    if (message.fileType && message.fileType.startsWith('image/')) {
+                        attachmentHTML = `
+                            <div class="image-attachment">
+                                <img src="${message.fileUrl}" alt="Uploaded image" style="max-width: 200px; border-radius: 8px; cursor: pointer;" 
+                                     onclick="window.open('${message.fileUrl}', '_blank')">
+                            </div>
+                        `;
+                    } else {
+                        attachmentHTML = `
+                            <div class="file-attachment" onclick="window.open('${message.fileUrl}', '_blank')" style="cursor: pointer;">
+                                <i class='bx bx-file'></i>
+                                <span>${message.fileName}</span>
+                            </div>
+                        `;
+                    }
+                }
+                
+                // show message time
+                const timeString = timestamp ? timestamp.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: true
+                }) : '';
+                
+                messageDiv.innerHTML = `
+                    <img src="${profilePicture}" alt="User Icon" class="user_icon" 
+                         data-user-id="${message.userId}"
+                         onerror="this.src='./styles/images/defaultprofile.png';">
+                    <div class="message_box">
+                        <div class="message_content">
+                            ${message.text ? escapeHtml(message.text) : ''}
+                            ${attachmentHTML}
+                            <div class="message_time">
+                                ${escapeHtml(message.userName)} - ${timeString}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                messageContainer.appendChild(messageDiv);
+            });
+            
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+        });
+}
+
+// Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     initializeEmojiPicker();
     
@@ -142,91 +257,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Modify the existing onAuthStateChanged to include typing status listener
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        currentUser = user;
-        console.log("Logged in user:", user.displayName);
-        loadMessages();
-        listenToTypingStatus(); // Add this line
-    } else {
-        const messageContainer = document.getElementById("messageContainer");
-        messageContainer.innerHTML = '<div class="message">Please log in to use the chat</div>';
-        console.log("No user logged in");
-    }
-});
-
-// Function to load messages
-function loadMessages() {
-    db.collection("messages")
-        .orderBy("timestamp")
-        .onSnapshot((querySnapshot) => {
-            const messageContainer = document.getElementById("messageContainer");
-            messageContainer.innerHTML = '';
-            
-            querySnapshot.forEach((doc) => {
-                const message = doc.data();
-                const messageDiv = document.createElement("div");
-                const isOwnMessage = message.userId === firebase.auth().currentUser.uid;
-                
-                messageDiv.className = `message ${isOwnMessage ? 'message_right' : 'message_left'}`;
-                
-                // Get profile picture
-                let profilePicture = './styles/images/defaultprofile.png';
-                if (isOwnMessage) {
-                    const savedPicture = localStorage.getItem("userProfilePicture");
-                    if (savedPicture) {
-                        profilePicture = savedPicture;
-                    }
-                }
-
-                // Handle file attachments
-                let attachmentHTML = '';
-                if (message.fileUrl) {
-                    if (message.fileType && message.fileType.startsWith('image/')) {
-                        attachmentHTML = `
-                            <div class="image-attachment">
-                                <img src="${message.fileUrl}" alt="Uploaded image" style="max-width: 200px; border-radius: 8px; cursor: pointer;" 
-                                     onclick="window.open('${message.fileUrl}', '_blank')">
-                            </div>
-                        `;
-                    } else {
-                        attachmentHTML = `
-                            <div class="file-attachment" onclick="window.open('${message.fileUrl}', '_blank')" style="cursor: pointer;">
-                                <i class='bx bx-file'></i>
-                                <span>${message.fileName}</span>
-                            </div>
-                        `;
-                    }
-                }
-                
-                const timestamp = message.timestamp?.toDate();
-                const timeString = timestamp ? new Date(timestamp).toLocaleString('en-US', {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: true
-                }) : '';
-                
-                messageDiv.innerHTML = `
-                    <img src="${profilePicture}" alt="User Icon" class="user_icon" onerror="this.src='./styles/images/defaultprofile.png';">
-                    <div class="message_box">
-                        <div class="message_content">
-                            ${message.text ? escapeHtml(message.text) : ''}
-                            ${attachmentHTML}
-                            <div class="message_time">
-                                ${escapeHtml(message.userName)} - ${timeString}
-                            </div>
-                        </div>
-                    </div>
-                `;
-                
-                messageContainer.appendChild(messageDiv);
-            });
-            
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        });
-}
-
 // Function to escape HTML
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') return '';
@@ -238,7 +268,7 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// Function to send text message
+// Function to send message
 function sendMessage() {
     const messageInput = document.getElementById("messageInput");
     const message = messageInput.value.trim();
@@ -271,6 +301,7 @@ function sendMessage() {
 
 // File upload handler
 async function handleFileUpload(event) {
+    event.preventDefault();
     const file = event.target.files[0];
     if (!file) return;
 
@@ -281,20 +312,21 @@ async function handleFileUpload(event) {
     }
 
     try {
-        // Show loading state
-        const loadingMessage = document.createElement('div');
-        loadingMessage.textContent = 'Uploading file...';
-        document.getElementById('messageContainer').appendChild(loadingMessage);
+        // Loading state
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'loading-message';
+        loadingDiv.textContent = 'Uploading...';
+        document.getElementById('messageContainer').appendChild(loadingDiv);
 
         // Create storage reference
         const storageRef = firebase.storage().ref();
         const fileRef = storageRef.child(`uploads/${user.uid}/${Date.now()}_${file.name}`);
         
-        // Upload file to Firebase Storage
-        const snapshot = await fileRef.put(file);
-        const downloadURL = await snapshot.ref.getDownloadURL();
+        // Upload file
+        await fileRef.put(file);
+        const downloadURL = await fileRef.getDownloadURL();
 
-        // Add message with file to Firestore
+        // Add message to Firestore
         await db.collection("messages").add({
             userId: user.uid,
             userName: user.displayName || 'Anonymous',
@@ -302,11 +334,11 @@ async function handleFileUpload(event) {
             fileUrl: downloadURL,
             fileName: file.name,
             fileType: file.type,
-            text: ''  // Empty text for file messages
+            text: ''
         });
 
-        // Remove loading message
-        loadingMessage.remove();
+        // Remove loading indicator
+        loadingDiv.remove();
         console.log("File uploaded successfully");
     } catch (error) {
         console.error("Error uploading file:", error);
@@ -318,11 +350,16 @@ async function handleFileUpload(event) {
 window.sendMessage = sendMessage;
 window.handleFileUpload = handleFileUpload;
 
-// Event listeners
-document.getElementById("messageInput")?.addEventListener("keypress", function(e) {
-    if (e.key === "Enter" && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
+// Event listeners for message input and file upload
+document.addEventListener('DOMContentLoaded', () => {
+    const imageUpload = document.getElementById('imageUpload');
+    const documentUpload = document.getElementById('documentUpload');
+    
+    if (imageUpload) {
+        imageUpload.addEventListener('change', handleFileUpload);
+    }
+    if (documentUpload) {
+        documentUpload.addEventListener('change', handleFileUpload);
     }
 });
 
@@ -335,6 +372,7 @@ firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
         console.log("Logged in user:", user.displayName);
         loadMessages();
+        listenToTypingStatus();
     } else {
         const messageContainer = document.getElementById("messageContainer");
         messageContainer.innerHTML = '<div class="message">Please log in to use the chat</div>';
