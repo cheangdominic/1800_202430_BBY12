@@ -125,3 +125,32 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
+
+
+document.getElementById("dogProfilePictureInput").addEventListener("change", (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            // Set the profile picture source to the uploaded image
+            document.getElementById("dog-profile-picture").src = e.target.result;
+            // Save to localStorage for persistence
+            localStorage.setItem("dogProfilePicture", e.target.result);
+            console.log("New profile picture saved to localStorage:", e.target.result);
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert("No file selected.");
+    }
+});
+
+// Load stored profile picture on page load
+window.onload = function () {
+    const savedPicture = localStorage.getItem("dogProfilePicture");
+    if (savedPicture) {
+        document.getElementById("dog-profile-picture").src = savedPicture;
+        console.log("Loaded profile picture from localStorage.");
+    } else {
+        console.log("No profile picture found in localStorage, using default.");
+    }
+};
