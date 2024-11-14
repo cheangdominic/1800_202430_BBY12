@@ -48,7 +48,7 @@
 
 .alert.alert-warning {
     position: sticky;
-    top: 58.4px;
+    top: 62.5px;
     z-index: 999;  
 }
 
@@ -103,5 +103,5 @@
 }
 
 .postTemplate {
-    padding-bottom: 100px; /* Adjust this value based on your navbar's height */
+    padding-bottom: 100px;
 }
