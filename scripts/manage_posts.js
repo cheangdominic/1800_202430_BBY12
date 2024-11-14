@@ -57,6 +57,12 @@ document.addEventListener("DOMContentLoaded", function () {
                             .catch(error => console.error("Error deleting playdate from global collection:", error));
                     });
                 });
+
+                document.querySelectorAll(".edit-btn").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        redirectToPage("edit_post.html");
+                    });
+                });
             });
         } else {
             console.log("No user is signed in");

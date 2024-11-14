@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         post.innerHTML = `
                         <div class="post">
                             <div class="post-image">
-                                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
+                                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" id="profile-post-img" alt="post placeholder">
                             </div>
                             <div class="post-text">
                                 <h3>${playdate.title}</h3>
