@@ -85,7 +85,7 @@ map.on('click', async (event) => {
 
     currentMarker = new mapboxgl.Marker({
         color: "#00008B",
-        draggable: true
+        draggable: false
     })
     .setLngLat(coordinates)
     .setPopup(new mapboxgl.Popup().setText(address))
