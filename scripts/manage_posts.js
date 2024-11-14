@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (user) {
             const userId = user.uid;
             db.collection("users").doc(userId).collection("userPlaydates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-                let i = 0;
                 const postContainer = document.querySelector(".post-gallery");
                 postContainer.innerHTML = "";
 
@@ -12,35 +11,51 @@ document.addEventListener("DOMContentLoaded", function () {
                     const currentTime = new Date();
                     const playdateTime = new Date(playdate.datetime);
                     const post = document.createElement("div");
+
                     if (currentTime < playdateTime) {
-                        i++;
+                        post.classList.add("post");
                         post.innerHTML = `
-                <div class="post" id="post-${i}">
-                    <div class="post-image">
-                        <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
-                    </div>
-                    <div class="post-text">
-                        <h3>${playdate.title}</h3>
-                        <p>${playdate.description}</p>
-                        <p>${playdate.address}</p>
-                        <p>${new Date(playdate.datetime).toLocaleString()}</p>
-                    </div>
-                    <div class="post-actions">
-                        <button class="edit-btn" onclick="editPost('post-${i}')">Edit</button>
-                        <button class="delete-btn" onclick="deletePost('post-${i}')">Delete</button>
-                    </div>
-                </div>`;
+                        <div class="post">
+                            <div class="post-image">
+                                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
+                            </div>
+                            <div class="post-text">
+                                <h3>${playdate.title}</h3>
+                                <p>${playdate.description}</p>
+                                <p>${playdate.address}</p>
+                                <p>${new Date(playdate.datetime).toLocaleString()}</p>
+                            </div>
+                            <div class="post-actions">
+                                <button class="edit-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}">Edit</button>
+                                <button class="delete-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}">Delete</button>
+                            </div>
+                        </div>`;
                         postContainer.appendChild(post);
                     } else {
-                        db.collection("playdates").doc(doc.id).delete()
+                        db.collection("playdates").doc(playdate.globalPlaydateId).delete()
                             .catch((error) => {
-                                console.error("Error removing expired playdate: ", error);
+                                console.error("Error removing expired playdate from global collection: ", error);
                             });
                         db.collection("users").doc(userId).collection("userPlaydates").doc(doc.id).delete()
-                        .catch((error) => {
-                            console.error("Error removing expired playdate: ", error);
-                        });
+                            .catch((error) => {
+                                console.error("Error removing expired playdate from user collection: ", error);
+                            });
                     }
+                });
+
+                document.querySelectorAll(".delete-btn").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        const userPlaydateId = event.target.getAttribute("data-id");
+                        const globalPlaydateId = event.target.getAttribute("data-global-id");
+
+                        db.collection("users").doc(userId).collection("userPlaydates").doc(userPlaydateId).delete()
+                            .then(() => console.log("Playdate deleted from user collection"))
+                            .catch(error => console.error("Error deleting playdate from user collection:", error));
+
+                        db.collection("playdates").doc(globalPlaydateId).delete()
+                            .then(() => console.log("Playdate deleted from global collection"))
+                            .catch(error => console.error("Error deleting playdate from global collection:", error));
+                    });
                 });
             });
         } else {

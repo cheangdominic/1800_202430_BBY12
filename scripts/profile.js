@@ -109,7 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>`;
                         postContainer.appendChild(post);
                     } else {
-                        db.collection("playdates").doc(doc.id).delete()
+                        db.collection("playdates").doc(playdate.globalPlaydateId).delete()
                             .catch((error) => {
                                 console.error("Error removing expired playdate: ", error);
                             });
