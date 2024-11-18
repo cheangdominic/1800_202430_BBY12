@@ -48,18 +48,25 @@ document.addEventListener("DOMContentLoaded", function () {
                         const userPlaydateId = event.target.getAttribute("data-id");
                         const globalPlaydateId = event.target.getAttribute("data-global-id");
 
-                        db.collection("users").doc(userId).collection("userPlaydates").doc(userPlaydateId).delete()
-                            .then(() => console.log("Playdate deleted from user collection"))
-                            .catch(error => console.error("Error deleting playdate from user collection:", error));
+                        const confirmDelete = confirm("Are you sure you want to delete this playdate?");
+                        if (confirmDelete) {
+                            db.collection("users").doc(userId).collection("userPlaydates").doc(userPlaydateId).delete()
+                                .then(() => console.log("Playdate deleted from user collection"))
+                                .catch(error => console.error("Error deleting playdate from user collection:", error));
 
-                        db.collection("playdates").doc(globalPlaydateId).delete()
-                            .then(() => console.log("Playdate deleted from global collection"))
-                            .catch(error => console.error("Error deleting playdate from global collection:", error));
+                            db.collection("playdates").doc(globalPlaydateId).delete()
+                                .then(() => console.log("Playdate deleted from global collection"))
+                                .catch(error => console.error("Error deleting playdate from global collection:", error));
+                        }
                     });
                 });
 
                 document.querySelectorAll(".edit-btn").forEach(button => {
                     button.addEventListener("click", (event) => {
+                        const userPlaydateId = event.target.getAttribute("data-id");
+                        const globalPlaydateId = event.target.getAttribute("data-global-id");
+                        localStorage.setItem("editPlaydateId", userPlaydateId);
+                        localStorage.setItem("editGlobalId", globalPlaydateId);
                         redirectToPage("edit_post.html");
                     });
                 });
