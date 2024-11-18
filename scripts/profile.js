@@ -1,85 +1,90 @@
-console.log("userProfile.js loaded");
+document.addEventListener("DOMContentLoaded", () => {
+    console.log("profile.js loaded");
 
-// DOM Elements: User info, Profile Pictures
-const nameAgeLocationElement = document.querySelector(".profile-info h2");
-const hobbiesElement = document.querySelector(".hobbies-section p");
-const userProfilePicture = document.getElementById("user-profile-image");
-const dogIcon = document.getElementById("dog-icon");
+    // DOM Elements
+    const nameAgeLocationElement = document.querySelector(".profile-info h2");
+    const hobbiesElement = document.querySelector(".hobbies-section p");
+    const userProfilePicture = document.getElementById("user-profile-image");
+    const dogProfilesContainer = document.getElementById("dog-profiles");
 
-// Load Profile Contents
+    // Load User Profile Data
+    function loadProfile(userId) {
+        db.collection("profiles")
+            .doc(userId)
+            .get()
+            .then((doc) => {
+                if (doc.exists) {
+                    const data = doc.data();
 
-function loadProfile(userId) {
-    db.collection("profiles")
-        .doc(userId)
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                const data = doc.data();
+                    // Load user profile picture
+                    const savedPicture = localStorage.getItem("userProfilePicture");
+                    if (savedPicture) {
+                        userProfilePicture.src = savedPicture;
+                    } else if (data.profilePicture) {
+                        userProfilePicture.src = data.profilePicture;
+                    } else {
+                        userProfilePicture.src = "./styles/images/defaultprofile.png";
+                    }
 
-                // Load user profile picture
-                const savedPicture = localStorage.getItem("userProfilePicture");
-                if (savedPicture) {
-                    userProfilePicture.src = savedPicture;
-                    console.log("Using user profile picture from localStorage.");
-                } else if (data.profilePicture === "localStorage") {
-                    const localImage = localStorage.getItem("userProfilePicture");
-                    userProfilePicture.src = localImage || "./styles/images/defaultprofile.png";
-                    console.log("Using local image reference for user profile picture.");
-                } else if (data.profilePicture) {
-                    // Reference from Firestore
-                    userProfilePicture.src = data.profilePicture;
-                    console.log("Using Firestore reference for user profile picture.");
+                    // Populate name, age, location
+                    const name = data.name || "Name";
+                    const age = data.age ? `, ${data.age}` : "";
+                    const location = data.location ? `, ${data.location}` : "";
+                    nameAgeLocationElement.textContent = `${name}${age}${location}`;
+
+                    // Populate hobbies and interests
+                    hobbiesElement.textContent = data.interests || "No interests specified.";
                 } else {
-                    // Default Image
-                    userProfilePicture.src = "./styles/images/defaultprofile.png";
-                    console.log("Using default user profile picture.");
+                    console.log("No profile data found for this user.");
                 }
-
-                // Populate name, age, location
-                const name = data.name || "Name";
-                const age = data.age ? `, ${data.age}` : "";
-                const location = data.location ? `, ${data.location}` : "";
-                nameAgeLocationElement.textContent = `${name}${age}${location}`;
-
-                // Populate hobbies and interests
-                hobbiesElement.textContent = data.interests || "No interests specified.";
-
-                console.log("Profile data loaded:", data);
-            } else {
-                console.log("No profile data found for this user.");
-            }
-        })
-        .catch((error) => {
-            console.error("Error loading profile data:", error);
-        });
-}
-
-
-// Load Dog Icon
-function loadDogIcon() {
-    const savedPicture = localStorage.getItem("dogProfilePicture");
-    if (savedPicture) {
-        dogIcon.src = savedPicture;
-        console.log("Dog icon updated from localStorage:", savedPicture);
-    } else {
-        dogIcon.src = "./styles/images/defaultdog.jpg";
-        console.log("Using default dog profile picture.");
+            });
     }
-}
 
-// Load profile and dog icon when page loads
-window.onload = function () {
+    // Load Dog Profiles Dynamically
+    function loadDogProfiles(userId) {
+        db.collection("users")
+            .doc(userId)
+            .collection("dogprofiles")
+            .get()
+            .then((snapshot) => {
+                if (!snapshot.empty) {
+                    dogProfilesContainer.innerHTML = ""; 
+
+                    snapshot.forEach((doc) => {
+                        const dog = doc.data();
+
+                        // Dynamically populate if user has multiple dogs or adds one
+                        const dogCardHTML = `
+                            <div class="dog-card">
+                                <img src="${dog.profilePicture || './styles/images/defaultdog.jpg'}" alt="${dog.dogname}'s Profile">
+                                <h5>${dog.dogname || "No Name"}</h5>
+                                <p>Age: ${dog.age || "N/A"}</p>
+                                <p>Breed: ${dog.breed || "N/A"}</p>
+                                <p>Size: ${dog.size || "N/A"}</p>
+                                <a href="dog_profile.html?dogID=${doc.id}">View Profile</a>
+                            </div>
+                        `;
+
+                        dogProfilesContainer.innerHTML += dogCardHTML;
+                    });
+                } else {
+                    dogProfilesContainer.innerHTML = "<p>No dogs added yet. Click 'Add Dog' to create a profile for your dog.</p>";
+                }
+            });
+    }
+
+    // Loads all profiles onto page
     auth.onAuthStateChanged((user) => {
         if (user) {
-            loadProfile(user.uid);
-            loadDogIcon();
+            loadProfile(user.uid); 
+            loadDogProfiles(user.uid); 
         } else {
             console.log("No user is signed in");
         }
     });
-};
+});
 
-
+// Dynamically populates page with current/active playdates
 document.addEventListener("DOMContentLoaded", function () {
     auth.onAuthStateChanged((user) => {
         if (user) {
@@ -109,14 +114,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         </div>`;
                         postContainer.appendChild(post);
                     } else {
-                        db.collection("playdates").doc(playdate.globalPlaydateId).delete()
-                            .catch((error) => {
-                                console.error("Error removing expired playdate: ", error);
-                            });
-                        db.collection("users").doc(userId).collection("userPlaydates").doc(doc.id).delete()
-                            .catch((error) => {
-                                console.error("Error removing expired playdate: ", error);
-                            });
+                        db.collection("playdates").doc(playdate.globalPlaydateId).delete();
+                        db.collection("users").doc(userId).collection("userPlaydates").doc(doc.id).delete();
                     }
                 });
             });
@@ -125,32 +124,3 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 });
-
-
-document.getElementById("dogProfilePictureInput").addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            // Set the profile picture source to the uploaded image
-            document.getElementById("dog-profile-picture").src = e.target.result;
-            // Save to localStorage for persistence
-            localStorage.setItem("dogProfilePicture", e.target.result);
-            console.log("New profile picture saved to localStorage:", e.target.result);
-        };
-        reader.readAsDataURL(file);
-    } else {
-        alert("No file selected.");
-    }
-});
-
-// Load stored profile picture on page load
-window.onload = function () {
-    const savedPicture = localStorage.getItem("dogProfilePicture");
-    if (savedPicture) {
-        document.getElementById("dog-profile-picture").src = savedPicture;
-        console.log("Loaded profile picture from localStorage.");
-    } else {
-        console.log("No profile picture found in localStorage, using default.");
-    }
-};
