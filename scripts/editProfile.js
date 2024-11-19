@@ -9,6 +9,13 @@ function convertImageToBase64(imageFile, callback) {
     FR.readAsDataURL(imageFile);
 }
 
+
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", (event) => {
+        redirectToPage("profile.html");
+    });
+});
+
 // Set default profile picture
 function setDefaultProfilePicture() {
     document.getElementById("userProfilePicturePreview").src = "./styles/images/defaultprofile.png";

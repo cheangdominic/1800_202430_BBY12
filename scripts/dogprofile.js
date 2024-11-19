@@ -20,6 +20,12 @@ function loadDogProfile(userId, dogID) {
         });
 }
 
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", (event) => {
+        redirectToPage("profile.html");
+    });
+});
+
 // Populate the page with the dogprofile data from Firestore
 function populateDogProfile(data, dogID) {
     document.getElementById("dog-name").textContent = data.dogname || "Unknown";

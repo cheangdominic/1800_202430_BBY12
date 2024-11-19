@@ -79,9 +79,17 @@ document.addEventListener("DOMContentLoaded", function () {
                         redirectToPage("edit_post.html");
                     });
                 });
+
+                document.querySelectorAll("#back-btn").forEach(button => {
+                    button.addEventListener("click", (event) => {
+                        redirectToPage("profile.html");
+                    });
+                });
+                
             });
         } else {
             console.log("No user is signed in");
         }
     });
+
 });

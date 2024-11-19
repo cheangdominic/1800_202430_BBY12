@@ -38,6 +38,12 @@ function loadDogProfile(userId, dogID) {
         });
 }
 
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", (event) => {
+        redirectToPage("dog_profile.html");
+    });
+});
+
 // Populate the UI with dog profile data
 function populateDogProfile(data, dogID) {
     document.getElementById("dogNameInput").value = data.dogname || "";
