@@ -71,7 +71,12 @@
         
             <!-- Dog Size -->
             <label for="dogSizeInput">Size</label>
-            <input type="text" id="dogSizeInput" placeholder="Enter your dog's size">
+            <select class="form-select" id="dogSizeInput" required>
+                <option value="">Select your dog's size</option>
+                <option value="Small">Small</option>
+                <option value="Medium">Medium</option>
+                <option value="Large">Large</option>
+              </select>
         
             <!-- Dog Breed -->
             <label for="dogBreedInput">Breed</label>
@@ -79,7 +84,7 @@
 
             <div class="update-button">
                 <button id="updateDogProfileBtn" class="btn btn-dark">Update</button>
-                <a href="dog_profile.html" class="btn">Return to Profile</a>
+                <a id="returnDogProfileBtn" class="btn btn-secondary">Return to Dog Profile</a>
             </div>
         </div>
     </div>
