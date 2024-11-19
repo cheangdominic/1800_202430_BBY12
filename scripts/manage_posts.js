@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <p>${new Date(playdate.datetime).toLocaleString()}</p>
                             </div>
                             <div class="post-actions">
-                                <button class="edit-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}">Edit</button>
+                                <button class="edit-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}" data-title="${playdate.title}" data-description="${playdate.description}" data-address="${playdate.address}" data-start="${new Date(playdate.datetime).toLocaleString()}">Edit</button>
                                 <button class="delete-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}">Delete</button>
                             </div>
                         </div>`;
@@ -65,8 +65,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     button.addEventListener("click", (event) => {
                         const userPlaydateId = event.target.getAttribute("data-id");
                         const globalPlaydateId = event.target.getAttribute("data-global-id");
+                        const playdateTitle = event.target.getAttribute("data-title");
+                        const playdateAddress = event.target.getAttribute("data-address");
+                        const playdateDescription = event.target.getAttribute("data-description");
+                        const playdateStart = event.target.getAttribute("data-start");
+
                         localStorage.setItem("editPlaydateId", userPlaydateId);
                         localStorage.setItem("editGlobalId", globalPlaydateId);
+                        localStorage.setItem("savedTitle", playdateTitle);
+                        localStorage.setItem("savedAddress", playdateAddress);
+                        localStorage.setItem("savedDescription", playdateDescription);
+                        localStorage.setItem("savedStart", playdateStart);
                         redirectToPage("edit_post.html");
                     });
                 });

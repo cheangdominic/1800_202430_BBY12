@@ -1,3 +1,35 @@
+function formatDateTime(dateString) {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const savedTitle = localStorage.getItem("savedTitle");
+    const savedAddress = localStorage.getItem("savedAddress");
+    const savedDescription = localStorage.getItem("savedDescription");
+    const savedStart = localStorage.getItem("savedStart");
+    
+    if (savedTitle) {
+        document.querySelector('.form-control[placeholder="Playdate Title"]').value = savedTitle;
+    }
+    if (savedDescription) {
+        document.querySelector('.form-control[aria-label="With textarea"]').value = savedDescription;
+    }
+    if (savedAddress) {
+        selectedAddress = savedAddress;
+        geocoder.setInput(savedAddress);
+    }
+    if (savedStart) {
+        document.getElementById("playdate-datetime").value = formatDateTime(savedStart);
+    }
+});
+
 function capitalizeEachWord(str) {
     return str
         .split(' ')

@@ -82,6 +82,10 @@ body {
     padding: 20px;
 }
 
+.pet-icon-add {
+    margin-top: -10%;
+}
+
 .profile-picture {
     width: 200px;
     height: 200px;
