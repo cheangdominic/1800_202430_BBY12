@@ -14,7 +14,11 @@ const geolocate = new mapboxgl.GeolocateControl({
     trackUserLocation: true,
     showUserHeading: true
 });
-map.addControl(geolocate, 'bottom-right');
+map.addControl(geolocate, 'top-left');
+
+map.on('load', () => {
+    geolocate.trigger();
+});
 
 const coordinatesGeocoder = function (query) {
     const matches = query.match(

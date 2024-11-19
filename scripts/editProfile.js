@@ -91,6 +91,7 @@ function updateButton(userId) {
     document.getElementById("updateProfileBtn").addEventListener("click", (e) => {
         e.preventDefault();
         updateProfile(userId);
+        redirectToPage('profile.html');
     });
 }
 

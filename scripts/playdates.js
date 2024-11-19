@@ -47,6 +47,7 @@ function savePlaydate() {
                 document.querySelector('.form-control[aria-label="With textarea"]').value = "";
                 selectedAddress = "";
                 geocoder.clear();
+                redirectToPage('main.html');
             }).catch(error => {
                 console.error("Error saving playdate: ", error);
             });
