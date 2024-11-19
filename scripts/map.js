@@ -16,6 +16,10 @@ const geolocate = new mapboxgl.GeolocateControl({
 });
 map.addControl(geolocate, 'top-left');
 
+map.on('load', () => {
+    geolocate.trigger();
+});
+
 const coordinatesGeocoder = function (query) {
     const matches = query.match(
         /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
