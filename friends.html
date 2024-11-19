@@ -116,10 +116,13 @@
 
 <!-- Friend List Filters -->
 <div class="friends-filters">
-    <button class="filter-btn active" onclick="filterFriends('all')">All</button>
-    <button class="filter-btn" onclick="filterFriends('online')">Online</button>
-    <button class="filter-btn" onclick="filterFriends('recent')">Recent</button>
+    <button id="allButton" class="filter-btn">All</button>
+    <button id="onlineButton" class="filter-btn">Online</button>
+    <button id="recentButton" class="filter-btn">Recent</button>
 </div>
+  
+  <ul id="userList" class="user-list"></ul>
+  
 
     <!-- Add Friend Modal -->
     <div class="modal fade" id="addFriendModal" tabindex="-1">
