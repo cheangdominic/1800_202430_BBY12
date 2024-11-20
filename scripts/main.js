@@ -3,6 +3,7 @@ function getNameFromAuth() {
         if (user) {
             userDisplayName = user.displayName;
             userId = user.uid;
+            userEmail = user.email;
             document.getElementById("name-goes-here").innerText = user.displayName;
             document.getElementById("email-goes-here").innerText = user.email;
         } else {
@@ -24,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         snapshot.forEach(async doc => {
             const playdate = doc.data();
             const currentTime = new Date();
-            const playdateTime = new Date(playdate.datetime);  
+            const playdateTime = new Date(playdate.datetime);
             const post = document.createElement("div");
 
             if (currentTime < playdateTime) {
@@ -39,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 } catch (error) {
                     console.error("Error fetching host's name:", error);
                 }
-                
+
                 if (playdate.latitude && playdate.longitude) {
                     mapImageURL = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${playdate.longitude},${playdate.latitude},14,0/500x300?access_token=${mapboxToken}`;
                 } else {
@@ -60,8 +61,30 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <p class="card-text">${playdate.description}</p>
                     <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
-                    <button type="button" class="btn btn-warning">Join</button>
+                    <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-warning">Join</button>
+                    <i id="userCount-btn" class='bx bxs-group'></i>
                 </div>`;
+
+                const joinButton = post.querySelector("#join-btn");
+                joinButton.addEventListener("click", (event) => {
+
+                    db.collection("playdates").doc(doc.id).collection("usersGoing").add({
+                            Username: userDisplayName,
+                            UserID: userId,
+                            Email: userEmail
+                        })
+                        .then(() => {
+                            console.log("User added to playdate!");
+                        })
+                        .catch((error) => {
+                            console.error("Error adding user to playdate:", error);
+                        });
+                });
+
+                const userCountButton = post.querySelector("#userCount-btn");
+                userCountButton.addEventListener("click", (event) => {
+
+                });
                 postContainer.appendChild(post);
             } else {
                 db.collection("playdates").doc(doc.id).delete()
@@ -74,5 +97,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                     });
             }
         });
+
     });
 });

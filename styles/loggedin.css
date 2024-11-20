@@ -31,6 +31,12 @@
     width: 110%;
 }
 
+.bxs-group {
+    margin-top: 1%;
+    font-size: 250%;
+    float: left;
+}
+
 .bx.bxs-home, .bx.bxs-map-alt, .bx.bxs-plus-square, .bx.bxs-user-plus, .bx.bxs-chat {
     font-size: 250%;
 }
