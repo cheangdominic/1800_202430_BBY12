@@ -9,6 +9,12 @@ function formatDateTime(dateString) {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", (event) => {
+        redirectToPage("profile.html");
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function () {
     const savedTitle = localStorage.getItem("savedTitle");
     const savedAddress = localStorage.getItem("savedAddress");
