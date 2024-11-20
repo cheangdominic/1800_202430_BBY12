@@ -24,12 +24,22 @@ document.addEventListener("DOMContentLoaded", async function () {
         snapshot.forEach(async doc => {
             const playdate = doc.data();
             const currentTime = new Date();
-            const playdateTime = new Date(playdate.datetime);
+            const playdateTime = new Date(playdate.datetime);  
             const post = document.createElement("div");
 
             if (currentTime < playdateTime) {
                 let mapImageURL = "";
 
+                let userName = "Unknown Host";
+                try {
+                    const userDoc = await db.collection("users").doc(playdate.userId).get();
+                    if (userDoc.exists) {
+                        userName = userDoc.data().name || "Unknown Host";
+                    }
+                } catch (error) {
+                    console.error("Error fetching host's name:", error);
+                }
+                
                 if (playdate.latitude && playdate.longitude) {
                     mapImageURL = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${playdate.longitude},${playdate.latitude},14,0/500x300?access_token=${mapboxToken}`;
                 } else {
@@ -46,6 +56,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                 <img src="${mapImageURL || './styles/images/default-location.jpg'}" class="card-img-top" alt="location image">
                 <div class="card-body">
                     <h5 class="card-title">${playdate.title}</h5>
+                    <p class="card-text">Hosted by: @${userName}</p>
                     <p class="card-text">${playdate.description}</p>
                     <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
