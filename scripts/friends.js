@@ -1,8 +1,7 @@
-<<<<<<< HEAD
-// グローバル変数の初期化
+// Initialize global variables
 let currentUser;
 
-// ユーザーの認証状態を監視し、認証されていない場合はログインページにリダイレクト
+// Monitor authentication state and redirect to login page if not authenticated
 firebase.auth().onAuthStateChanged(function(user) {
     if (user) {
         currentUser = user;
@@ -14,10 +13,10 @@ firebase.auth().onAuthStateChanged(function(user) {
 });
 
 /**
- * フレンドリクエストを読み込んで表示する関数
- * - 保留中のフレンドリクエストを取得
- * - 各リクエストの送信者のプロフィール情報を取得
- * - リクエストカードをDOMに追加
+ * Function to load and display friend requests
+ * - Retrieves pending friend requests
+ * - Gets profile information for each request sender
+ * - Adds request cards to the DOM
  */
 function loadFriendRequests() {
     const requestsContainer = document.getElementById('friendRequests');
@@ -70,10 +69,10 @@ function loadFriendRequests() {
 }
 
 /**
- * フレンドリストを読み込んで表示する関数
- * - 現在のユーザーに関連するフレンド情報を取得
- * - 各フレンドのプロフィール情報を取得
- * - フレンドカードをDOMに追加
+ * Function to load and display friends list
+ * - Retrieves friend information related to current user
+ * - Gets profile information for each friend
+ * - Adds friend cards to the DOM
  */
 function loadFriends() {
     const friendsContainer = document.getElementById('friendsList');
@@ -121,10 +120,10 @@ function loadFriends() {
 }
 
 /**
- * フレンドリクエストを送信する関数
- * - メールアドレスからユーザーを検索
- * - 既存の友達関係やリクエストをチェック
- * - 新しいフレンドリクエストを作成
+ * Function to send friend request
+ * - Searches for user by email
+ * - Checks for existing friendship or request
+ * - Creates new friend request
  */
 async function sendFriendRequest() {
     const friendEmail = document.getElementById('friendEmail').value.trim();
@@ -146,13 +145,13 @@ async function sendFriendRequest() {
         const friendData = userQuerySnapshot.docs[0];
         const friendId = friendData.id;
 
-        // 自分自身へのリクエスト防止
+        // Prevent self-friend request
         if (friendId === currentUser.uid) {
             alert('You cannot send a friend request to yourself');
             return;
         }
 
-        // 既存の友達関係チェック
+        // Check existing friendship
         const existingFriendship = await db.collection('friends')
             .where('users', 'array-contains', currentUser.uid)
             .get();
@@ -169,7 +168,7 @@ async function sendFriendRequest() {
             return;
         }
 
-        // 既存のリクエストチェック
+        // Check existing request
         const existingRequest = await db.collection('friendRequests')
             .where('from', '==', currentUser.uid)
             .where('to', '==', friendId)
@@ -181,7 +180,7 @@ async function sendFriendRequest() {
             return;
         }
 
-        // フレンドリクエスト作成
+        // Create friend request
         await db.collection('friendRequests').add({
             from: currentUser.uid,
             to: friendId,
@@ -200,9 +199,9 @@ async function sendFriendRequest() {
 }
 
 /**
- * フレンドリクエストを承認する関数
- * - 友達関係のドキュメントを作成
- * - リクエストのステータスを更新
+ * Function to accept friend request
+ * - Creates friendship document
+ * - Updates request status
  */
 async function acceptFriendRequest(requestId, friendId) {
     try {
@@ -223,8 +222,8 @@ async function acceptFriendRequest(requestId, friendId) {
 }
 
 /**
- * フレンドリクエストを拒否する関数
- * - リクエストのステータスを「declined」に更新
+ * Function to decline friend request
+ * - Updates request status to 'declined'
  */
 async function declineFriendRequest(requestId) {
     try {
@@ -240,9 +239,9 @@ async function declineFriendRequest(requestId) {
 }
 
 /**
- * チャットページを開く関数
- * - フレンドIDをローカルストレージに保存
- * - チャットページへ遷移
+ * Function to open chat page
+ * - Saves friend ID to local storage
+ * - Navigates to chat page
  */
 function openChat(friendId) {
     localStorage.setItem('currentChatFriend', friendId);
@@ -250,9 +249,9 @@ function openChat(friendId) {
 }
 
 /**
- * フレンドを検索する関数
- * - 名前で部分一致検索を実行
- * - マッチしないフレンドカードを非表示
+ * Function to search friends
+ * - Performs partial match search by name
+ * - Hides friend cards that don't match
  */
 function searchFriends(searchTerm) {
     const friendCards = document.querySelectorAll('.friend-card');
@@ -266,19 +265,19 @@ function searchFriends(searchTerm) {
     });
 }
 
-// 検索イベントリスナーの設定
+// Set up search event listener
 document.getElementById('friendSearch')?.addEventListener('input', (e) => {
     searchFriends(e.target.value);
 });
 
 /**
- * フレンド追加モーダルを表示する関数
+ * Function to show add friend modal
  */
 function showAddFriendModal() {
     $('#addFriendModal').modal('show');
 }
 
-// グローバルスコープに関数を公開
+// Expose functions to global scope
 window.sendFriendRequest = sendFriendRequest;
 window.acceptFriendRequest = acceptFriendRequest;
 window.declineFriendRequest = declineFriendRequest;
@@ -286,8 +285,8 @@ window.openChat = openChat;
 window.showAddFriendModal = showAddFriendModal;
 
 /**
- * オンライン状態を更新する関数
- * - ユーザーのオンライン状態とlastSeenを更新
+ * Function to update online status
+ * - Updates user's online status and lastSeen
  */
 function updateOnlineStatus(isOnline) {
     if (!currentUser) return;
@@ -299,9 +298,9 @@ function updateOnlineStatus(isOnline) {
 }
 
 /**
- * プレゼンス（オンライン状態）システムのセットアップ関数
- * - Firestoreとリアルタイムデータベースの両方を使用
- * - オンライン/オフライン状態を自動的に追跡
+ * Function to set up presence system
+ * - Uses both Firestore and Realtime Database
+ * - Automatically tracks online/offline status
  */
 let presenceRef;
 function setupPresence() {
@@ -330,9 +329,9 @@ function setupPresence() {
 }
 
 /**
- * プロフィールプレビューを表示する関数
- * - ユーザーのプロフィール情報を取得
- * - モーダルでプロフィール情報を表示
+ * Function to show profile preview
+ * - Gets user's profile information
+ * - Displays profile information in modal
  */
 function showProfilePreview(userId) {
     const previewModal = new bootstrap.Modal(document.getElementById('profilePreviewModal'));
@@ -348,9 +347,9 @@ function showProfilePreview(userId) {
 }
 
 /**
- * フレンドを削除する関数
- * - 確認ダイアログを表示
- * - フレンドシップドキュメントを削除
+ * Function to remove friend
+ * - Shows confirmation dialog
+ * - Deletes friendship document
  */
 async function removeFriend(friendId) {
     if (!confirm('Are you sure you want to remove this friend?')) return;
@@ -375,9 +374,9 @@ async function removeFriend(friendId) {
 }
 
 /**
- * フレンドリストをフィルタリングする関数
- * - オンライン状態や最近のメッセージでフィルタリング
- * - フィルターボタンの状態を更新
+ * Function to filter friends list
+ * - Filters by online status or recent messages
+ * - Updates filter button states
  */
 function filterFriends(filter) {
     const friendCards = document.querySelectorAll('.friend-card');
@@ -402,9 +401,9 @@ function filterFriends(filter) {
 let activityTimeout;
 
 /**
- * ユーザーのアクティビティを更新する関数
- * - 最後のアクティブタイムスタンプを更新
- * - 非アクティブタイマーをリセット
+ * Function to update user activity
+ * - Updates last active timestamp
+ * - Resets inactivity timer
  */
 function updateUserActivity() {
     if (!currentUser) return;
@@ -417,22 +416,7 @@ function updateUserActivity() {
     
     activityTimeout = setTimeout(() => {
         updateOnlineStatus(false);
-    }, 300000); // 5分
+    }, 300000); // 5 minutes
 }
 
-// ユーザーアクティビティのイベントリスナーを
-=======
-// Initialize Firebase
-const app = firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
-const firebaseConfig = {
-    apiKey: "AIzaSyCesnliQh3zmwEc782jk71-bCdPWVS8h2s",
-    authDomain: "updog-d7aa0.firebaseapp.com",
-    projectId: "updog-d7aa0",
-    storageBucket: "updog-d7aa0.firebasestorage.app",
-    messagingSenderId: "509822779265",
-    appId: "1:509822779265:web:171948f292612764ad3280"
-  };
-
->>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
+// Set up user activity event listeners

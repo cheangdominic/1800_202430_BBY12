@@ -55,108 +55,7 @@ function addEmojiToMessage(emoji) {
     }
 }
 
-<<<<<<< HEAD
 /// Function to load messages
-=======
-// Update typing status - add before loadMessages
-async function updateTypingStatus(isTyping) {
-    if (!currentUser) return;
-    
-    try {
-        await db.collection('typing').doc(currentUser.uid).set({
-            userId: currentUser.uid,
-            userName: currentUser.displayName || 'Anonymous',
-            isTyping: isTyping,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } catch (error) {
-        console.error('Error updating typing status:', error);
-    }
-}
-
-// Listen for typing status - add after updateTypingStatus
-function listenToTypingStatus() {
-    db.collection('typing').onSnapshot((snapshot) => {
-        const typingUsers = [];
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            if (data.isTyping && data.userId !== currentUser?.uid) {
-                typingUsers.push(data.userName);
-            }
-        });
-        
-        const typingIndicator = document.getElementById('typingIndicator');
-        if (typingIndicator) {
-            if (typingUsers.length > 0) {
-                const typingText = typingUsers.length === 1 
-                    ? `${typingUsers[0]} is typing...`
-                    : `${typingUsers.length} people are typing...`;
-                typingIndicator.textContent = typingText;
-                typingIndicator.style.display = 'block';
-            } else {
-                typingIndicator.style.display = 'none';
-            }
-        }
-    });
-}
-
-// Add these event listeners after existing event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    initializeEmojiPicker();
-    
-    // Emoji button click handler
-    const emojiButton = document.getElementById('emojiButton');
-    if (emojiButton) {
-        emojiButton.addEventListener('click', function() {
-            const picker = document.getElementById('emojiPicker');
-            if (picker) {
-                picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-            }
-        });
-    }
-    
-    // Close emoji picker when clicking outside
-    document.addEventListener('click', (e) => {
-        const picker = document.getElementById('emojiPicker');
-        const emojiButton = document.getElementById('emojiButton');
-        if (picker && emojiButton && !picker.contains(e.target) && !emojiButton.contains(e.target)) {
-            picker.style.display = 'none';
-        }
-    });
-
-    // Add typing indicator handler
-    const messageInput = document.getElementById('messageInput');
-    if (messageInput) {
-        messageInput.addEventListener('input', function() {
-            if (!isTyping) {
-                isTyping = true;
-                updateTypingStatus(true);
-            }
-            
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                isTyping = false;
-                updateTypingStatus(false);
-            }, TYPING_TIMER);
-        });
-    }
-});
-
-// Modify the existing onAuthStateChanged to include typing status listener
-firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-        currentUser = user;
-        console.log("Logged in user:", user.displayName);
-        loadMessages();
-        listenToTypingStatus(); // Add this line
-    } else {
-        const messageContainer = document.getElementById("messageContainer");
-        messageContainer.innerHTML = '<div class="message">Please log in to use the chat</div>';
-        console.log("No user logged in");
-    }
-});
-
->>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
 function loadMessages() {
     db.collection("messages")
         .orderBy("timestamp")
@@ -170,11 +69,7 @@ function loadMessages() {
                 const message = doc.data();
                 const timestamp = message.timestamp?.toDate();
                 
-<<<<<<< HEAD
                 // Add date divider
-=======
-                // add line when the date changes
->>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
                 if (timestamp) {
                     const messageDate = timestamp.toLocaleDateString('en-US', {
                         weekday: 'short',
@@ -246,11 +141,7 @@ function loadMessages() {
                     }
                 }
                 
-<<<<<<< HEAD
                 // Show message time
-=======
-                // show time for the message
->>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
                 const timeString = timestamp ? timestamp.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
