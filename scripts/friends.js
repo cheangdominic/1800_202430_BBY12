@@ -1,422 +1,288 @@
-// Initialize global variables
+// Global variable to store the currently logged in user
 let currentUser;
 
-// Monitor authentication state and redirect to login page if not authenticated
-firebase.auth().onAuthStateChanged(function(user) {
+// Authentication state observer
+firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         currentUser = user;
-        loadFriendRequests();
-        loadFriends();
+        loadFriendsList(); // Load friends list when user is authenticated
     } else {
-        window.location.href = 'login.html';
+        window.location.href = 'login.html'; // Redirect to login if not authenticated
+    }
+});
+
+// Event listeners for search functionality
+// Trigger search when the search button is clicked
+document.getElementById('searchButton').addEventListener('click', searchUsers);
+// Trigger search when Enter key is pressed in search input
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchUsers();
     }
 });
 
 /**
- * Function to load and display friend requests
- * - Retrieves pending friend requests
- * - Gets profile information for each request sender
- * - Adds request cards to the DOM
+ * Search for users by email in Firebase
+ * This function queries the users collection for matching email addresses
  */
-function loadFriendRequests() {
-    const requestsContainer = document.getElementById('friendRequests');
-    
-    db.collection('friendRequests')
-        .where('to', '==', currentUser.uid)
-        .where('status', '==', 'pending')
-        .onSnapshot((snapshot) => {
-            requestsContainer.innerHTML = '';
+function searchUsers() {
+    const searchEmail = document.getElementById('searchInput').value.trim();
+    if (!searchEmail) return; // Exit if search input is empty
+
+    const searchResults = document.getElementById('searchResults');
+    searchResults.innerHTML = '<p>Searching...</p>';
+
+    // Query Firestore for users with matching email
+    firebase.firestore().collection('users')
+        .where('email', '==', searchEmail)
+        .get()
+        .then((querySnapshot) => {
+            searchResults.innerHTML = '';
             
-            if (snapshot.empty) {
-                requestsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class='bx bx-user-plus'></i>
-                        <p>No pending friend requests</p>
-                    </div>
-                `;
+            // Display message if no users found
+            if (querySnapshot.empty) {
+                searchResults.innerHTML = '<p>No users found</p>';
                 return;
             }
 
-            snapshot.forEach((doc) => {
-                const request = doc.data();
-                db.collection('profiles').doc(request.from).get().then((senderDoc) => {
-                    const sender = senderDoc.data();
-                    const requestHtml = `
-                        <div class="friend-request-card">
-                            <div class="request-profile">
-                                <img src="${sender.profilePicture || './styles/images/defaultprofile.png'}" 
-                                     alt="Profile picture"
-                                     onerror="this.src='./styles/images/defaultprofile.png'">
-                                <div class="request-info">
-                                    <h3>${sender.name || 'Anonymous'}</h3>
-                                    <p>Wants to be your friend</p>
-                                </div>
-                            </div>
-                            <div class="request-actions">
-                                <button class="accept-btn" onclick="acceptFriendRequest('${doc.id}', '${request.from}')">
-                                    Accept
-                                </button>
-                                <button class="decline-btn" onclick="declineFriendRequest('${doc.id}')">
-                                    Decline
-                                </button>
-                            </div>
-                        </div>
-                    `;
-                    requestsContainer.insertAdjacentHTML('beforeend', requestHtml);
-                });
+            // Create and display user cards for each result
+            querySnapshot.forEach((doc) => {
+                const userData = doc.data();
+                // Don't show the current user in search results
+                if (doc.id !== currentUser.uid) {
+                    const userCard = createUserSearchCard(doc.id, userData);
+                    searchResults.appendChild(userCard);
+                }
             });
+        })
+        .catch((error) => {
+            console.error("Error searching users: ", error);
+            searchResults.innerHTML = '<p>Error searching users</p>';
         });
 }
 
 /**
- * Function to load and display friends list
- * - Retrieves friend information related to current user
- * - Gets profile information for each friend
- * - Adds friend cards to the DOM
+ * Create a card element for a user search result
+ * @param {string} userId - The user's Firebase UID
+ * @param {Object} userData - The user's profile data
+ * @returns {HTMLElement} The created card element
  */
-function loadFriends() {
-    const friendsContainer = document.getElementById('friendsList');
+function createUserSearchCard(userId, userData) {
+    const div = document.createElement('div');
+    div.className = 'card mb-3';
+    // Create card HTML with user profile information
+    div.innerHTML = `
+        <div class="card-body d-flex align-items-start">
+            <div class="friend-profile-img">
+                <img src="${userData.profileImage || '/images/default-avatar.png'}" 
+                     alt="Profile" class="rounded-circle">
+            </div>
+            <div class="friend-info flex-grow-1 ms-3">
+                <h5 class="card-title">${userData.name || 'Anonymous User'}</h5>
+                <p class="card-text text-muted">${userData.email}</p>
+                <p class="card-text profile-bio">${userData.bio || 'No bio available'}</p>
+                ${userData.hobbies ? `<p class="card-text hobbies">
+                    <small class="text-muted">Hobbies: ${userData.hobbies}</small></p>` : ''}
+            </div>
+            <button class="btn btn-primary add-friend-btn" data-userid="${userId}">
+                Add Friend
+            </button>
+        </div>
+    `;
+
+    // Add click event listener to the Add Friend button
+    div.querySelector('.add-friend-btn').addEventListener('click', () => addFriend(userId));
+    return div;
+}
+
+/**
+ * Add a user as a friend and clear search results after successful addition
+ * @param {string} friendId - The Firebase UID of the user to add as friend
+ */
+function addFriend(friendId) {
+    const friendsRef = firebase.firestore().collection('friendships');
     
-    db.collection('friends')
-        .where('users', 'array-contains', currentUser.uid)
-        .onSnapshot((snapshot) => {
-            friendsContainer.innerHTML = '';
-            
-            if (snapshot.empty) {
-                friendsContainer.innerHTML = `
-                    <div class="empty-state">
-                        <i class='bx bx-user'></i>
-                        <p>No friends yet</p>
-                    </div>
-                `;
+    // Check if friendship already exists
+    friendsRef.where('users', 'array-contains', currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+            let friendshipExists = false;
+            querySnapshot.forEach((doc) => {
+                if (doc.data().users.includes(friendId)) {
+                    friendshipExists = true;
+                }
+            });
+
+            if (friendshipExists) {
+                alert('This user is already your friend!');
                 return;
             }
 
-            snapshot.forEach((doc) => {
-                const friendship = doc.data();
-                const friendId = friendship.users.find(id => id !== currentUser.uid);
+            // Create new friendship document
+            return friendsRef.add({
+                users: [currentUser.uid, friendId],
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        })
+        .then((docRef) => {
+            if (docRef) {  // Only execute if friend was actually added
+                alert('Friend added successfully!');
+                loadFriendsList(); // Reload friends list to show new friend
                 
-                db.collection('profiles').doc(friendId).get().then((friendDoc) => {
-                    const friend = friendDoc.data();
-                    const friendHtml = `
-                        <div class="friend-card" onclick="openChat('${friendId}')">
-                            <div class="friend-profile">
-                                <img src="${friend.profilePicture || './styles/images/defaultprofile.png'}" 
-                                     alt="Profile picture"
-                                     onerror="this.src='./styles/images/defaultprofile.png'">
-                                <div class="friend-info">
-                                    <h3>${friend.name || 'Anonymous'}</h3>
-                                    <p class="status ${friend.online ? 'online' : ''}">
-                                        ${friend.online ? 'Online' : 'Offline'}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    friendsContainer.insertAdjacentHTML('beforeend', friendHtml);
-                });
+                // Clear search results and search input
+                const searchResults = document.getElementById('searchResults');
+                const searchInput = document.getElementById('searchInput');
+                searchResults.innerHTML = ''; // Clear search results
+                searchInput.value = ''; // Clear search input field
+            }
+        })
+        .catch((error) => {
+            console.error("Error adding friend: ", error);
+            alert('Error adding friend');
+        });
+}
+
+/**
+ * Load and display the current user's friends list
+ * This function queries the friendships collection and displays friend cards
+ */
+function loadFriendsList() {
+    const friendsList = document.getElementById('friendsList');
+    friendsList.innerHTML = '<p>Loading friends...</p>';
+
+    // Query Firestore for current user's friendships
+    firebase.firestore().collection('friendships')
+        .where('users', 'array-contains', currentUser.uid)
+        .get()
+        .then((querySnapshot) => {
+            friendsList.innerHTML = '';
+            
+            if (querySnapshot.empty) {
+                friendsList.innerHTML = '<p>No friends yet</p>';
+                return;
+            }
+
+            // Create array of promises to fetch friend data
+            const friendPromises = [];
+            querySnapshot.forEach((doc) => {
+                const friendshipData = doc.data();
+                const friendId = friendshipData.users.find(id => id !== currentUser.uid);
+                
+                // Create a promise for each friend's data
+                const friendPromise = firebase.firestore().collection('users').doc(friendId).get()
+                    .then((friendDoc) => {
+                        if (friendDoc.exists) {
+                            return {
+                                friendId: friendId,
+                                friendData: friendDoc.data(),
+                                friendshipId: doc.id
+                            };
+                        }
+                    });
+                friendPromises.push(friendPromise);
             });
+
+            // Wait for all friend data to be fetched
+            return Promise.all(friendPromises);
+        })
+        .then((friends) => {
+            // Create and display friend cards
+            friends.forEach((friend) => {
+                if (friend) {
+                    const friendCard = createFriendCard(friend.friendId, friend.friendData, friend.friendshipId);
+                    friendsList.appendChild(friendCard);
+                }
+            });
+        })
+        .catch((error) => {
+            console.error("Error loading friends: ", error);
+            friendsList.innerHTML = '<p>Error loading friends</p>';
         });
 }
 
 /**
- * Function to send friend request
- * - Searches for user by email
- * - Checks for existing friendship or request
- * - Creates new friend request
+ * Create a card element for a friend
+ * @param {string} friendId - The friend's Firebase UID
+ * @param {Object} friendData - The friend's profile data
+ * @param {string} friendshipId - The Firebase document ID of the friendship
+ * @returns {HTMLElement} The created card element
  */
-async function sendFriendRequest() {
-    const friendEmail = document.getElementById('friendEmail').value.trim();
-    if (!friendEmail) {
-        alert('Please enter an email address');
-        return;
-    }
-
-    try {
-        const userQuerySnapshot = await db.collection('users')
-            .where('email', '==', friendEmail)
-            .get();
-
-        if (userQuerySnapshot.empty) {
-            alert('User not found');
-            return;
-        }
-
-        const friendData = userQuerySnapshot.docs[0];
-        const friendId = friendData.id;
-
-        // Prevent self-friend request
-        if (friendId === currentUser.uid) {
-            alert('You cannot send a friend request to yourself');
-            return;
-        }
-
-        // Check existing friendship
-        const existingFriendship = await db.collection('friends')
-            .where('users', 'array-contains', currentUser.uid)
-            .get();
-
-        let isAlreadyFriend = false;
-        existingFriendship.forEach(doc => {
-            if (doc.data().users.includes(friendId)) {
-                isAlreadyFriend = true;
-            }
-        });
-
-        if (isAlreadyFriend) {
-            alert('You are already friends with this user');
-            return;
-        }
-
-        // Check existing request
-        const existingRequest = await db.collection('friendRequests')
-            .where('from', '==', currentUser.uid)
-            .where('to', '==', friendId)
-            .where('status', '==', 'pending')
-            .get();
-
-        if (!existingRequest.empty) {
-            alert('Friend request already sent');
-            return;
-        }
-
-        // Create friend request
-        await db.collection('friendRequests').add({
-            from: currentUser.uid,
-            to: friendId,
-            status: 'pending',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        $('#addFriendModal').modal('hide');
-        document.getElementById('friendEmail').value = '';
-        alert('Friend request sent successfully!');
-
-    } catch (error) {
-        console.error('Error sending friend request:', error);
-        alert('Error sending friend request. Please try again.');
-    }
+function createFriendCard(friendId, friendData, friendshipId) {
+    console.log("Creating friend card for:", friendshipId);
+    
+    const div = document.createElement('div');
+    div.className = 'col-md-6 mb-3';
+    // Create card HTML with friend's profile information
+    div.innerHTML = `
+        <div class="card friend-card">
+            <div class="card-body">
+                <div class="d-flex align-items-start">
+                    <div class="friend-profile-img">
+                        <img src="${friendData.profileImage || '/images/default-avatar.png'}" 
+                             alt="Profile" class="rounded-circle">
+                    </div>
+                    <div class="friend-info flex-grow-1 ms-3">
+                        <h5 class="card-title">${friendData.name || 'Anonymous User'}</h5>
+                        <p class="card-text text-muted">${friendData.email}</p>
+                        
+                        <div class="profile-details mt-3">
+                            <p class="card-text profile-bio">${friendData.bio || 'No bio available'}</p>
+                            
+                            ${friendData.hobbies ? `
+                            <div class="hobbies-section">
+                                <h6 class="text-muted">Hobbies</h6>
+                                <p class="card-text hobbies">${friendData.hobbies}</p>
+                            </div>` : ''}
+                            
+                            ${friendData.location ? `
+                            <div class="location-section">
+                                <h6 class="text-muted">Location</h6>
+                                <p class="card-text location">${friendData.location}</p>
+                            </div>` : ''}
+                            
+                            ${friendData.interests ? `
+                            <div class="interests-section">
+                                <h6 class="text-muted">Interests</h6>
+                                <div class="interests-tags">
+                                    ${friendData.interests.map(interest => 
+                                        `<span class="badge bg-light text-dark">${interest}</span>`
+                                    ).join(' ')}
+                                </div>
+                            </div>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-actions mt-3">
+                    <button onclick="removeFriend('${friendshipId}')" class="btn btn-danger remove-friend-btn">
+                        Remove Friend
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    return div;
 }
 
 /**
- * Function to accept friend request
- * - Creates friendship document
- * - Updates request status
+ * Remove a friend (delete friendship)
+ * This function is attached to the global window object to be accessible from HTML onclick
+ * @param {string} friendshipId - The Firebase document ID of the friendship to delete
  */
-async function acceptFriendRequest(requestId, friendId) {
-    try {
-        await db.collection('friends').add({
-            users: [currentUser.uid, friendId],
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        await db.collection('friendRequests').doc(requestId).update({
-            status: 'accepted'
-        });
-
-        console.log('Friend request accepted successfully');
-    } catch (error) {
-        console.error('Error accepting friend request:', error);
-        alert('Error accepting friend request. Please try again.');
-    }
-}
-
-/**
- * Function to decline friend request
- * - Updates request status to 'declined'
- */
-async function declineFriendRequest(requestId) {
-    try {
-        await db.collection('friendRequests').doc(requestId).update({
-            status: 'declined'
-        });
-
-        console.log('Friend request declined successfully');
-    } catch (error) {
-        console.error('Error declining friend request:', error);
-        alert('Error declining friend request. Please try again.');
+window.removeFriend = function(friendshipId) {
+    console.log("Attempting to remove friendship:", friendshipId);
+    
+    if (confirm('Are you sure you want to remove this friend?')) {
+        // Delete friendship document from Firestore
+        firebase.firestore().collection('friendships').doc(friendshipId).delete()
+            .then(() => {
+                console.log("Friendship successfully deleted");
+                alert('Friend removed successfully!');
+                loadFriendsList(); // Reload friends list to reflect removal
+            })
+            .catch((error) => {
+                console.error("Error removing friend:", error);
+                alert('Error removing friend: ' + error.message);
+            });
     }
 }
-
-/**
- * Function to open chat page
- * - Saves friend ID to local storage
- * - Navigates to chat page
- */
-function openChat(friendId) {
-    localStorage.setItem('currentChatFriend', friendId);
-    window.location.href = 'chat.html';
-}
-
-/**
- * Function to search friends
- * - Performs partial match search by name
- * - Hides friend cards that don't match
- */
-function searchFriends(searchTerm) {
-    const friendCards = document.querySelectorAll('.friend-card');
-    friendCards.forEach(card => {
-        const name = card.querySelector('.friend-info h3').textContent.toLowerCase();
-        if (name.includes(searchTerm.toLowerCase())) {
-            card.style.display = 'flex';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
-// Set up search event listener
-document.getElementById('friendSearch')?.addEventListener('input', (e) => {
-    searchFriends(e.target.value);
-});
-
-/**
- * Function to show add friend modal
- */
-function showAddFriendModal() {
-    $('#addFriendModal').modal('show');
-}
-
-// Expose functions to global scope
-window.sendFriendRequest = sendFriendRequest;
-window.acceptFriendRequest = acceptFriendRequest;
-window.declineFriendRequest = declineFriendRequest;
-window.openChat = openChat;
-window.showAddFriendModal = showAddFriendModal;
-
-/**
- * Function to update online status
- * - Updates user's online status and lastSeen
- */
-function updateOnlineStatus(isOnline) {
-    if (!currentUser) return;
-
-    db.collection('profiles').doc(currentUser.uid).update({
-        online: isOnline,
-        lastSeen: firebase.firestore.FieldValue.serverTimestamp()
-    });
-}
-
-/**
- * Function to set up presence system
- * - Uses both Firestore and Realtime Database
- * - Automatically tracks online/offline status
- */
-let presenceRef;
-function setupPresence() {
-    const uid = currentUser.uid;
-    
-    presenceRef = db.collection('status').doc(uid);
-    
-    const isOfflineForFirestore = {
-        state: 'offline',
-        lastChanged: firebase.firestore.FieldValue.serverTimestamp(),
-    };
-
-    const isOnlineForFirestore = {
-        state: 'online',
-        lastChanged: firebase.firestore.FieldValue.serverTimestamp(),
-    };
-
-    firebase.database().ref('.info/connected').on('value', function(snapshot) {
-        if (snapshot.val() == false) {
-            presenceRef.set(isOfflineForFirestore);
-            return;
-        }
-
-        presenceRef.set(isOnlineForFirestore);
-    });
-}
-
-/**
- * Function to show profile preview
- * - Gets user's profile information
- * - Displays profile information in modal
- */
-function showProfilePreview(userId) {
-    const previewModal = new bootstrap.Modal(document.getElementById('profilePreviewModal'));
-    
-    db.collection('profiles').doc(userId).get().then(doc => {
-        if (doc.exists) {
-            const profile = doc.data();
-            document.getElementById('previewName').textContent = profile.name;
-            document.getElementById('previewImage').src = profile.profilePicture || './styles/images/defaultprofile.png';
-            document.getElementById('previewBio').textContent = profile.bio || 'No bio available';
-        }
-    });
-}
-
-/**
- * Function to remove friend
- * - Shows confirmation dialog
- * - Deletes friendship document
- */
-async function removeFriend(friendId) {
-    if (!confirm('Are you sure you want to remove this friend?')) return;
-
-    try {
-        const friendshipQuery = await db.collection('friends')
-            .where('users', 'array-contains', currentUser.uid)
-            .get();
-
-        friendshipQuery.forEach(async (doc) => {
-            if (doc.data().users.includes(friendId)) {
-                await doc.ref.delete();
-            }
-        });
-
-        bootstrap.Modal.getInstance(document.getElementById('profilePreviewModal')).hide();
-        
-    } catch (error) {
-        console.error('Error removing friend:', error);
-        alert('Error removing friend. Please try again.');
-    }
-}
-
-/**
- * Function to filter friends list
- * - Filters by online status or recent messages
- * - Updates filter button states
- */
-function filterFriends(filter) {
-    const friendCards = document.querySelectorAll('.friend-card');
-    
-    friendCards.forEach(card => {
-        switch(filter) {
-            case 'online':
-                card.style.display = card.querySelector('.status.online') ? 'flex' : 'none';
-                break;
-            case 'recent':
-                break;
-            default:
-                card.style.display = 'flex';
-        }
-    });
-    
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.onclick.toString().includes(filter));
-    });
-}
-
-let activityTimeout;
-
-/**
- * Function to update user activity
- * - Updates last active timestamp
- * - Resets inactivity timer
- */
-function updateUserActivity() {
-    if (!currentUser) return;
-    
-    clearTimeout(activityTimeout);
-    
-    db.collection('profiles').doc(currentUser.uid).update({
-        lastActive: firebase.firestore.FieldValue.serverTimestamp()
-    });
-    
-    activityTimeout = setTimeout(() => {
-        updateOnlineStatus(false);
-    }, 300000); // 5 minutes
-}
-
-// Set up user activity event listeners
