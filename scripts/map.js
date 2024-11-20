@@ -139,6 +139,7 @@ map.addControl(
         localGeocoder: coordinatesGeocoder,
         zoom: 14,
         placeholder: 'Search',
+        types: 'poi',
         mapboxgl: mapboxgl,
         reverseGeocode: true,
     }),
@@ -146,7 +147,7 @@ map.addControl(
     // Add the MapboxGeocoder search box to the map
     const geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
-        types: 'country,region,place,postcode,locality,neighborhood,address',
+        types: 'place,postcode,locality,neighborhood,address',
         localGeocoder: forwardGeocoder, 
         placeholder: 'Enter search e.g. Lot 7 at BCIT'
     });
