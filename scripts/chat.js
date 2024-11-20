@@ -1,4 +1,4 @@
-// Initialize Firebase with your config
+// Initialize Firebase and load skeleton
 function loadSkeleton() {
     $('#navbarPlaceholder').load('./text/nav.html');
     $('#footerPlaceholder').load('./text/footer.html');
@@ -7,22 +7,19 @@ loadSkeleton();
 
 let currentUser;
 
-// Global variables for new features
-let typingTimeout;
-let isTyping = false;
-const TYPING_TIMER = 3000; // 3 seconds
-
-// Emoji data
+// Emoji data structure
 const emojiCategories = {
     smileys: ['😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '😉', '😌', '😍', '🥰', '😘'],
     animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸'],
     hearts: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💕', '💞', '💓', '💗', '💖']
 };
 
-// Initialize emoji picker
+// Initialize emoji picker with categories
 function initializeEmojiPicker() {
     const emojiPicker = document.getElementById('emojiPicker');
     if (!emojiPicker) return;
+    
+    emojiPicker.innerHTML = '';
     
     Object.entries(emojiCategories).forEach(([category, emojis]) => {
         const categoryDiv = document.createElement('div');
@@ -49,7 +46,7 @@ function initializeEmojiPicker() {
     });
 }
 
-// Add emoji to message
+// Add emoji to message input
 function addEmojiToMessage(emoji) {
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
@@ -58,49 +55,7 @@ function addEmojiToMessage(emoji) {
     }
 }
 
-// Update typing status
-async function updateTypingStatus(isTyping) {
-    if (!currentUser) return;
-    
-    try {
-        await db.collection('typing').doc(currentUser.uid).set({
-            userId: currentUser.uid,
-            userName: currentUser.displayName || 'Anonymous',
-            isTyping: isTyping,
-            timestamp: firebase.firestore.FieldValue.serverTimestamp()
-        });
-    } catch (error) {
-        console.error('Error updating typing status:', error);
-    }
-}
-
-// Listen for typing status
-function listenToTypingStatus() {
-    db.collection('typing').onSnapshot((snapshot) => {
-        const typingUsers = [];
-        snapshot.forEach((doc) => {
-            const data = doc.data();
-            if (data.isTyping && data.userId !== currentUser?.uid) {
-                typingUsers.push(data.userName);
-            }
-        });
-        
-        const typingIndicator = document.getElementById('typingIndicator');
-        if (typingIndicator) {
-            if (typingUsers.length > 0) {
-                const typingText = typingUsers.length === 1 
-                    ? `${typingUsers[0]} is typing...`
-                    : `${typingUsers.length} people are typing...`;
-                typingIndicator.textContent = typingText;
-                typingIndicator.style.display = 'block';
-            } else {
-                typingIndicator.style.display = 'none';
-            }
-        }
-    });
-}
-
-// Function to load messages
+/// Function to load messages
 function loadMessages() {
     db.collection("messages")
         .orderBy("timestamp")
@@ -114,7 +69,7 @@ function loadMessages() {
                 const message = doc.data();
                 const timestamp = message.timestamp?.toDate();
                 
-                // add line when the date change
+                // Add date divider
                 if (timestamp) {
                     const messageDate = timestamp.toLocaleDateString('en-US', {
                         weekday: 'short',
@@ -186,7 +141,7 @@ function loadMessages() {
                     }
                 }
                 
-                // show message time
+                // Show message time
                 const timeString = timestamp ? timestamp.toLocaleTimeString('en-US', {
                     hour: '2-digit',
                     minute: '2-digit',
@@ -215,11 +170,161 @@ function loadMessages() {
         });
 }
 
+
+
+// Load user profile picture
+async function loadUserProfilePicture(userId, messageDiv) {
+    try {
+        const doc = await db.collection("profiles").doc(userId).get();
+        if (doc.exists) {
+            const userData = doc.data();
+            const userImg = messageDiv.querySelector(`[data-user-id="${userId}"]`);
+            if (userImg) {
+                if (userData.profilePicture === "localStorage") {
+                    const localImage = localStorage.getItem(`userProfilePicture_${userId}`);
+                    if (localImage) {
+                        userImg.src = localImage;
+                    }
+                } else if (userData.profilePicture) {
+                    userImg.src = userData.profilePicture;
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Error loading profile picture:", error);
+    }
+}
+
+// Create HTML for image attachments
+function createImageAttachment(url) {
+    return `
+        <div class="image-attachment">
+            <img src="${url}" alt="Uploaded image" style="max-width: 200px; border-radius: 8px; cursor: pointer;" 
+                 onclick="window.open('${url}', '_blank')">
+        </div>
+    `;
+}
+
+// Create HTML for file attachments
+function createFileAttachment(url, fileName) {
+    return `
+        <div class="file-attachment" onclick="window.open('${url}', '_blank')" style="cursor: pointer;">
+            <i class='bx bx-file'></i>
+            <span>${fileName}</span>
+        </div>
+    `;
+}
+
+// Send message
+async function sendMessage() {
+    if (event && event.key === 'Enter' && !event.shiftKey) {
+        event.preventDefault();
+    }
+
+    const messageInput = document.getElementById("messageInput");
+    const message = messageInput.value.trim();
+    
+    if (!message) return;
+    
+    if (!currentUser) {
+        alert("Please log in to send messages");
+        return;
+    }
+    
+    try {
+        // Add message to Firestore
+        await db.collection("messages").add({
+            text: message,
+            userId: currentUser.uid,
+            userName: currentUser.displayName || 'Anonymous',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        messageInput.value = '';
+
+        // Scroll to bottom
+        const messageContainer = document.getElementById("messageContainer");
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+
+    } catch (error) {
+        console.error("Error sending message:", error);
+        alert("Failed to send message. Please try again.");
+    }
+}
+
+// Handle file uploads
+async function handleFileUpload(event) {
+    event.preventDefault();
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!currentUser) {
+        alert("Please log in to upload files");
+        return;
+    }
+
+    try {
+        const loadingDiv = document.createElement('div');
+        loadingDiv.className = 'loading-message';
+        loadingDiv.textContent = 'Uploading...';
+        document.getElementById('messageContainer').appendChild(loadingDiv);
+
+        const storageRef = firebase.storage().ref();
+        const fileRef = storageRef.child(`uploads/${currentUser.uid}/${Date.now()}_${file.name}`);
+        
+        await fileRef.put(file);
+        const downloadURL = await fileRef.getDownloadURL();
+
+        await db.collection("messages").add({
+            userId: currentUser.uid,
+            userName: currentUser.displayName || 'Anonymous',
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            fileUrl: downloadURL,
+            fileName: file.name,
+            fileType: file.type,
+            text: ''
+        });
+
+        loadingDiv.remove();
+    } catch (error) {
+        console.error("Error uploading file:", error);
+        alert("Failed to upload file. Please try again.");
+    }
+}
+
+// Escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+    if (typeof unsafe !== 'string') return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // Event listeners
 document.addEventListener('DOMContentLoaded', () => {
     initializeEmojiPicker();
     
-    // Emoji button click handler
+    // Add message input event listeners
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    
+    if (messageInput) {
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+    }
+    
+    if (sendButton) {
+        sendButton.addEventListener('click', sendMessage);
+    }
+
+    // Emoji picker toggle
     const emojiButton = document.getElementById('emojiButton');
     if (emojiButton) {
         emojiButton.addEventListener('click', function() {
@@ -239,119 +344,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Add typing indicator handler
-    const messageInput = document.getElementById('messageInput');
-    if (messageInput) {
-        messageInput.addEventListener('input', function() {
-            if (!isTyping) {
-                isTyping = true;
-                updateTypingStatus(true);
-            }
-            
-            clearTimeout(typingTimeout);
-            typingTimeout = setTimeout(() => {
-                isTyping = false;
-                updateTypingStatus(false);
-            }, TYPING_TIMER);
-        });
-    }
-});
-
-// Function to escape HTML
-function escapeHtml(unsafe) {
-    if (typeof unsafe !== 'string') return '';
-    return unsafe
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-// Function to send message
-function sendMessage() {
-    const messageInput = document.getElementById("messageInput");
-    const message = messageInput.value.trim();
-    
-    if (!message) return;
-    
-    const user = firebase.auth().currentUser;
-    
-    if (!user) {
-        alert("Please log in to send messages");
-        return;
-    }
-    
-    // Add message to Firestore
-    db.collection("messages").add({
-        text: message,
-        userId: user.uid,
-        userName: user.displayName || 'Anonymous',
-        timestamp: firebase.firestore.Timestamp.now()
-    })
-    .then(() => {
-        messageInput.value = '';
-        console.log("Message sent successfully");
-    })
-    .catch((error) => {
-        console.error("Error sending message: ", error);
-        alert("Failed to send message. Please try again.");
-    });
-}
-
-// File upload handler
-async function handleFileUpload(event) {
-    event.preventDefault();
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const user = firebase.auth().currentUser;
-    if (!user) {
-        alert("Please log in to upload files");
-        return;
-    }
-
-    try {
-        // Loading state
-        const loadingDiv = document.createElement('div');
-        loadingDiv.className = 'loading-message';
-        loadingDiv.textContent = 'Uploading...';
-        document.getElementById('messageContainer').appendChild(loadingDiv);
-
-        // Create storage reference
-        const storageRef = firebase.storage().ref();
-        const fileRef = storageRef.child(`uploads/${user.uid}/${Date.now()}_${file.name}`);
-        
-        // Upload file
-        await fileRef.put(file);
-        const downloadURL = await fileRef.getDownloadURL();
-
-        // Add message to Firestore
-        await db.collection("messages").add({
-            userId: user.uid,
-            userName: user.displayName || 'Anonymous',
-            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-            fileUrl: downloadURL,
-            fileName: file.name,
-            fileType: file.type,
-            text: ''
-        });
-
-        // Remove loading indicator
-        loadingDiv.remove();
-        console.log("File uploaded successfully");
-    } catch (error) {
-        console.error("Error uploading file:", error);
-        alert("Failed to upload file. Please try again.");
-    }
-}
-
-// Make functions globally available
-window.sendMessage = sendMessage;
-window.handleFileUpload = handleFileUpload;
-
-// Event listeners for message input and file upload
-document.addEventListener('DOMContentLoaded', () => {
+    // File upload handlers
     const imageUpload = document.getElementById('imageUpload');
     const documentUpload = document.getElementById('documentUpload');
     
@@ -363,8 +356,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-document.getElementById("imageUpload")?.addEventListener("change", handleFileUpload);
-document.getElementById("documentUpload")?.addEventListener("change", handleFileUpload);
+// Make functions globally available
+window.sendMessage = sendMessage;
+window.handleFileUpload = handleFileUpload;
 
 // Authentication state observer
 firebase.auth().onAuthStateChanged((user) => {
@@ -372,7 +366,6 @@ firebase.auth().onAuthStateChanged((user) => {
         currentUser = user;
         console.log("Logged in user:", user.displayName);
         loadMessages();
-        listenToTypingStatus();
     } else {
         const messageContainer = document.getElementById("messageContainer");
         messageContainer.innerHTML = '<div class="message">Please log in to use the chat</div>';
