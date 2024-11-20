@@ -1,0 +1,8 @@
+#back-btn {
+    margin-top: 1.2%;
+    font-size: 250%;
+    position: absolute;
+    z-index: 999;
+    color: white;
+    cursor: pointer;
+}

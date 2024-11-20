@@ -1,114 +1,142 @@
-console.log("userProfile.js loaded");
+console.log("profile.js loaded");
 
-// DOM Elements: User info, Profile Pictures
-const nameAgeLocationElement = document.querySelector(".profile-info h2");
-const hobbiesElement = document.querySelector(".hobbies-section p");
-const userProfilePicture = document.getElementById("user-profile-image");
-const dogIcon = document.getElementById("dog-icon");
-
-// Load Profile Contents
+// Load user profile data from Firestore
 function loadProfile(userId) {
-    db.collection("profiles")
+    db.collection("users")
         .doc(userId)
+        .collection("userProfile")
+        .doc("profile")
         .get()
         .then((doc) => {
             if (doc.exists) {
-                const data = doc.data();
-
-                // Load user profile picture
-                const savedPicture = localStorage.getItem("userProfilePicture");
-                if (savedPicture) {
-                    userProfilePicture.src = savedPicture;
-                    console.log("Using user profile picture from localStorage.");
-                } else if (data.profilePicture === "localStorage") {
-                    const localImage = localStorage.getItem("userProfilePicture");
-                    userProfilePicture.src = localImage || "./styles/images/defaultprofile.png";
-                    console.log("Using local image reference for user profile picture.");
-                } else if (data.profilePicture) {
-                    // Reference from Firestore
-                    userProfilePicture.src = data.profilePicture;
-                    console.log("Using Firestore reference for user profile picture.");
-                } else {
-                    // Default Image
-                    userProfilePicture.src = "./styles/images/defaultprofile.png";
-                    console.log("Using default user profile picture.");
-                }
-
-                // Populate name, age, location
-                const name = data.name || "Name";
-                const age = data.age ? `, ${data.age}` : "";
-                const location = data.location ? `, ${data.location}` : "";
-                nameAgeLocationElement.textContent = `${name}${age}${location}`;
-
-                // Populate hobbies and interests
-                hobbiesElement.textContent = data.interests || "No interests specified.";
-
-                console.log("Profile data loaded:", data);
+                updateProfile(doc.data());
             } else {
                 console.log("No profile data found for this user.");
             }
         })
         .catch((error) => {
-            console.error("Error loading profile data:", error);
+            console.error("Error loading profile:", error);
         });
 }
 
-// Load Dog Icon
-function loadDogIcon() {
-    const savedPicture = localStorage.getItem("dogProfilePicture");
-    if (savedPicture) {
-        dogIcon.src = savedPicture;
-        console.log("Dog icon updated from localStorage:", savedPicture);
-    } else {
-        dogIcon.src = "./styles/images/defaultdog.jpg";
-        console.log("Using default dog profile picture.");
-    }
+// Update the profile UI with loaded data
+function updateProfile(data) {
+    const nameAgeLocationElement = document.querySelector(".profile-info h2");
+    const hobbiesElement = document.querySelector(".hobbies-section p");
+    const userProfilePicture = document.getElementById("user-profile-image");
+
+    const savedPicture = localStorage.getItem("userProfilePicture");
+    userProfilePicture.src =
+        savedPicture || data.profilePicture || "./styles/images/defaultprofile.png";
+
+    const name = data.name || "Name";
+    const age = data.age ? `, ${data.age}` : "";
+    const location = data.location ? `, ${data.location}` : "";
+    nameAgeLocationElement.textContent = `${name}${age}${location}`;
+
+    hobbiesElement.textContent = data.interests || "No interests specified.";
 }
 
-// Load profile and dog icon when page loads
-window.onload = function () {
-    auth.onAuthStateChanged((user) => {
-        if (user) {
-            loadProfile(user.uid);
-            loadDogIcon();
-        } else {
-            console.log("No user is signed in");
-        }
-    });
-};
+// Load dog profiles dynamically
+function loadDogProfiles(userId) {
+    const dogProfilesContainer = document.getElementById("dog-profiles");
+    db.collection("users")
+        .doc(userId)
+        .collection("dogprofiles")
+        .get()
+        .then((snapshot) => {
+            if (!snapshot.empty) {
+                dogProfilesContainer.innerHTML = "";
+                snapshot.forEach((doc) => {
+                    const dog = doc.data();
+                    addDogProfileToPage(doc.id, dog);
+                });
+            } else {
+                dogProfilesContainer.innerHTML =
+                    "<p>No dogs added yet. Click 'Add Dog' to create a profile for your dog.</p>";
+            }
+        })
+        .catch((error) => {
+            console.error("Error loading dog profiles:", error);
+        });
+}
 
-document.addEventListener("DOMContentLoaded", function () {
-    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
-        const postContainer = document.querySelector(".post-gallery");
-        postContainer.innerHTML = "";
+// Adds dog profile to page
+function addDogProfileToPage(dogId, dog) {
+    const dogProfilesContainer = document.getElementById("dog-profiles");
+    const dogCardHTML = `
+        <div class="dog-card">
+            <img src="${dog.profilePicture || './styles/images/defaultdog.jpg'}" alt="${dog.dogname}'s Profile">
+            <h5>${dog.dogname || "No Name"}</h5>
+            <p>Age: ${dog.age || "N/A"}</p>
+            <p>Breed: ${dog.breed || "N/A"}</p>
+            <p>Size: ${dog.size || "N/A"}</p>
+            <a href="dog_profile.html?dogID=${dogId}">View Profile</a>
+        </div>
+    `;
+    dogProfilesContainer.innerHTML += dogCardHTML;
+}
 
-        snapshot.forEach(doc => {
-            const playdate = doc.data();
-            const currentTime = new Date();
-            const playdateTime = new Date(playdate.datetime);
-            const post = document.createElement("div");
-            if (currentTime < playdateTime) {
-                post.classList.add("post");
-                post.innerHTML = `
-                <div class="post">
-                    <div class="post-image">
-                        <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
-                    </div>
-                    <div class="post-text">
-                        <h3>${playdate.title}</h3>
-                        <p>${playdate.description}</p>
-                        <p>${playdate.address}</p>
-                        <p>${new Date(playdate.datetime).toLocaleString()}>
-                    </div>
-                </div>`;
+// Load playdate posts dynamically
+function loadPlaydates(userId) {
+    const postContainer = document.querySelector(".post-gallery");
+    db.collection("users")
+        .doc(userId)
+        .collection("userPlaydates")
+        .orderBy("createdAt", "desc")
+        .onSnapshot((snapshot) => {
+            postContainer.innerHTML = ""; // Clears the container
+            snapshot.forEach((doc) => {
+                const playdate = doc.data();
+                const currentTime = new Date();
+                const playdateTime = new Date(playdate.datetime);
+
+                if (currentTime < playdateTime) {
+                    const post = createPlaydatePost(playdate);
                     postContainer.appendChild(post);
-            }
-            else {
-                db.collection("playdates").doc(doc.id).delete()
-                    .catch((error) => {
-                        console.error("Error removing expired playdate: ", error);
-                    });
-            }
+                } else {
+                    // Remove expired playdates from collection
+                    db.collection("playdates").doc(playdate.globalPlaydateId).delete();
+                    db.collection("users")
+                        .doc(userId)
+                        .collection("userPlaydates")
+                        .doc(doc.id)
+                        .delete();
+                }
+            });
         });
-    });
+}
+
+// Create a playdate post element
+function createPlaydatePost(playdate) {
+    const post = document.createElement("div");
+    post.classList.add("post");
+    post.innerHTML = `
+        <div class="post">
+            <div class="post-image">
+                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" id="profile-post-img" alt="post placeholder">
+            </div>
+            <div class="post-text">
+                <h3>${playdate.title}</h3>
+                <p>${playdate.description}</p>
+                <p>${playdate.address}</p>
+                <p>${new Date(playdate.datetime).toLocaleString()}</p>
+            </div>
+        </div>`;
+    return post;
+}
+
+// Does all functions
+function doAll(userId) {
+    loadProfile(userId);
+    loadDogProfiles(userId);
+    loadPlaydates(userId);
+}
+
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        doAll(user.uid);
+    } else {
+        console.log("No user is signed in.");
+    }
 });

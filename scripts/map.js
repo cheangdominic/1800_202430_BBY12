@@ -14,7 +14,11 @@ const geolocate = new mapboxgl.GeolocateControl({
     trackUserLocation: true,
     showUserHeading: true
 });
-map.addControl(geolocate, 'bottom-right');
+map.addControl(geolocate, 'top-left');
+
+map.on('load', () => {
+    geolocate.trigger();
+});
 
 const coordinatesGeocoder = function (query) {
     const matches = query.match(
@@ -85,7 +89,7 @@ map.on('click', async (event) => {
 
     currentMarker = new mapboxgl.Marker({
         color: "#00008B",
-        draggable: true
+        draggable: false
     })
     .setLngLat(coordinates)
     .setPopup(new mapboxgl.Popup().setText(address))

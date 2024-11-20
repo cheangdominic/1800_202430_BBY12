@@ -1,52 +1,69 @@
 console.log("dogProfile.js loaded");
 
-auth.onAuthStateChanged((user) => {
-    if (user) {
-        loadDogProfile(user.uid); 
-    } else {
-        alert("Please log in to view your dog's profile.");
-    }
-});
-
-window.onload = function () {
-    const savedPicture = localStorage.getItem("dogProfilePicture");
-
-    console.log("Saved Picture in LocalStorage:", savedPicture);
-    if (savedPicture) {
-        document.getElementById("dog-profile-picture").src = savedPicture;
-    } else {
-        document.getElementById("dog-profile-picture").src = "./styles/images/defaultdog.jpg";
-        console.log("No saved profile picture found. Using default image.");
-    }
-};
-
-function loadDogProfile(userId) {
-    db.collection('users')
+// Load the dog's profile data from Firestore
+function loadDogProfile(userId, dogID) {
+    db.collection("users")
         .doc(userId)
-        .collection('dogprofiles')
-        .doc('dog') 
+        .collection("dogprofiles")
+        .doc(dogID)
         .get()
         .then((doc) => {
             if (doc.exists) {
-                const data = doc.data();
-
-                // Determine which picture to use
-                const savedPicture = localStorage.getItem("dogProfilePicture");
-                const profilePicture = savedPicture || data.profilePicture || "./styles/images/defaultdog.jpg";
-
-                // Assign the determined picture
-                document.getElementById("dog-profile-picture").src = profilePicture;
-
-                // Populate text fields
-                document.getElementById("dog-name").textContent = data.dogname || "Unknown";
-                document.getElementById("dog-age").textContent = data.age || "Unknown";
-                document.getElementById("dog-size").textContent = data.size || "Unknown";
-                document.getElementById("dog-breed").textContent = data.breed || "Unknown";
-
-                console.log("Dog profile loaded:", data);
+                populateDogProfile(doc.data(), dogID);
             } else {
-                console.log("No dog profile found in Firestore. Using defaults.");
-                document.getElementById("dog-profile-picture").src = "./styles/images/defaultdog.jpg";
+                console.error("Dog profile not found.");
             }
         })
+        .catch((error) => {
+            console.error("Error loading dog profile:", error);
+            alert("Failed to load dog profile.");
+        });
 }
+
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", (event) => {
+        redirectToPage("profile.html");
+    });
+});
+
+// Populate the page with the dogprofile data from Firestore
+function populateDogProfile(data, dogID) {
+    document.getElementById("dog-name").textContent = data.dogname || "Unknown";
+    document.getElementById("dog-picture").src = data.profilePicture || "./styles/images/defaultdog.jpg";
+    document.getElementById("dog-age").textContent = data.age || "Unknown";
+    document.getElementById("dog-breed").textContent = data.breed || "Unknown";
+    document.getElementById("dog-size").textContent = data.size || "Unknown";
+
+    // Dog profile picture styling
+    const dogPicture = document.getElementById("dog-picture");
+    dogPicture.style.maxWidth = "500px";
+    dogPicture.style.height = "auto";
+    dogPicture.style.margin = "0 auto";
+    dogPicture.style.borderRadius = "10px";
+
+    // Edit dog profile link
+    document.getElementById("edit-dog-profile").href = `edit_dog_profile.html?dogID=${dogID}`;
+
+    console.log("Dog profile loaded successfully:", data);
+}
+
+// Does all functions
+function doAll(userId) {
+    const params = new URLSearchParams(window.location.search);
+    const dogID = params.get("dogID");
+
+    if (!dogID) {
+        alert("No dog ID provided in the URL.");
+        return;
+    }
+
+    loadDogProfile(userId, dogID);
+}
+
+auth.onAuthStateChanged((user) => {
+    if (user) {
+        doAll(user.uid);
+    } else {
+        alert("Log in to view dog's profile.");
+    }
+});

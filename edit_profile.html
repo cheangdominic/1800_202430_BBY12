@@ -37,6 +37,7 @@
        <!-- Link to styles of your own -->
        <link rel="stylesheet" href="./styles/loggedin.css">
        <link rel="stylesheet" href="./styles/styles.css">
+       <link rel="stylesheet" href="./styles/editprofile.css">
        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
@@ -45,7 +46,11 @@
 </head>
 <body>
     <div class="container">
-        <div class="header">Edit Profile</div>
+        <nav id="navbarPlaceholder"></nav>
+        <div class="header-wrapper">
+            <i id='back-btn' class='bx bx-left-arrow-alt'></i>
+            <div class="header">Edit Profile</div>
+        </div>
         <div class="profile-pic">
             <img id="userProfilePicturePreview" src="./styles/images/default-user.png" alt="Profile Picture">
             <input type="file" id="userProfilePictureInput" accept="image/*" style="display:none;">

@@ -27,7 +27,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script> 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
 
@@ -55,16 +55,13 @@
         <!-- Top Section -->
         <div class="header">Profile
             <div class="pet-icons">
-                <a href="dog_profile.html" class="pet-icon" title="Pet 1 Profile">
-                    <img id="dog-icon" src="/styles/images/defaultdog.jpg" alt="Small Dog Profile Icon">
-                </a>
-                <a href="create_doggo.html" class="pet-icon" title="Add a Dog?">
-                    <img src="./styles/images/plus-icon-21715.png">
-                </a>
+                <div class="pet-icon-add">
+                    <a href="create_doggo.html" class="btn btn-warning">Add Dog</a>
+                </div>
             </div>
         </div>
 
-        <!-- Profile Section -->
+        <!-- Profile Section -->          
         <div class="profile-section">
             <div class="profile-picture">
                 <img id="user-profile-image" src="/styles/images/defaultprofile.png" alt="User Profile Picture">
@@ -77,6 +74,14 @@
                 <a href="manage_posts.html" class="btn">Manage My Posts</a>
             </div>
         </div>
+
+        <!-- Dog Profiles Section -->
+    <div class="dog-profile-container">
+        <h3>Your Dogs</h3>
+        <div id="dog-profiles" class="d-flex flex-wrap gap-3">
+          <!-- Dog profile cards will be dynamically populated here -->
+        </div>
+      </div>
 
         <!-- Hobbies & Interests Section -->
         <div class="hobbies-section">

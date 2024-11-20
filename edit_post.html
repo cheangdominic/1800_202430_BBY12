@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Edit Dog Profile</title>
+    <title>UpDog</title>
     <meta name="comp1800 template" content="My 1800 App">
 
     <!------------------------>
@@ -30,6 +30,7 @@
     <script src="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.js"></script> 
     <link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.8.1/firebase-ui-auth.css" />
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.7.0/mapbox-gl.js"></script>
 
     <!-------------------------------------------->
     <!-- Other libraries and styles of your own -->
@@ -37,63 +38,56 @@
        <!-- Link to styles of your own -->
        <link rel="stylesheet" href="./styles/loggedin.css">
        <link rel="stylesheet" href="./styles/styles.css">
-       <link rel="stylesheet" href="./styles/editdogprofile.css">
        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
-    <link rel="stylesheet" href="./styles/profile.css">
 
 </head>
+
 <body>
-    <div class="container">
-        <nav id="navbarPlaceholder"></nav>
-        <div class="header-wrapper">
-            <i id='back-btn' class='bx bx-left-arrow-alt'></i>
-            <div class="header">Edit Dog Profile</div>
-        </div>
+  <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.min.js"></script>
+  <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v5.0.3/mapbox-gl-geocoder.css" type="text/css">
 
-        <!-- Profile Picture Section -->
-        <div class="profile-pic">
-            <img id="dogProfilePicturePreview" src="/styles/images/defaultdog.jpg" alt="Selected Dog" class="preview-large">
-            <button class="change-picture-button">
-                <label for="dogProfilePictureInput">Change Picture</label>
-            </button>
-            <input type="file" id="dogProfilePictureInput" accept="image/*" style="display: none;">
-        </div>
+    <!------------------------------>
+    <!-- Your HTML Layout go here -->
+    
+    <!-- our own navbar goes here -->
+    <nav id="navbarPlaceholder"></nav>
+    
+    <div class="form">
+      <h1>Edit Post</h1>
 
-        <!-- Form Section -->
-        <div class="form">
-            <h3>Edit Dog Profile</h3>
-            
-            <!-- Dog Name -->
-            <label for="dogNameInput">Name</label>
-            <input type="text" id="dogNameInput" placeholder="Enter your dog's name">
-        
-            <!-- Dog Age -->
-            <label for="dogAgeInput">Age</label>
-            <input type="text" id="dogAgeInput" placeholder="Enter your dog's age">
-        
-            <!-- Dog Size -->
-            <label for="dogSizeInput">Size</label>
-            <select class="form-select" id="dogSizeInput" required>
-                <option value="">Select your dog's size</option>
-                <option value="Small">Small</option>
-                <option value="Medium">Medium</option>
-                <option value="Large">Large</option>
-              </select>
-        
-            <!-- Dog Breed -->
-            <label for="dogBreedInput">Breed</label>
-            <input type="text" id="dogBreedInput" placeholder="Enter your dog's breed">
+      <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Playdate Title" aria-label="Playdate Title">
+      </div>
 
-            <div class="update-button">
-                <button id="updateDogProfileBtn" class="btn btn-dark">Update</button>
-                <a id="returnDogProfileBtn" class="btn btn-secondary">Return to Dog Profile</a>
-            </div>
-        </div>
+      <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Park Address</span>
+        <div id="geocoder"></div>
+        <pre id="result"></pre>
+      </div>
+
+      <div class="input-group">
+        <span class="input-group-text">Start Date</span>
+        <input type="datetime-local" id="playdate-datetime"/>
     </div>
 
+      <div class="input-group">
+        <span class="input-group-text">Description</span>
+        <textarea class="form-control" aria-label="With textarea"></textarea>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button class="btn btn-warning" type="button" onclick="saveEditedPlaydate()">Save Changes</button>
+      </div>
+    </div>
+    
+
+
+    <!-- the body of your page goes here -->
     <nav id="bottomNavbarPlaceholder"></nav>
+    
+    <!-- stuff -->
 
     <!-- our own footer goes here-->
     <nav id="footerPlaceholder"></nav>
@@ -104,6 +98,12 @@
     <script src="./scripts/firebaseAPI_UpDog.js"></script>
     <script src="./scripts/skeleton.js"></script>
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/editdogprofile.js"></script>
+    <script src="./scripts/main.js"></script>
+    <script src="./scripts/dateofplaydate.js"></script>
+    <script src="./scripts/editpost.js"></script>
+    <script src="./scripts/autoaddress.js"></script>
+
+
 </body>
+
 </html>

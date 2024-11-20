@@ -37,6 +37,7 @@
        <!-- Link to styles of your own -->
        <link rel="stylesheet" href="./styles/loggedin.css">
        <link rel="stylesheet" href="./styles/styles.css">
+       <link rel="stylesheet" href="./styles/managepost.css">
        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
@@ -48,6 +49,7 @@
             <nav id="navbarPlaceholder"></nav>
             <!-- Header Section -->
             <div class="header-wrapper">
+                <i id='back-btn' class='bx bx-left-arrow-alt'></i>
                 <div class="header">Manage My Posts</div>
             </div>
     
@@ -57,7 +59,7 @@
 
             <!-- TODO: Add JS Function to Add Posts-->
             <div class="add-post-button">
-                <button onclick="addNewPost()">New Post</button>
+                <button class="addpost" onclick="redirectToPage('postcreate.html')">New Post</button>
             </div>
 
             <div class="post-gallery">
@@ -88,6 +90,8 @@
             </div>
         </div>
     
+        <nav id="bottomNavbarPlaceholder"></nav>
+        
         <!-- our own footer goes here-->
         <nav id="footerPlaceholder"></nav>
         <script src="./scripts/firebaseAPI_UpDog.js"></script>

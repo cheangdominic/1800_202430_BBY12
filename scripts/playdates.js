@@ -20,6 +20,7 @@ function savePlaydate() {
 
             playdateTitle = capitalizeEachWord(playdateTitle.trim());
 
+            // Save to global collection first
             db.collection("playdates").add({
                 title: playdateTitle,
                 description: playdateDescription || "",
@@ -27,30 +28,39 @@ function savePlaydate() {
                 datetime: playdateDatetime,
                 createdAt: firebase.firestore.FieldValue.serverTimestamp(),
                 userId: userId
-            })
-                .then(() => {
-                    console.log("Playdate saved globally!");
-                    alert("Playdate saved successfully!");
-                    document.querySelector('.form-control[placeholder="Playdate Title"]').value = "";
-                    document.querySelector('.form-control[aria-label="With textarea"]').value = "";
-                    selectedAddress = "";
-                    geocoder.clear();
-                })
-                .catch(error => {
-                    console.error("Error saving playdate: ", error);
+            }).then((playdate) => {
+                const globalPlaydateId = playdate.id;
+
+                return db.collection("users").doc(userId).collection("userPlaydates").add({
+                    title: playdateTitle,
+                    description: playdateDescription || "",
+                    address: selectedAddress,
+                    datetime: playdateDatetime,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    userId: userId,
+                    globalPlaydateId: globalPlaydateId
                 });
+            }).then(() => {
+                console.log("Playdate saved globally and in user collection!");
+                alert("Playdate saved successfully!");
+                document.querySelector('.form-control[placeholder="Playdate Title"]').value = "";
+                document.querySelector('.form-control[aria-label="With textarea"]').value = "";
+                selectedAddress = "";
+                geocoder.clear();
+                redirectToPage('main.html');
+            }).catch(error => {
+                console.error("Error saving playdate: ", error);
+            });
         } else {
             if (selectedAddress.trim() == "" && playdateDatetime.trim() == "") {
-                console.error("Playdate address, and date cannot be empty.")
-                alert("A place, date and time must be submitted.")
-            }
-            else if (playdateDatetime.trim() == "") {
-                console.error("The date cannot be empty.")
-                alert("A date and time must be submitted.")
-            }
-            else {
-                console.error("The address cannot be empty.")
-                alert("An address must be submitted.")
+                console.error("Playdate address, and date cannot be empty.");
+                alert("A place, date, and time must be submitted.");
+            } else if (playdateDatetime.trim() == "") {
+                console.error("The date cannot be empty.");
+                alert("A date and time must be submitted.");
+            } else {
+                console.error("The address cannot be empty.");
+                alert("An address must be submitted.");
             }
         }
     } else {

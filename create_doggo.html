@@ -50,56 +50,50 @@
             <div class="header">Add New Dog</div>
         </div>
 
-        <div class="profile-pic">
-            <img id="dog-profile-picture" src="https://via.placeholder.com/100" alt="Dog Profile Picture">
-            <button class="change-picture-button">Upload Image</button>
-        </div>
-
-        <!-- Dog Information Form -->
-        <div class="dog-info-form">
-            <form id="add-dog-form">
-                <div class="form-group">
-                    <label for="dog-name">Name</label>
-                    <input type="text" id="dog-name" placeholder="Enter your dog's name" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dog-age">Age</label>
-                    <input type="text" id="dog-age" placeholder="Enter your dog's age" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dog-breed">Breed</label>
-                    <input type="text" id="dog-breed" placeholder="Enter your dog's breed" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dog-size">Size</label>
-                    <select id="dog-size" required>
-                        <option value="">Select size</option>
-                        <option value="Small">Small</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Large">Large</option>
-                    </select>
-                </div>
-                
-                <div class="form-group">
-                    <label for="dog-description">Description</label>
-                    <textarea id="dog-description" placeholder="Enter a brief description for your dog" rows="3" required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="submit-button">Add Dog</button>
-                </div>
+        <div class="container mt-5">
+            <h1 class="text-center">Add Your Dog</h1>
+            <form id="dog-form">
+              <div class="mb-3">
+                <label for="dog-name" class="form-label">Dog Name</label>
+                <input type="text" class="form-control" id="dog-name" placeholder="Enter your dog's name" required>
+              </div>
+              <div class="mb-3">
+                <label for="dog-age" class="form-label">Dog Age</label>
+                <input type="number" class="form-control" id="dog-age" placeholder="Enter your dog's age" required>
+              </div>
+              <div class="mb-3">
+                <label for="dog-breed" class="form-label">Dog Breed</label>
+                <input type="text" class="form-control" id="dog-breed" placeholder="Enter your dog's breed" required>
+              </div>
+              <div class="mb-3">
+                <label for="dog-size" class="form-label">Dog Size</label>
+                <select class="form-select" id="dog-size" required>
+                  <option value="">Select your dog's size</option>
+                  <option value="Small">Small</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Large">Large</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="dog-image" class="form-label">Dog Profile Picture</label>
+                <input type="file" class="form-control" id="dog-image" accept="image/*" required>
+              </div>
+              <button type="submit" class="btn btn-primary w-100">Add Dog</button>
             </form>
-        </div>
-    </div>
+          </div>
 
     <nav id="bottomNavbarPlaceholder"></nav>
     
         <!-- our own footer goes here-->
         <nav id="footerPlaceholder"></nav>
 
-        <script src="./scripts/profile.js"></script>
+        <!---------------------------------------------->
+        <!-- Your own JavaScript functions go here    -->
+        <!---------------------------------------------->
+        <script src="./scripts/firebaseAPI_UpDog.js"></script>
+        <script src="./scripts/skeleton.js"></script>
+        <script src="./scripts/script.js"></script>
+        <script src="./scripts/main.js"></script>
+        <script src="./scripts/create_doggo.js"></script>
 </body>
 </html>

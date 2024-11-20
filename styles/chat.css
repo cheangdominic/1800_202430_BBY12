@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /* Base container styles */
 body {
     margin: 0;
@@ -17,10 +18,26 @@ body {
 
 /* Header styles */
 .header-container {
+=======
+/* Container for both message container and input container */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f7fb;
+    overflow-x: hidden; /* 横スクロール防止 */
+}
+.header {
+    background: linear-gradient(135deg, #deee4a 0%, #52c0ff 100%);
+    padding: 1rem;
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
     position: fixed;
     top: 60px;
     left: 0;
     right: 0;
+<<<<<<< HEAD
     display: flex;
     align-items: center;
     padding: 1rem;
@@ -53,6 +70,9 @@ body {
 
 .back-button i {
     font-size: 24px;
+=======
+    z-index: 99;
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
 }
 
 .header h1 {
@@ -60,6 +80,7 @@ body {
     font-size: 1.5rem;
     font-weight: 600;
 }
+<<<<<<< HEAD
 
 /* Message container styles */
 .message-container {
@@ -70,6 +91,40 @@ body {
     background-color:#ffffff;
     margin-bottom: 0px;
     padding-bottom: 60px;
+=======
+.messageContainer{
+    flex: 1; 
+    display: flex;
+    flex-direction: column;
+}
+.message-container {
+    flex:1 ;
+    margin: 1.5rem auto;
+    margin-top: 90px;
+    margin-bottom: 80px; 
+    padding: 20px;
+    padding-bottom: 100px; 
+    background-color: white;
+    border-radius: 20px;
+    height: calc(100vh - 280px);
+    overflow-y: auto;
+    width: 90%;
+    max-width: 1000px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.message-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.message-container::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.message-container::-webkit-scrollbar-thumb {
+    background: #6d63ff;
+    border-radius: 3px;
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
 }
 
 .message {
@@ -132,6 +187,7 @@ body {
 /* Input container styles */
 .input-container {
     position: fixed;
+<<<<<<< HEAD
     bottom: 0;
     left: 0;
     right: 0;
@@ -142,6 +198,21 @@ body {
     box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     gap: 8px;
     height: 60px; 
+=======
+    bottom: 70px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 960px;
+    background-color: white;
+    padding: 16px;
+    border-radius: 20px;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 100;
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
     box-sizing: border-box;
 }
 
@@ -387,8 +458,32 @@ body {
 
 /* Responsive styles */
 @media (max-width: 768px) {
+<<<<<<< HEAD
     .header h1 {
         font-size: 1.25rem;
+=======
+    .message-container {
+        width: 95%;
+        margin: 1rem auto;
+        margin-top: 70px;
+        padding: 15px;
+        padding-bottom: 90px; 
+        height: calc(100vh - 220px);
+    }
+
+    .header {
+        padding: 0.8rem;
+    }
+    
+    .header h1 {
+        font-size: 1.4rem;
+    }
+
+    .message-container {
+        margin-bottom: 70px;
+        padding: 15px;
+        border-radius: 15px;
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
     }
 
     .message_box {
@@ -405,7 +500,14 @@ body {
     }
 
     .input-container {
+<<<<<<< HEAD
         padding: 0.75rem;
+=======
+        width: calc(100% - 20px);
+        padding: 12px;
+        bottom: 60px;
+        border-radius: 15px;
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
     }
 
     #messageInput {
@@ -418,4 +520,30 @@ body {
         width: 36px;
         height: 36px;
     }
+<<<<<<< HEAD
+=======
+
+    .image-attachment {
+        max-width: 200px;
+    }
+
+    .chat-wrapper {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+        padding-top: 80px;
+        box-sizing: border-box;
+    }
+}
+.loading-dots span:nth-child(1) { animation-delay: -0.32s; }
+.loading-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes bounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+>>>>>>> 9dff4daeda1b373ecac342e6b317d9cc05dcdad3
 }

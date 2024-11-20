@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Edit Dog Profile</title>
+    <title>Public Profile</title>
     <meta name="comp1800 template" content="My 1800 App">
 
     <!------------------------>
@@ -37,63 +37,73 @@
        <!-- Link to styles of your own -->
        <link rel="stylesheet" href="./styles/loggedin.css">
        <link rel="stylesheet" href="./styles/styles.css">
-       <link rel="stylesheet" href="./styles/editdogprofile.css">
        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
-    <!-- <link rel="stylesheet" href="./styles/style.css"> -->
-    <link rel="stylesheet" href="./styles/profile.css">
+    <link rel="stylesheet" href="./styles/publicprofile.css">
 
 </head>
+
 <body>
-    <div class="container">
-        <nav id="navbarPlaceholder"></nav>
-        <div class="header-wrapper">
-            <i id='back-btn' class='bx bx-left-arrow-alt'></i>
-            <div class="header">Edit Dog Profile</div>
-        </div>
 
-        <!-- Profile Picture Section -->
-        <div class="profile-pic">
-            <img id="dogProfilePicturePreview" src="/styles/images/defaultdog.jpg" alt="Selected Dog" class="preview-large">
-            <button class="change-picture-button">
-                <label for="dogProfilePictureInput">Change Picture</label>
-            </button>
-            <input type="file" id="dogProfilePictureInput" accept="image/*" style="display: none;">
-        </div>
+    <!------------------------------>
+    <!-- Your HTML Layout go here -->
+    
+    <!-- our own navbar goes here -->
+    <nav id="navbarPlaceholder"></nav>
 
-        <!-- Form Section -->
-        <div class="form">
-            <h3>Edit Dog Profile</h3>
-            
-            <!-- Dog Name -->
-            <label for="dogNameInput">Name</label>
-            <input type="text" id="dogNameInput" placeholder="Enter your dog's name">
-        
-            <!-- Dog Age -->
-            <label for="dogAgeInput">Age</label>
-            <input type="text" id="dogAgeInput" placeholder="Enter your dog's age">
-        
-            <!-- Dog Size -->
-            <label for="dogSizeInput">Size</label>
-            <select class="form-select" id="dogSizeInput" required>
-                <option value="">Select your dog's size</option>
-                <option value="Small">Small</option>
-                <option value="Medium">Medium</option>
-                <option value="Large">Large</option>
-              </select>
-        
-            <!-- Dog Breed -->
-            <label for="dogBreedInput">Breed</label>
-            <input type="text" id="dogBreedInput" placeholder="Enter your dog's breed">
+    <header>
+        <h1 id="profile-name">User's Name</h1>
+      </header>
+    
+      <main>
+        <section id="profile-section">
+          <!-- Profile Picture -->
+          <div class="profile-image-container">
+            <img id="profile-image" src="placeholder.jpg" alt="Profile Picture">
+          </div>
+    
+          <!-- Basic User Information -->
+          <div class="user-info">
+            <p><strong>Age:</strong> <span id="profile-age"></span>Loading...</p>
+            <p><strong>Location:</strong> <span id="profile-location">Loading...</span></p>
+            <p><strong>Interests:</strong> <span id="profile-interests">Loading...</span></p>
+          </div>
+        </section>
+    
+        <hr>
+    
+        <section id="dog-section">
+          <h2>Dog Information</h2>
+          <!-- Dog Details -->
+          <p><strong>Name:</strong> <span id="dog-name">Loading...</span></p>
+          <p><strong>Age:</strong> <span id="dog-age">Loading...</span></p>
+          <p><strong>Breed:</strong> <span id="dog-breed">Loading...</span></p>
+          <p><strong>Size:</strong> <span id="dog-size">Loading...</span></p>   
+        </section>
+      </main>
 
-            <div class="update-button">
-                <button id="updateDogProfileBtn" class="btn btn-dark">Update</button>
-                <a id="returnDogProfileBtn" class="btn btn-secondary">Return to Dog Profile</a>
+    <!-- the body of your page goes here -->
+
+    <nav class="navbar fixed-bottom bg-body-tertiary">
+        <div class="bottom-navbar-icons">
+            <div class="home">
+                <a class="navbar-brand" href="main.html"><i class='bx bxs-home'></i></a>
+            </div>
+            <div class="map-icon">
+                <a class="navbar-brand" href="maps.html"><i class='bx bxs-map-alt'></i></a>
+            </div>
+            <div class="post-icon">
+                <a class="navbar-brand" href="postcreate.html"><i class='bx bxs-plus-square'></i></a>
+            </div>
+            <div class="people-icon">
+                <a class="navbar-brand" href="friends.html"><i class='bx bxs-user-plus'></i></a>
+            </div>
+            <div class="chat-icon">
+                <a class="navbar-brand" href="chat.html"><i class='bx bxs-chat'></i></a>
             </div>
         </div>
-    </div>
-
-    <nav id="bottomNavbarPlaceholder"></nav>
+    </nav>
+    <!-- stuff -->
 
     <!-- our own footer goes here-->
     <nav id="footerPlaceholder"></nav>
@@ -104,6 +114,9 @@
     <script src="./scripts/firebaseAPI_UpDog.js"></script>
     <script src="./scripts/skeleton.js"></script>
     <script src="./scripts/script.js"></script>
-    <script src="./scripts/editdogprofile.js"></script>
+    <script src="./scripts/main.js"></script>
+    <script src="./scripts/public_profile.js"></script>
+
 </body>
+
 </html>
