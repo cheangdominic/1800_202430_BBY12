@@ -20,6 +20,55 @@ map.on('load', () => {
     geolocate.trigger();
 });
 
+// Load custom data to supplement the search results.
+// Custom locations will show up first, if there is a match
+const customData = {
+    'features': [{
+            'type': 'Feature',
+            'properties': {
+                'title': 'Lot 7 at BCIT'
+            },
+            'geometry': {
+                'coordinates': [-122.99934141156427, 49.249070527260315],
+                'type': 'Point'
+            }
+        },
+        {
+            'type': 'Feature',
+            'properties': {
+                'title': 'Lot N at BCIT'
+            },
+            'geometry': {
+                'coordinates': [-123.00264423718266, 49.244465504164474],
+                'type': 'Point'
+            }
+        },
+    ],
+    'type': 'FeatureCollection'
+};
+
+function customGeocoder(query) {
+    const matchingFeatures = [];
+    for (const feature of customData.features) {
+        // Handle queries with different capitalization
+        // than the source data by calling toLowerCase().
+        if (
+            feature.properties.title
+            .toLowerCase()
+            .includes(query.toLowerCase())
+        ) {
+            // Add an emoji as a prefix for custom (fun!)
+            // data results using carmen geojson format:
+            // https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+            feature['place_name'] = `🚗 ${feature.properties.title}`;
+            feature['center'] = feature.geometry.coordinates;
+            feature['place_type'] = ['park'];
+            matchingFeatures.push(feature);
+        }
+    }
+    return matchingFeatures;
+}
+
 const coordinatesGeocoder = function (query) {
     const matches = query.match(
         /^[ ]*(?:Lat: )?(-?\d+\.?\d*)[, ]+(?:Lng: )?(-?\d+\.?\d*)[ ]*$/i
@@ -62,6 +111,28 @@ const coordinatesGeocoder = function (query) {
     return geocodes;
 };
 
+function forwardGeocoder(query) {
+        const matchingFeatures = [];
+        for (const feature of customData.features) {
+            // Handle queries with different capitalization
+            // than the source data by calling toLowerCase().
+            if (
+                feature.properties.title
+                    .toLowerCase()
+                    .includes(query.toLowerCase())
+            ) {
+                // Add a tree emoji as a prefix for custom
+                // data results using carmen geojson format:
+                // https://github.com/mapbox/carmen/blob/master/carmen-geojson.md
+                feature['place_name'] = `🌲 ${feature.properties.title}`;
+                feature['center'] = feature.geometry.coordinates;
+                feature['place_type'] = ['park'];
+                matchingFeatures.push(feature);
+            }
+        }
+        return matchingFeatures;
+    }
+
 map.addControl(
     new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
@@ -72,6 +143,14 @@ map.addControl(
         reverseGeocode: true,
     }),
 );
+    // Add the MapboxGeocoder search box to the map
+    const geocoder = new MapboxGeocoder({
+        accessToken: mapboxgl.accessToken,
+        types: 'country,region,place,postcode,locality,neighborhood,address',
+        localGeocoder: forwardGeocoder, 
+        placeholder: 'Enter search e.g. Lot 7 at BCIT'
+    });
+    map.addControl(geocoder);
 
 let currentMarker;
 
