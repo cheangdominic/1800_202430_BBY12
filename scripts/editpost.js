@@ -90,7 +90,7 @@ function saveEditedPlaydate() {
                 document.querySelector('.form-control[aria-label="With textarea"]').value = "";
                 selectedAddress = "";
                 geocoder.clear();
-                redirectToPage('manage_posts.html');
+                redirectToPage('profile.html');
             }).catch(error => {
                 console.error("Error updating playdate: ", error);
             });
