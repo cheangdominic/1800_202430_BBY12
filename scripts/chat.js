@@ -6,6 +6,7 @@ function loadSkeleton() {
 loadSkeleton();
 
 let currentUser;
+const MESSAGE_LIMIT = 50;
 
 // Emoji data structure
 const emojiCategories = {
@@ -50,8 +51,12 @@ function initializeEmojiPicker() {
 function addEmojiToMessage(emoji) {
     const messageInput = document.getElementById('messageInput');
     if (messageInput) {
-        messageInput.value += emoji;
+        const start = messageInput.selectionStart;
+        const end = messageInput.selectionEnd;
+        const text = messageInput.value;
+        messageInput.value = text.substring(0, start) + emoji + text.substring(end);
         messageInput.focus();
+        messageInput.setSelectionRange(start + emoji.length, start + emoji.length);
     }
 }
 
@@ -61,8 +66,9 @@ function loadMessages() {
         .orderBy("timestamp")
         .onSnapshot((querySnapshot) => {
             const messageContainer = document.getElementById("messageContainer");
-            messageContainer.innerHTML = '';
+            if (!messageContainer) return;
             
+            messageContainer.innerHTML = '';
             let currentDate = null;
             
             querySnapshot.forEach((doc) => {
@@ -169,8 +175,6 @@ function loadMessages() {
             messageContainer.scrollTop = messageContainer.scrollHeight;
         });
 }
-
-
 
 // Load user profile picture
 async function loadUserProfilePicture(userId, messageDiv) {
