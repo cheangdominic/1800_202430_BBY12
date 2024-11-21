@@ -37,12 +37,12 @@
     float: left;
 }
 
-.bx.bxs-group {
-    cursor: pointer;
-}
-
 .bx.bxs-home, .bx.bxs-map-alt, .bx.bxs-plus-square, .bx.bxs-user-plus, .bx.bxs-chat {
     font-size: 250%;
+}
+
+.bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover {
+    color: #FFC107;
 }
 
 .bx.bxs-inbox, .bx.bxs-user-circle {

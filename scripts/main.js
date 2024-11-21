@@ -62,24 +62,39 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
                     <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-warning">Join</button>
-                    <i id="userCount-btn" class='bx bxs-group'></i>
+                    <div class="participants">
+                        <i id="userCount-btn" class='bx bxs-group'></i>
+                        <p id="participants">View Participants</p>
+                    </div>
                 </div>`;
 
                 const joinButton = post.querySelector("#join-btn");
-                joinButton.addEventListener("click", (event) => {
+                joinButton.addEventListener("click", async (event) => {
+                    const playdateRef = db.collection("playdates").doc(doc.id);
+                    const usersGoingRef = playdateRef.collection("usersGoing");
 
-                    db.collection("playdates").doc(doc.id).collection("usersGoing").add({
-                            Username: userDisplayName,
-                            UserID: userId,
-                            Email: userEmail
-                        })
+                    const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
+
+                    if (!userAlreadyJoined.empty) {
+                        alert("You have already joined this playdate!");
+                        joinButton.disabled = true;
+                        return;
+                    }
+                    usersGoingRef.add({
+                        Username: userDisplayName,
+                        UserID: userId,
+                        Email: userEmail
+                    })
                         .then(() => {
                             console.log("User added to playdate!");
+                            alert("You have successfully joined this playdate!");
+                            joinButton.disabled = true;
                         })
                         .catch((error) => {
                             console.error("Error adding user to playdate:", error);
                         });
                 });
+
 
                 const userCountButton = post.querySelector("#userCount-btn");
                 userCountButton.addEventListener("click", (event) => {

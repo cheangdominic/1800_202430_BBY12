@@ -20,7 +20,6 @@ function savePlaydate() {
 
             playdateTitle = capitalizeEachWord(playdateTitle.trim());
 
-            // Save to global collection first
             db.collection("playdates").add({
                 title: playdateTitle,
                 description: playdateDescription || "",
