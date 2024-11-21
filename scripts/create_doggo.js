@@ -51,6 +51,13 @@ function submitForm(userId) {
 
 // Save dog profile to Firestore
 function saveDogProfile(userId, dogData) {
+    let profilePicture = dogData.profilePicture || "./styles/images/defaultdog.jpg";
+
+    if (!dogData.profilePicture) {
+        localStorage.removeItem("dogProfilePicture");
+    } else if (localStorage.getItem("dogProfilePicture")) {
+        profilePicture = localStorage.getItem("dogProfilePicture");
+    }
     db.collection("users")
         .doc(userId)
         .collection("dogprofiles")
