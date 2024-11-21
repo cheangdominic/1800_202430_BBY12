@@ -74,12 +74,16 @@
     height: 40vw;
 }
 
-.brand-text{
+.brand-text {
     position: absolute;
     text-align: center;
     width: 100%;
     margin-top: 0.5%;
     font-size: 130%;
+}
+
+.brand-text img {
+    margin-left: -35px;
 }
 
 .input-group{
