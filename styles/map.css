@@ -2,7 +2,11 @@
     position: absolute;
     top: 5px;
     bottom: 5px;
-    height: 86.5%;
+    height: 90%;
     width: 100%;
     margin-top: 50px;
+}
+
+.bx.bxs-map-alt {
+    color: #FFC107;
 }

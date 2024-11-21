@@ -1,7 +1,3 @@
-#geocoder {
-    z-index: 1;
-    margin: 20px;
-}
-.mapboxgl-ctrl-geocoder {
-    min-width: 100%;
+.bx.bxs-plus-square {
+    color: #FFC107;
 }

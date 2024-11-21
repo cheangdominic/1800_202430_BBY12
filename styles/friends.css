@@ -43,6 +43,10 @@ h1:after {
     transition: transform 0.2s ease;
 }
 
+.bx.bxs-user-plus {
+    color: #FFC107; 
+}
+
 .search-section:hover {
     transform: translateY(-2px);
 }
