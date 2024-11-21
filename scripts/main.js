@@ -30,8 +30,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             if (currentTime < playdateTime) {
                 let mapImageURL = "";
-
                 let userName = "Unknown Host";
+
                 try {
                     const userDoc = await db.collection("users").doc(playdate.userId).get();
                     if (userDoc.exists) {
@@ -69,12 +69,18 @@ document.addEventListener("DOMContentLoaded", async function () {
                 </div>`;
 
                 const joinButton = post.querySelector("#join-btn");
+
+                const usersGoingRef = db.collection("playdates").doc(doc.id).collection("usersGoing");
+                const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
+
+                if (!userAlreadyJoined.empty) {
+                    joinButton.textContent = "Joined";
+                    joinButton.disabled = true;
+                }
+
                 joinButton.addEventListener("click", async (event) => {
-                    const playdateRef = db.collection("playdates").doc(doc.id);
-                    const usersGoingRef = playdateRef.collection("usersGoing");
-
                     const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
-
+                    
                     if (!userAlreadyJoined.empty) {
                         alert("You have already joined this playdate!");
                         joinButton.disabled = true;
@@ -88,6 +94,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                         .then(() => {
                             console.log("User added to playdate!");
                             alert("You have successfully joined this playdate!");
+                            joinButton.textContent = "Joined";
                             joinButton.disabled = true;
                         })
                         .catch((error) => {
@@ -95,11 +102,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                         });
                 });
 
-
                 const userCountButton = post.querySelector("#userCount-btn");
                 userCountButton.addEventListener("click", (event) => {
-
                 });
+
                 postContainer.appendChild(post);
             } else {
                 db.collection("playdates").doc(doc.id).delete()
@@ -112,6 +118,5 @@ document.addEventListener("DOMContentLoaded", async function () {
                     });
             }
         });
-
     });
 });
