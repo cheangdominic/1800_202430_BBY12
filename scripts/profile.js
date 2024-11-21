@@ -64,10 +64,10 @@ function loadDogProfiles(userId) {
     db.collection("users").doc(userId).collection("dogprofiles").get()
         .then((snapshot) => {
             if (!snapshot.empty) {
-                dogProfilesContainer.innerHTML = ""; 
+                dogProfilesContainer.innerHTML = "";
                 snapshot.forEach((doc) => {
                     const dog = doc.data();
-                    addDogProfileToPage(doc.id, dog); 
+                    addDogProfileToPage(doc.id, dog);
                 });
             } else {
                 dogProfilesContainer.innerHTML = "<p>No dogs added yet. Click 'Add Dog' to create a profile for your dog.</p>";
@@ -99,11 +99,47 @@ function loadPlaydates(userId) {
                             <p>${playdate.address}</p>
                             <p>${new Date(playdate.datetime).toLocaleString()}</p>
                         </div>
+                                                    <div class="post-actions">
+                                <button class="edit-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}" data-title="${playdate.title}" data-description="${playdate.description}" data-address="${playdate.address}" data-start="${new Date(playdate.datetime).toLocaleString()}">Edit</button>
+                                <button class="delete-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}">Delete</button>
+                            </div>
                     </div>`;
                 postContainer.innerHTML += post;
             } else {
                 deleteExpiredPlaydate(userId, doc.id, playdate.globalPlaydateId);
             }
+        });
+        document.querySelectorAll(".delete-btn").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const userPlaydateId = event.target.getAttribute("data-id");
+                const globalPlaydateId = event.target.getAttribute("data-global-id");
+                const confirmDelete = confirm("Are you sure you want to delete this playdate?");
+                if (confirmDelete) {
+                    db.collection("users").doc(userId).collection("userPlaydates").doc(userPlaydateId).delete()
+                        .then(() => console.log("Playdate deleted from user collection"))
+                        .catch(error => console.error("Error deleting playdate from user collection:", error));
+                    db.collection("playdates").doc(globalPlaydateId).delete()
+                        .then(() => console.log("Playdate deleted from global collection"))
+                        .catch(error => console.error("Error deleting playdate from global collection:", error));
+                }
+            });
+        });
+        document.querySelectorAll(".edit-btn").forEach(button => {
+            button.addEventListener("click", (event) => {
+                const userPlaydateId = event.target.getAttribute("data-id");
+                const globalPlaydateId = event.target.getAttribute("data-global-id");
+                const playdateTitle = event.target.getAttribute("data-title");
+                const playdateAddress = event.target.getAttribute("data-address");
+                const playdateDescription = event.target.getAttribute("data-description");
+                const playdateStart = event.target.getAttribute("data-start");
+                localStorage.setItem("editPlaydateId", userPlaydateId);
+                localStorage.setItem("editGlobalId", globalPlaydateId);
+                localStorage.setItem("savedTitle", playdateTitle);
+                localStorage.setItem("savedAddress", playdateAddress);
+                localStorage.setItem("savedDescription", playdateDescription);
+                localStorage.setItem("savedStart", playdateStart);
+                redirectToPage("edit_post.html");
+            });
         });
     });
 }
