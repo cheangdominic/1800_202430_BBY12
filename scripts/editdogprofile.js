@@ -2,7 +2,7 @@ console.log("editDogProfile.js loaded");
 
 // Convert image to Base64
 function convertImageToBase64(imageFile, callback) {
-    const FR = new FileReader(); // https://onlinewebtutorblog.com/convert-image-to-the-base64-string-using-javascript/
+    const FR = new FileReader();
     FR.onload = (event) => {
         callback(event.target.result);
     };
@@ -30,6 +30,7 @@ function loadDogProfile(userId, dogID) {
             } else {
                 console.error("No dog profile found in Firestore.");
                 alert("Dog profile not found.");
+                window.location.href = "profile.html";
             }
         })
         .catch((error) => {
@@ -37,8 +38,6 @@ function loadDogProfile(userId, dogID) {
             alert("Failed to load dog profile.");
         });
 }
-
-
 
 // Populate the UI with dog profile data
 function populateDogProfile(data, dogID) {
@@ -105,21 +104,24 @@ function updateDogProfile(userId, dogID) {
         });
 }
 
-// Update Button
+// Update button
 function updateButton(userId, dogID) {
-    document.getElementById("updateDogProfileBtn").addEventListener("click", (e) => {
-        e.preventDefault();
-        updateDogProfile(userId, dogID);
-    });
+    const updateBtn = document.getElementById("updateDogProfileBtn"); 
+    if (updateBtn) {
+        updateBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            updateDogProfile(userId, dogID);
+        });
+    } else {
+        console.error("Update button not working.");
+    }
 }
 
 // Back button returns to dog profile by ID
-function backButton() {
+function backButton(dogID) {
     document.querySelectorAll("#back-btn").forEach(button => {
         button.addEventListener("click", (event) => {
             event.preventDefault();
-            const urlParams = new URLSearchParams(window.location.search);
-            const dogID = urlParams.get("dogID");
             if (dogID) {
                 redirectToPage(`dog_profile.html?dogID=${dogID}`);
             } else {
@@ -135,26 +137,16 @@ function backButton() {
 function doAll(userId, dogID) {
     validateDogID(dogID);
     loadDogProfile(userId, dogID);
-    uploadProfilePicture();
-    updateButton(userId, dogID);
+    uploadProfilePicture(dogID);
+    updateButton(userId, dogID); 
+    backButton(dogID); 
 }
 
 auth.onAuthStateChanged((user) => {
     if (user) {
         const urlParams = new URLSearchParams(window.location.search);
         const dogID = urlParams.get("dogID");
-
-        db.collection("users").doc(user.uid).collection("dogprofiles").doc(dogID).get()
-            .then((doc) => {
-                if (doc.exists) {
-                    populateDogProfile(doc.data(), dogID);
-                    uploadProfilePicture(dogID); 
-                } else {
-                    console.error("Dog profile not found.");
-                }
-            })
-            .catch((error) => console.error("Error loading dog profile:", error));
-        backButton();
+        doAll(user.uid, dogID); 
     } else {
         alert("Please log in to edit your dog profile.");
         window.location.href = "login.html";
