@@ -72,6 +72,12 @@ function saveDogProfile(userId, dogData) {
         });
 }
 
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        redirectToPage("profile.html");
+    });
+});
+
 // Does all functions
 function doAll(userId) {
     submitForm(userId);
