@@ -513,43 +513,43 @@ input[type="file"] {
 }
 
 /* Dog Cards */
-.dog-profile-container {
-    margin: 20px 0;
-  }
-  
-  #dog-profiles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-  }
-  
-  .dog-card {
-    width: 150px;
-    border: 1px solid #ddd;
+.dog-card {
+    background-color: #fff;
     border-radius: 8px;
-    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     padding: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  .dog-card img {
-    width: 100px;
-    height: 100px;
+    text-align: center;
+    margin: 10px;
+}
+
+.dog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    background-color: #f0f8ff; 
+}
+
+.dog-card img {
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-  }
-  
-  .dog-card h5 {
-    margin: 10px 0 5px;
-    font-size: 1rem;
+    border: 0.5px solid black;
+    margin-bottom: 10px;
+}
+
+.dog-card h5 {
+    font-size: 1.2rem;
     color: #333;
-  }
-  
-  .dog-card p {
+    margin: 5px 0;
+}
+
+.dog-card p {
     font-size: 0.9rem;
-    color: #666;
-  }
+    color: #555;
+    margin: 2px 0;
+}
   
 
 
