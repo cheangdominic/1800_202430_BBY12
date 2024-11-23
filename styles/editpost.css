@@ -6,3 +6,8 @@
     color: black;
     cursor: pointer;
 }
+
+.btn.btn-custom {
+    color: white;
+    background-color: #81875B;
+}

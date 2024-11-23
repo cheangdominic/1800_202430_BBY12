@@ -1,3 +1,8 @@
 .bx.bxs-plus-square {
-    color: #FFC107;
+    color: #81875B;
+}
+
+.btn.btn-custom {
+    background-color: #81875B;
+    color: white;
 }

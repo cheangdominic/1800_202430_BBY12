@@ -1,5 +1,5 @@
 .bx.bxs-home {
-    color: #FFC107;
+    color: #81875B;
 }
 
 #participants {
@@ -12,7 +12,7 @@
 }
 
 .participants:hover {
-    color: #FFC107;
+    color: #81875B;
 }
 
 .modal {
@@ -33,6 +33,22 @@
     border-radius: 10px;
     width: 80%;
     max-width: 500px;
+}
+
+.btn.btn-custom {
+    color: white;
+    background-color: #81875B;
+}
+
+.btn.btn-leave {
+    color: white;
+    background-color: #99623a;
+}
+
+.alert.alert-custom {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-color: rgba(129, 135, 91, 0.6);
 }
 
 .close {

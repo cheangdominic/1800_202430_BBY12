@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <p class="card-text">${playdate.description}</p>
                     <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
-                    <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-warning">Join</button>
+                    <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-custom">Join</button>
                     <div class="participants">
                         <i id="userCount-btn" class='bx bxs-group'></i>
                         <p id="participants">View Participants</p>
@@ -71,24 +71,31 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const joinButton = post.querySelector("#join-btn");
 
                 const usersGoingRef = db.collection("playdates").doc(doc.id).collection("usersGoing");
+                const joinedPlaydatesRef = db.collection("users").doc(userId).collection("joinedPlaydates");
                 const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
 
                 if (!userAlreadyJoined.empty) {
                     joinButton.textContent = "Leave";
+                    joinButton.classList.remove("btn-custom");
+                    joinButton.classList.add("btn-leave");
                 }
 
                 joinButton.addEventListener("click", async (event) => {
                     const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
+                    const joinedPlaydate = await joinedPlaydatesRef.where("UserID", "==", userId).get();
                     
                     if (!userAlreadyJoined.empty) {
                         confirm("Are you sure you want to leave this playdate?");
                         if(confirm) {
                             const userDoc = userAlreadyJoined.docs[0];
+                            const joinedDoc = joinedPlaydate.docs[0];
                             const userDocId = userDoc.id;
+                            const joinedDocId = joinedDoc.id;
                             await usersGoingRef.doc(userDocId).delete();
+                            await joinedPlaydatesRef.doc(joinedDocId).delete();
                             joinButton.textContent = "Join";
-                            joinButton.classList.remove("btn-danger");
-                            joinButton.classList.add("btn-warning");
+                            joinButton.classList.remove("btn-leave");
+                            joinButton.classList.add("btn-custom");
                         }
                         return;
                     }
@@ -100,8 +107,16 @@ document.addEventListener("DOMContentLoaded", async function () {
                         .then(() => {
                             console.log("User added to playdate!");
                             joinButton.textContent = "Leave";
-                            joinButton.classList.remove("btn-warning");
-                            joinButton.classList.add("btn-danger");
+                            joinButton.classList.remove("btn-custom");
+                            joinButton.classList.add("btn-leave");
+                            joinedPlaydatesRef.add({
+                                title: playdate.title,
+                                description: playdate.description || "",
+                                address: playdate.address,
+                                datetime: playdate.datetime,
+                                host: userName,
+                                UserID: userId
+                            });
                             alert("You have successfully joined this playdate!");
                         })
                         .catch((error) => {

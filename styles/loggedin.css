@@ -31,6 +31,11 @@
     width: 100%;
 }
 
+.btn.btn-custom {
+    color: white;
+    background-color: #81875B;
+}
+
 .bxs-group {
     margin-top: 1%;
     font-size: 250%;
@@ -41,8 +46,8 @@
     font-size: 250%;
 }
 
-.bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover {
-    color: #FFC107;
+.bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover, .bx.bxs-user-circle:hover, .bx.bxs-inbox:hover {
+    color: #81875B;
 }
 
 .bx.bxs-inbox, .bx.bxs-user-circle {

@@ -99,7 +99,7 @@ function loadPlaydates(userId) {
                             <p>${playdate.address}</p>
                             <p>${new Date(playdate.datetime).toLocaleString()}</p>
                         </div>
-                                                    <div class="post-actions">
+                            <div class="post-actions">
                                 <button class="edit-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}" data-title="${playdate.title}" data-description="${playdate.description}" data-address="${playdate.address}" data-start="${new Date(playdate.datetime).toLocaleString()}">Edit</button>
                                 <button class="delete-btn" data-id="${doc.id}" data-global-id="${playdate.globalPlaydateId}">Delete</button>
                             </div>

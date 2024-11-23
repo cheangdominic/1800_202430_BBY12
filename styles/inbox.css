@@ -52,6 +52,10 @@ header {
     margin-bottom: 10px;
 }
 
+.bx.bxs-inbox{
+    color: #81875B;
+}
+
 .notification-time,
 .notification-location,
 .notification-date {

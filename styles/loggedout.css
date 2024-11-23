@@ -35,3 +35,15 @@
     color: #333;
     text-align: center;
 }
+
+.btn.btn-custom {
+    color: white;
+    background-color: #81875B;
+}
+
+.card-body {
+    border: 1px solid rgba(124, 82, 53, 0.3); /* foft orange border */
+    border-radius: 2px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* soft shadow */
+    transition: transform 0.3s;
+}
