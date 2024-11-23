@@ -30,22 +30,26 @@ function savePlaydate() {
             }).then((playdate) => {
                 const globalPlaydateId = playdate.id;
 
-                return db.collection("users").doc(userId).collection("userPlaydates").add({
-                    title: playdateTitle,
-                    description: playdateDescription || "",
-                    address: selectedAddress,
-                    datetime: playdateDatetime,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-                    userId: userId,
-                    globalPlaydateId: globalPlaydateId
-                });
+                return Promise.all([
+                    db.collection("users").doc(userId).collection("userPlaydates").add({
+                        title: playdateTitle,
+                        description: playdateDescription || "",
+                        address: selectedAddress,
+                        datetime: playdateDatetime,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        userId: userId,
+                        globalPlaydateId: globalPlaydateId
+                    })
+                ]);
             }).then(() => {
                 console.log("Playdate saved globally and in user collection!");
                 alert("Playdate saved successfully!");
+                
                 document.querySelector('.form-control[placeholder="Playdate Title"]').value = "";
                 document.querySelector('.form-control[aria-label="With textarea"]').value = "";
                 selectedAddress = "";
                 geocoder.clear();
+
                 redirectToPage('main.html');
             }).catch(error => {
                 console.error("Error saving playdate: ", error);
