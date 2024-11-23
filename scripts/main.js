@@ -74,16 +74,22 @@ document.addEventListener("DOMContentLoaded", async function () {
                 const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
 
                 if (!userAlreadyJoined.empty) {
-                    joinButton.textContent = "Joined";
-                    joinButton.disabled = true;
+                    joinButton.textContent = "Leave";
                 }
 
                 joinButton.addEventListener("click", async (event) => {
                     const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
                     
                     if (!userAlreadyJoined.empty) {
-                        alert("You have already joined this playdate!");
-                        joinButton.disabled = true;
+                        confirm("Are you sure you want to leave this playdate?");
+                        if(confirm) {
+                            const userDoc = userAlreadyJoined.docs[0];
+                            const userDocId = userDoc.id;
+                            await usersGoingRef.doc(userDocId).delete();
+                            joinButton.textContent = "Join";
+                            joinButton.classList.remove("btn-danger");
+                            joinButton.classList.add("btn-warning");
+                        }
                         return;
                     }
                     usersGoingRef.add({
@@ -93,9 +99,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                     })
                         .then(() => {
                             console.log("User added to playdate!");
+                            joinButton.textContent = "Leave";
+                            joinButton.classList.remove("btn-warning");
+                            joinButton.classList.add("btn-danger");
                             alert("You have successfully joined this playdate!");
-                            joinButton.textContent = "Joined";
-                            joinButton.disabled = true;
                         })
                         .catch((error) => {
                             console.error("Error adding user to playdate:", error);
