@@ -554,6 +554,10 @@ input[type="file"] {
     color: #555;
     margin: 2px 0;
 }
+
+#updateProfileBtn {
+    background-color: #81875B;
+}
   
 
 
