@@ -25,8 +25,8 @@ body {
 
 /* Header Section */
 .header {
-    background-color: #ff6f61;
-    color: white;
+    background-color: transparent;
+    color: black;
     text-align: center;
     padding: 25px 0;
     font-size: 18px;
@@ -57,7 +57,7 @@ body {
     display: inline-block;
     text-align: center;
     font-size: 18px;
-    color: #ff6f61;
+    color: #7C5235;
     line-height: 45px;
     text-decoration: none;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
@@ -65,8 +65,8 @@ body {
 }
 
 .edit-btn, .delete-btn {
-    border: 3px solid #ff6f61;
-    background-color: #ff6f61;
+    border: 3px solid #7C5235;
+    background-color: #7C5235;
     color: white;
     border-radius: 20%;
 }
@@ -74,9 +74,9 @@ body {
 #back-btn {
     margin-top: 1.2%;
     font-size: 250%;
-    position: absolute;
+    position: static;
     z-index: 999;
-    color: white;
+    color: black;
     cursor: pointer;
 }
 
@@ -131,7 +131,7 @@ body {
 /* General btn */
 .btn {
     display: inline-block;
-    background-color: #ff6f61;
+    background-color: #7c5335;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -144,7 +144,7 @@ body {
 }
 
 .profile-info .btn:hover {
-    background-color: #ff7f71;
+    background-color: #7c5335;
 }
 
 /* File Input Styling */
@@ -175,7 +175,7 @@ input[type="file"] {
 
 
 .return-button-container .btn {
-    background-color: #ff6f61; 
+    background-color: #7C5235; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -280,7 +280,7 @@ input[type="file"] {
 }
 
 .change-picture-button {
-    background-color: #ff6f61;
+    background-color: #7C5235;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -293,7 +293,7 @@ input[type="file"] {
 }
 
 .change-picture-button:hover {
-    background-color: #ff7f71;
+    background-color: #7c5335;
 }
 
 .form {
