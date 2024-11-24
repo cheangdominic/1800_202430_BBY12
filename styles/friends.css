@@ -100,6 +100,12 @@ h1:after {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
+/* Main content scrollable container */
+.main-content {
+    min-height: 100vh;
+    padding-bottom: 4rem;
+}
+
 /* Friends List */
 h2 {
     font-size: 1.8rem;
@@ -120,6 +126,148 @@ h2 {
 #friendsList .card:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* Friend Requests Section */
+#friendRequestsSection {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+#friendRequestsSection h4 {
+    color: #2c3e50;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.friend-requests-container {
+    max-height: 300px; /* スクロール可能な高さを設定 */
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* Friend Request Card */
+.friend-request-card {
+    border: none !important;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.friend-request-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+}
+
+.friend-request-card .card-body {
+    padding: 1.25rem;
+}
+
+.friend-request-card .btn-group {
+    gap: 0.5rem;
+}
+
+/* Friends List Container */
+.friends-section {
+    padding-bottom: 3rem; /* 下部に余白を追加 */
+}
+
+#friendsList {
+    max-height: 800px; /* スクロール可能な高さを設定 */
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+/* スクロールバーのスタイルを改善 */
+.friend-requests-container::-webkit-scrollbar,
+#friendsList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.friend-requests-container::-webkit-scrollbar-track,
+#friendsList::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 3px;
+}
+
+.friend-requests-container::-webkit-scrollbar-thumb,
+#friendsList::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+}
+
+.friend-requests-container::-webkit-scrollbar-thumb:hover,
+#friendsList::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}
+
+/* Toast Container */
+#toastContainer {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.toast {
+    margin-bottom: 10px;
+    min-width: 250px;
+}
+
+/* レスポンシブ対応の改善 */
+@media (max-width: 768px) {
+    .friend-requests-container,
+    #friendsList {
+        max-height: none; /* モバイルでは高さ制限を解除 */
+    }
+
+    #friendRequestsSection {
+        margin: 1rem 0;
+        padding: 1rem;
+    }
+
+    .friend-request-card .btn-group {
+        flex-direction: row;
+        width: auto;
+    }
+
+    .friend-request-card .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* アニメーションの追加 */
+.friend-request-card {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Empty State Styling */
+.friend-requests-container:empty::before,
+#friendsList:empty::before {
+    content: 'No items to display';
+    display: block;
+    text-align: center;
+    padding: 2rem;
+    color: #a0aec0;
+    font-style: italic;
 }
 
 .card-body {

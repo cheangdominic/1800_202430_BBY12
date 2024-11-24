@@ -45,27 +45,40 @@
     <nav id="navbarPlaceholder"></nav>
 
     <!-- Main content -->
-    <div class="container">
+    <div class="container main-content">
         <h1 class="text-center my-4">Friend List</h1>
         
+        <div id="notificationBadge" class="notification-badge" style="display: none;">0</div>
+        
+        <!-- Friend Requests Section -->
+        <div id="friendRequestsSection" class="mb-4">
+            <h4>Friend Requests</h4>
+            <div id="friendRequests" class="friend-requests-container">
+                <!-- Pending friend requests will be dynamically added here -->
+            </div>
+        </div>
+
         <!-- Friend search section -->
         <div class="search-section mb-4">
             <div class="input-group">
                 <input type="text" id="searchInput" class="form-control" placeholder="Search users by email">
                 <button class="btn btn-primary" id="searchButton">Search</button>
             </div>
-        </div>
-
-        <!-- Search results -->
-        <div id="searchResults" class="mb-4">
-            <!-- Results will be dynamically added here -->
+            <div id="searchResults" class="mt-3">
+                <!-- Search results will be dynamically added here -->
+            </div>
         </div>
 
         <!-- Current friends list -->
-        <h2>My Friends</h2>
-        <div id="friendsList" class="row">
-            <!-- Friends will be dynamically added here -->
+        <div class="friends-section">
+            <h2 class="mb-3">My Friends</h2>
+            <div id="friendsList" class="row">
+                <!-- Friends will be dynamically added here -->
+            </div>
         </div>
+
+        <!-- Toast container for notifications -->
+        <div id="toastContainer"></div>
     </div>
     
     <!-- the body of your page goes here -->

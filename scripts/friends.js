@@ -6,15 +6,14 @@ firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
         currentUser = user;
         loadFriendsList(); // Load friends list when user is authenticated
+        loadFriendRequests(); // Load pending friend requests
     } else {
         window.location.href = 'login.html'; // Redirect to login if not authenticated
     }
 });
 
 // Event listeners for search functionality
-// Trigger search when the search button is clicked
 document.getElementById('searchButton').addEventListener('click', searchUsers);
-// Trigger search when Enter key is pressed in search input
 document.getElementById('searchInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
         searchUsers();
@@ -23,35 +22,33 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
 
 /**
  * Search for users by email in Firebase
- * This function queries the users collection for matching email addresses
  */
 function searchUsers() {
     const searchEmail = document.getElementById('searchInput').value.trim();
-    if (!searchEmail) return; // Exit if search input is empty
+    if (!searchEmail) return;
 
     const searchResults = document.getElementById('searchResults');
     searchResults.innerHTML = '<p>Searching...</p>';
 
-    // Query Firestore for users with matching email
     firebase.firestore().collection('users')
         .where('email', '==', searchEmail)
         .get()
         .then((querySnapshot) => {
             searchResults.innerHTML = '';
             
-            // Display message if no users found
             if (querySnapshot.empty) {
                 searchResults.innerHTML = '<p>No users found</p>';
                 return;
             }
 
-            // Create and display user cards for each result
             querySnapshot.forEach((doc) => {
                 const userData = doc.data();
-                // Don't show the current user in search results
                 if (doc.id !== currentUser.uid) {
-                    const userCard = createUserSearchCard(doc.id, userData);
-                    searchResults.appendChild(userCard);
+                    checkExistingRelationship(doc.id, userData)
+                        .then(relationshipStatus => {
+                            const userCard = createUserSearchCard(doc.id, userData, relationshipStatus);
+                            searchResults.appendChild(userCard);
+                        });
                 }
             });
         })
@@ -62,15 +59,62 @@ function searchUsers() {
 }
 
 /**
- * Create a card element for a user search result
- * @param {string} userId - The user's Firebase UID
- * @param {Object} userData - The user's profile data
- * @returns {HTMLElement} The created card element
+ * Check if there's an existing friendship or pending request
  */
-function createUserSearchCard(userId, userData) {
+async function checkExistingRelationship(targetUserId, userData) {
+    const friendshipsSnapshot = await firebase.firestore().collection('friendships')
+        .where('users', 'array-contains', currentUser.uid)
+        .get();
+    
+    const requestsSnapshot = await firebase.firestore().collection('friendRequests')
+        .where('senderId', '==', currentUser.uid)
+        .where('receiverId', '==', targetUserId)
+        .get();
+
+    const receivedRequestSnapshot = await firebase.firestore().collection('friendRequests')
+        .where('senderId', '==', targetUserId)
+        .where('receiverId', '==', currentUser.uid)
+        .get();
+
+    if (!friendshipsSnapshot.empty) {
+        const isFriend = friendshipsSnapshot.docs.some(doc => 
+            doc.data().users.includes(targetUserId));
+        if (isFriend) return 'friend';
+    }
+
+    if (!requestsSnapshot.empty) return 'pending';
+    if (!receivedRequestSnapshot.empty) return 'received';
+    
+    return 'none';
+}
+
+/**
+ * Create a card element for a user search result with appropriate button
+ */
+function createUserSearchCard(userId, userData, relationshipStatus) {
     const div = document.createElement('div');
     div.className = 'card mb-3';
-    // Create card HTML with user profile information
+    
+    // Define button HTML based on relationship status
+    let buttonHTML = '';
+    switch (relationshipStatus) {
+        case 'friend':
+            buttonHTML = `<button class="btn btn-secondary" disabled>Already Friends</button>`;
+            break;
+        case 'pending':
+            buttonHTML = `<button class="btn btn-secondary" disabled>Request Pending</button>`;
+            break;
+        case 'received':
+            buttonHTML = `
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="acceptFriendRequest('${userId}')">Accept</button>
+                    <button class="btn btn-danger" onclick="declineFriendRequest('${userId}')">Decline</button>
+                </div>`;
+            break;
+        default:
+            buttonHTML = `<button class="btn btn-primary send-request-btn" data-userid="${userId}">Send Friend Request</button>`;
+    }
+
     div.innerHTML = `
         <div class="card-body d-flex align-items-start">
             <div class="friend-profile-img">
@@ -83,78 +127,333 @@ function createUserSearchCard(userId, userData) {
                 <p class="card-text profile-bio">${userData.bio || 'No bio available'}</p>
                 ${userData.hobbies ? `<p class="card-text hobbies">
                     <small class="text-muted">Hobbies: ${userData.hobbies}</small></p>` : ''}
+                <div class="dog-info mt-2">
+                    ${userData.dogName ? `
+                    <p class="card-text">
+                        <small class="text-muted">🐕 Dog: ${userData.dogName}</small>
+                    </p>` : ''}
+                </div>
             </div>
-            <button class="btn btn-primary add-friend-btn" data-userid="${userId}">
-                Add Friend
-            </button>
+            ${buttonHTML}
         </div>
     `;
 
-    // Add click event listener to the Add Friend button
-    div.querySelector('.add-friend-btn').addEventListener('click', () => addFriend(userId));
+    if (relationshipStatus === 'none') {
+        div.querySelector('.send-request-btn').addEventListener('click', () => sendFriendRequest(userId));
+    }
+
     return div;
 }
 
 /**
- * Add a user as a friend and clear search results after successful addition
- * @param {string} friendId - The Firebase UID of the user to add as friend
+ * Send a friend request with fixed queries
  */
-function addFriend(friendId) {
-    const friendsRef = firebase.firestore().collection('friendships');
-    
-    // Check if friendship already exists
-    friendsRef.where('users', 'array-contains', currentUser.uid)
-        .get()
-        .then((querySnapshot) => {
-            let friendshipExists = false;
-            querySnapshot.forEach((doc) => {
-                if (doc.data().users.includes(friendId)) {
-                    friendshipExists = true;
+async function sendFriendRequest(receiverId) {
+    try {
+        await firebase.firestore().runTransaction(async (transaction) => {
+            // Check existing friendships
+            const friendshipsQuery = await firebase.firestore()
+                .collection('friendships')
+                .where('users', 'array-contains', currentUser.uid)
+                .get();
+            
+            let activeFriendship = false;
+            friendshipsQuery.forEach(doc => {
+                if (doc.data().users.includes(receiverId)) {
+                    activeFriendship = true;
                 }
             });
 
-            if (friendshipExists) {
-                alert('This user is already your friend!');
+            if (activeFriendship) {
+                throw new Error('Already friends with this user');
+            }
+
+            // Check sent requests
+            const sentRequestQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', currentUser.uid)
+                .where('receiverId', '==', receiverId)
+                .where('status', '==', 'pending')
+                .get();
+
+            if (!sentRequestQuery.empty) {
+                throw new Error('Friend request already sent');
+            }
+
+            // Check received requests
+            const receivedRequestQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', receiverId)
+                .where('receiverId', '==', currentUser.uid)
+                .where('status', '==', 'pending')
+                .get();
+
+            if (!receivedRequestQuery.empty) {
+                throw new Error('This user has already sent you a friend request');
+            }
+
+            // Clean up old requests - split into two queries
+            const oldSentRequestsQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', currentUser.uid)
+                .where('receiverId', '==', receiverId)
+                .get();
+
+            const oldReceivedRequestsQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', receiverId)
+                .where('receiverId', '==', currentUser.uid)
+                .get();
+
+            oldSentRequestsQuery.forEach(doc => {
+                if (doc.data().status !== 'pending') {
+                    transaction.delete(doc.ref);
+                }
+            });
+
+            oldReceivedRequestsQuery.forEach(doc => {
+                if (doc.data().status !== 'pending') {
+                    transaction.delete(doc.ref);
+                }
+            });
+
+            // Create new friend request
+            const requestRef = firebase.firestore().collection('friendRequests').doc();
+            const requestData = {
+                senderId: currentUser.uid,
+                receiverId: receiverId,
+                status: 'pending',
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            };
+            
+            transaction.set(requestRef, requestData);
+
+            // Create notification
+            const notificationRef = firebase.firestore().collection('notifications').doc();
+            transaction.set(notificationRef, {
+                userId: receiverId,
+                type: 'friendRequest',
+                senderId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
+        });
+
+        showToast('Friend request sent successfully!');
+        searchUsers(); // Refresh search results
+    } catch (error) {
+        console.error("Error sending friend request:", error);
+        showToast(error.message, 'error');
+    }
+}
+
+/**
+ * Load and display pending friend requests
+ */
+function loadFriendRequests() {
+    const requestsContainer = document.getElementById('friendRequests');
+    if (!requestsContainer) {
+        // フレンドリクエストセクションがない場合は作成
+        const friendRequestsSection = document.createElement('div');
+        friendRequestsSection.id = 'friendRequestsSection';
+        friendRequestsSection.className = 'mb-4';
+        friendRequestsSection.innerHTML = `
+            <h4>Friend Requests</h4>
+            <div id="friendRequests" class="friend-requests-container"></div>
+        `;
+        // mainContentの最初に挿入
+        const mainContent = document.querySelector('.main-content') || document.body;
+        mainContent.insertBefore(friendRequestsSection, mainContent.firstChild);
+    }
+
+    // リアルタイムでフレンドリクエストを監視
+    firebase.firestore().collection('friendRequests')
+        .where('receiverId', '==', currentUser.uid)
+        .where('status', '==', 'pending')
+        .onSnapshot((snapshot) => {
+            const requestsContainer = document.getElementById('friendRequests');
+            requestsContainer.innerHTML = '';
+            
+            if (snapshot.empty) {
+                requestsContainer.innerHTML = '<p>No pending friend requests</p>';
                 return;
             }
 
-            // Create new friendship document
-            return friendsRef.add({
-                users: [currentUser.uid, friendId],
-                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            // 各リクエストのデータを取得して表示
+            snapshot.forEach(async (doc) => {
+                const requestData = doc.data();
+                try {
+                    const senderDoc = await firebase.firestore().collection('users')
+                        .doc(requestData.senderId).get();
+                    
+                    if (senderDoc.exists) {
+                        const senderData = senderDoc.data();
+                        const requestCard = createRequestCard(requestData.senderId, senderData, doc.id);
+                        requestsContainer.appendChild(requestCard);
+                    }
+                } catch (error) {
+                    console.error("Error loading friend request:", error);
+                }
             });
-        })
-        .then((docRef) => {
-            if (docRef) {  // Only execute if friend was actually added
-                alert('Friend added successfully!');
-                loadFriendsList(); // Reload friends list to show new friend
-                
-                // Clear search results and search input
-                const searchResults = document.getElementById('searchResults');
-                const searchInput = document.getElementById('searchInput');
-                searchResults.innerHTML = ''; // Clear search results
-                searchInput.value = ''; // Clear search input field
-            }
-        })
-        .catch((error) => {
-            console.error("Error adding friend: ", error);
-            alert('Error adding friend');
+        }, (error) => {
+            console.error("Error loading friend requests:", error);
+            requestsContainer.innerHTML = '<p>Error loading friend requests</p>';
         });
 }
 
 /**
+ * Create a card element for a friend request
+ */
+function createRequestCard(senderId, senderData, requestId) {
+    const div = document.createElement('div');
+    div.className = 'card mb-3 friend-request-card';
+    div.innerHTML = `
+        <div class="card-body">
+            <div class="d-flex align-items-center">
+                <div class="friend-profile-img">
+                    <img src="${senderData.profileImage || '/images/default-avatar.png'}" 
+                         alt="Profile" class="rounded-circle">
+                </div>
+                <div class="friend-info flex-grow-1 ms-3">
+                    <h5 class="card-title">${senderData.name || 'Anonymous User'}</h5>
+                    <p class="card-text text-muted">${senderData.email}</p>
+                    ${senderData.dogName ? `
+                    <p class="card-text">
+                        <small class="text-muted">🐕 Dog: ${senderData.dogName}</small>
+                    </p>` : ''}
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-success accept-request-btn">Accept</button>
+                    <button class="btn btn-danger decline-request-btn">Decline</button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // ボタンのイベントリスナーを追加
+    div.querySelector('.accept-request-btn').addEventListener('click', () => 
+        acceptFriendRequest(requestId, senderId));
+    div.querySelector('.decline-request-btn').addEventListener('click', () => 
+        declineFriendRequest(requestId));
+
+    return div;
+}
+
+/**
+ * Accept a friend request with fixed queries
+ */
+async function acceptFriendRequest(requestId, senderId) {
+    try {
+        await firebase.firestore().runTransaction(async (transaction) => {
+            // Get the request document
+            const requestRef = firebase.firestore().collection('friendRequests').doc(requestId);
+            const requestDoc = await transaction.get(requestRef);
+
+            if (!requestDoc.exists) {
+                throw new Error('Friend request not found');
+            }
+
+            // Clean up other requests - split into two queries
+            // Check sent requests
+            const sentRequestsQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', currentUser.uid)
+                .where('receiverId', '==', senderId)
+                .get();
+
+            // Check received requests
+            const receivedRequestsQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', senderId)
+                .where('receiverId', '==', currentUser.uid)
+                .get();
+
+            // Delete other requests except the current one being accepted
+            sentRequestsQuery.forEach(doc => {
+                if (doc.id !== requestId) {
+                    transaction.delete(doc.ref);
+                }
+            });
+
+            receivedRequestsQuery.forEach(doc => {
+                if (doc.id !== requestId) {
+                    transaction.delete(doc.ref);
+                }
+            });
+
+            // Create new friendship
+            const friendshipRef = firebase.firestore().collection('friendships').doc();
+            transaction.set(friendshipRef, {
+                users: [currentUser.uid, senderId],
+                timestamp: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Update request status
+            transaction.update(requestRef, { 
+                status: 'accepted',
+                acceptedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            // Create notification
+            const notificationRef = firebase.firestore().collection('notifications').doc();
+            transaction.set(notificationRef, {
+                userId: senderId,
+                type: 'friendRequestAccepted',
+                accepterId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
+        });
+
+        showToast('Friend request accepted!');
+        loadFriendsList();
+        loadFriendRequests();
+    } catch (error) {
+        console.error("Error accepting friend request:", error);
+        showToast('Error accepting friend request: ' + error.message, 'error');
+    }
+}
+
+/**
+ * Decline a friend request
+ */
+async function declineFriendRequest(requestId) {
+    try {
+        await firebase.firestore().runTransaction(async (transaction) => {
+            const requestRef = firebase.firestore().collection('friendRequests').doc(requestId);
+            const requestDoc = await transaction.get(requestRef);
+
+            if (!requestDoc.exists) {
+                throw new Error('Friend request not found');
+            }
+
+            // リクエストのステータスを更新
+            transaction.update(requestRef, {
+                status: 'declined',
+                declinedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+        });
+
+        showToast('Friend request declined');
+        loadFriendRequests();
+    } catch (error) {
+        console.error("Error declining friend request:", error);
+        showToast('Error declining friend request: ' + error.message, 'error');
+    }
+}
+
+// ... 残りのコードはそのまま ...
+
+/**
  * Load and display the current user's friends list
- * This function queries the friendships collection and displays friend cards
  */
 function loadFriendsList() {
     const friendsList = document.getElementById('friendsList');
     friendsList.innerHTML = '<p>Loading friends...</p>';
 
-    // Query Firestore for current user's friendships
     firebase.firestore().collection('friendships')
         .where('users', 'array-contains', currentUser.uid)
-        .get()
-        .then((querySnapshot) => {
+        .onSnapshot((querySnapshot) => {
             friendsList.innerHTML = '';
             
             if (querySnapshot.empty) {
@@ -162,57 +461,47 @@ function loadFriendsList() {
                 return;
             }
 
-            // Create array of promises to fetch friend data
             const friendPromises = [];
             querySnapshot.forEach((doc) => {
                 const friendshipData = doc.data();
                 const friendId = friendshipData.users.find(id => id !== currentUser.uid);
                 
-                // Create a promise for each friend's data
                 const friendPromise = firebase.firestore().collection('users').doc(friendId).get()
                     .then((friendDoc) => {
                         if (friendDoc.exists) {
                             return {
                                 friendId: friendId,
                                 friendData: friendDoc.data(),
-                                friendshipId: doc.id
+                                friendshipId: doc.id,
+                                friendshipDate: friendshipData.timestamp
                             };
                         }
                     });
                 friendPromises.push(friendPromise);
             });
 
-            // Wait for all friend data to be fetched
-            return Promise.all(friendPromises);
-        })
-        .then((friends) => {
-            // Create and display friend cards
-            friends.forEach((friend) => {
-                if (friend) {
-                    const friendCard = createFriendCard(friend.friendId, friend.friendData, friend.friendshipId);
-                    friendsList.appendChild(friendCard);
-                }
+            Promise.all(friendPromises).then((friends) => {
+                friends.forEach((friend) => {
+                    if (friend) {
+                        const friendCard = createFriendCard(friend.friendId, friend.friendData, 
+                            friend.friendshipId, friend.friendshipDate);
+                        friendsList.appendChild(friendCard);
+                    }
+                });
             });
-        })
-        .catch((error) => {
-            console.error("Error loading friends: ", error);
-            friendsList.innerHTML = '<p>Error loading friends</p>';
         });
 }
 
 /**
  * Create a card element for a friend
- * @param {string} friendId - The friend's Firebase UID
- * @param {Object} friendData - The friend's profile data
- * @param {string} friendshipId - The Firebase document ID of the friendship
- * @returns {HTMLElement} The created card element
  */
-function createFriendCard(friendId, friendData, friendshipId) {
-    console.log("Creating friend card for:", friendshipId);
-    
+function createFriendCard(friendId, friendData, friendshipId, friendshipDate) {
     const div = document.createElement('div');
     div.className = 'col-md-6 mb-3';
-    // Create card HTML with friend's profile information
+    
+    const friendshipDateStr = friendshipDate ? 
+        `Friends since ${friendshipDate.toDate().toLocaleDateString()}` : '';
+    
     div.innerHTML = `
         <div class="card friend-card">
             <div class="card-body">
@@ -224,9 +513,16 @@ function createFriendCard(friendId, friendData, friendshipId) {
                     <div class="friend-info flex-grow-1 ms-3">
                         <h5 class="card-title">${friendData.name || 'Anonymous User'}</h5>
                         <p class="card-text text-muted">${friendData.email}</p>
+                        <p class="card-text"><small class="text-muted">${friendshipDateStr}</small></p>
                         
                         <div class="profile-details mt-3">
                             <p class="card-text profile-bio">${friendData.bio || 'No bio available'}</p>
+                            
+                            ${friendData.dogName ? `
+                            <div class="dog-section">
+                                <h6 class="text-muted">Dog</h6>
+                                <p class="card-text">🐕 ${friendData.dogName}</p>
+                            </div>` : ''}
                             
                             ${friendData.hobbies ? `
                             <div class="hobbies-section">
@@ -254,9 +550,14 @@ function createFriendCard(friendId, friendData, friendshipId) {
                 </div>
                 
                 <div class="card-actions mt-3">
-                    <button onclick="removeFriend('${friendshipId}')" class="btn btn-danger remove-friend-btn">
-                        Remove Friend
-                    </button>
+                    <div class="btn-group">
+                        <button onclick="showMessageModal('${friendId}')" 
+                                class="btn btn-primary">Message</button>
+                        <button onclick="showParkMeetupModal('${friendId}')" 
+                                class="btn btn-success">Schedule Park Meetup</button>
+                        <button onclick="removeFriend('${friendshipId}')" 
+                                class="btn btn-danger">Remove Friend</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -265,24 +566,321 @@ function createFriendCard(friendId, friendData, friendshipId) {
 }
 
 /**
- * Remove a friend (delete friendship)
- * This function is attached to the global window object to be accessible from HTML onclick
- * @param {string} friendshipId - The Firebase document ID of the friendship to delete
+ * Remove a friend with fixed cleanup
  */
-window.removeFriend = function(friendshipId) {
-    console.log("Attempting to remove friendship:", friendshipId);
-    
-    if (confirm('Are you sure you want to remove this friend?')) {
-        // Delete friendship document from Firestore
-        firebase.firestore().collection('friendships').doc(friendshipId).delete()
-            .then(() => {
-                console.log("Friendship successfully deleted");
-                alert('Friend removed successfully!');
-                loadFriendsList(); // Reload friends list to reflect removal
-            })
-            .catch((error) => {
-                console.error("Error removing friend:", error);
-                alert('Error removing friend: ' + error.message);
+async function removeFriend(friendshipId) {
+    if (!confirm('Are you sure you want to remove this friend?')) {
+        return;
+    }
+
+    try {
+        await firebase.firestore().runTransaction(async (transaction) => {
+            // Get the friendship document
+            const friendshipRef = firebase.firestore().collection('friendships').doc(friendshipId);
+            const friendshipDoc = await transaction.get(friendshipRef);
+            
+            if (!friendshipDoc.exists) {
+                throw new Error('Friendship not found');
+            }
+
+            const friendshipData = friendshipDoc.data();
+            const removedFriendId = friendshipData.users.find(id => id !== currentUser.uid);
+
+            // Delete the friendship
+            transaction.delete(friendshipRef);
+
+            // Clean up friend requests - split into two queries
+            const sentRequestsQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', currentUser.uid)
+                .where('receiverId', '==', removedFriendId)
+                .get();
+
+            const receivedRequestsQuery = await firebase.firestore()
+                .collection('friendRequests')
+                .where('senderId', '==', removedFriendId)
+                .where('receiverId', '==', currentUser.uid)
+                .get();
+
+            // Delete all found requests
+            sentRequestsQuery.forEach(doc => {
+                transaction.delete(doc.ref);
             });
+
+            receivedRequestsQuery.forEach(doc => {
+                transaction.delete(doc.ref);
+            });
+
+            // Add removal notification
+            const notificationRef = firebase.firestore().collection('notifications').doc();
+            transaction.set(notificationRef, {
+                userId: removedFriendId,
+                type: 'friendRemoved',
+                removerId: currentUser.uid,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
+        });
+
+        showToast('Friend removed successfully');
+        loadFriendsList();
+    } catch (error) {
+        console.error("Error removing friend:", error);
+        showToast('Error removing friend: ' + error.message, 'error');
+    }
+}
+
+/**
+ * Show toast notification
+ */
+function showToast(message, type = 'success') {
+    const toastContainer = document.getElementById('toastContainer');
+    if (!toastContainer) {
+        // Create toast container if it doesn't exist
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.style.cssText = 'position: fixed; bottom: 20px; right: 20px; z-index: 1000;';
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement('div');
+    toast.className = `toast ${type === 'success' ? 'bg-success' : 'bg-danger'} text-white`;
+    toast.innerHTML = `
+        <div class="toast-body">
+            ${message}
+        </div>
+    `;
+
+    toastContainer.appendChild(toast);
+    const bsToast = new bootstrap.Toast(toast, { autohide: true, delay: 3000 });
+    bsToast.show();
+
+    // Remove toast after it's hidden
+    toast.addEventListener('hidden.bs.toast', () => toast.remove());
+}
+
+/**
+ * Show message modal for direct messaging
+ */
+function showMessageModal(friendId) {
+    // Create modal if it doesn't exist
+    let messageModal = document.getElementById('messageModal');
+    if (!messageModal) {
+        const modalHTML = `
+            <div class="modal fade" id="messageModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Send Message</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <textarea id="messageText" class="form-control" 
+                                    rows="4" placeholder="Write your message..."></textarea>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" 
+                                    data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-primary" 
+                                    onclick="sendMessage('${friendId}')">Send</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        messageModal = document.getElementById('messageModal');
+    }
+
+    const modal = new bootstrap.Modal(messageModal);
+    modal.show();
+}
+
+/**
+ * Show park meetup scheduling modal
+ */
+function showParkMeetupModal(friendId) {
+    // Create modal if it doesn't exist
+    let meetupModal = document.getElementById('meetupModal');
+    if (!meetupModal) {
+        const modalHTML = `
+            <div class="modal fade" id="meetupModal" tabindex="-1">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Schedule Park Meetup</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Date and Time</label>
+                                <input type="datetime-local" id="meetupDateTime" class="form-control">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Park Location</label>
+                                <select id="parkLocation" class="form-select">
+                                    <option value="">Select a park...</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Notes</label>
+                                <textarea id="meetupNotes" class="form-control" 
+                                        rows="3" placeholder="Any additional notes..."></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" 
+                                    data-bs-dismiss="modal">Cancel</button>
+                            <button type="button" class="btn btn-success" 
+                                    onclick="scheduleMeetup('${friendId}')">Schedule</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        meetupModal = document.getElementById('meetupModal');
+        
+        // Load nearby parks (example implementation)
+        loadNearbyParks();
+    }
+
+    const modal = new bootstrap.Modal(meetupModal);
+    modal.show();
+}
+
+/**
+ * Load nearby parks for meetup scheduling
+ */
+function loadNearbyParks() {
+    // This would typically use a maps API to get nearby parks
+    // For now, we'll use dummy data
+    const dummyParks = [
+        { id: 1, name: "Central Dog Park" },
+        { id: 2, name: "Riverside Dog Run" },
+        { id: 3, name: "Paw Park" },
+        { id: 4, name: "Happy Tails Park" }
+    ];
+
+    const parkSelect = document.getElementById('parkLocation');
+    dummyParks.forEach(park => {
+        const option = document.createElement('option');
+        option.value = park.id;
+        option.textContent = park.name;
+        parkSelect.appendChild(option);
+    });
+}
+
+/**
+ * Schedule a park meetup with a friend
+ */
+function scheduleMeetup(friendId) {
+    const dateTime = document.getElementById('meetupDateTime').value;
+    const parkId = document.getElementById('parkLocation').value;
+    const notes = document.getElementById('meetupNotes').value;
+
+    if (!dateTime || !parkId) {
+        showToast('Please fill in all required fields', 'error');
+        return;
+    }
+
+    const meetupData = {
+        creatorId: currentUser.uid,
+        friendId: friendId,
+        dateTime: new Date(dateTime),
+        parkId: parkId,
+        notes: notes,
+        status: 'pending',
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    firebase.firestore().collection('meetups').add(meetupData)
+        .then(() => {
+            // Send notification to friend
+            return firebase.firestore().collection('notifications').add({
+                userId: friendId,
+                type: 'meetupInvite',
+                meetupDetails: meetupData,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                read: false
+            });
+        })
+        .then(() => {
+            showToast('Meetup invitation sent!');
+            bootstrap.Modal.getInstance(document.getElementById('meetupModal')).hide();
+        })
+        .catch((error) => {
+            console.error("Error scheduling meetup:", error);
+            showToast('Error scheduling meetup', 'error');
+        });
+}
+
+/**
+ * Send a direct message to a friend
+ */
+function sendMessage(friendId) {
+    const messageText = document.getElementById('messageText').value.trim();
+    if (!messageText) {
+        showToast('Please enter a message', 'error');
+        return;
+    }
+
+    const messageData = {
+        senderId: currentUser.uid,
+        receiverId: friendId,
+        text: messageText,
+        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+        read: false
+    };
+
+    firebase.firestore().collection('messages').add(messageData)
+        .then(() => {
+            showToast('Message sent!');
+            bootstrap.Modal.getInstance(document.getElementById('messageModal')).hide();
+        })
+        .catch((error) => {
+            console.error("Error sending message:", error);
+            showToast('Error sending message', 'error');
+        });
+}
+
+/**
+ * Check existing relationship between users
+ */
+async function checkExistingRelationship(targetUserId) {
+    try {
+        // Check friendships
+        const friendshipsSnapshot = await firebase.firestore().collection('friendships')
+            .where('users', 'array-contains', currentUser.uid)
+            .get();
+        
+        if (!friendshipsSnapshot.empty) {
+            const isFriend = friendshipsSnapshot.docs.some(doc => 
+                doc.data().users.includes(targetUserId));
+            if (isFriend) return 'friend';
+        }
+
+        // Check sent requests
+        const sentRequestSnapshot = await firebase.firestore().collection('friendRequests')
+            .where('senderId', '==', currentUser.uid)
+            .where('receiverId', '==', targetUserId)
+            .where('status', '==', 'pending')
+            .get();
+
+        if (!sentRequestSnapshot.empty) return 'pending';
+
+        // Check received requests
+        const receivedRequestSnapshot = await firebase.firestore().collection('friendRequests')
+            .where('senderId', '==', targetUserId)
+            .where('receiverId', '==', currentUser.uid)
+            .where('status', '==', 'pending')
+            .get();
+
+        if (!receivedRequestSnapshot.empty) return 'received';
+        
+        return 'none';
+    } catch (error) {
+        console.error("Error checking relationship:", error);
+        throw error;
     }
 }
