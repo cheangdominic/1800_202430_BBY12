@@ -1,359 +1,203 @@
-.friends-container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+/* Base styles */
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Page title */
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 2rem;
     position: relative;
+    padding-bottom: 0.5rem;
 }
 
-/* Search Bar */
-.search-bar {
+h1:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(to right, #3498db, #2ecc71);
+    border-radius: 2px;
+}
+
+/* Search section */
+.search-section {
     background: white;
-    padding: 12px 20px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-.search-bar i {
-    color: #65676b;
-    font-size: 20px;
-    margin-right: 12px;
-}
-
-.search-bar input {
-    border: none;
-    outline: none;
-    width: 100%;
-    font-size: 15px;
-}
-
-/* Sections */
-.friend-requests-section,
-.friends-section {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    margin-bottom: 24px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-
-h2 {
-    font-size: 18px;
-    color: #1a1a1a;
-    margin-bottom: 16px;
-    font-weight: 600;
-}
-
-/* Friend Request Card */
-.friend-request-card {
-    display: flex;
-    align-items: center;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 12px;
-    background: #f8f9fa;
+    padding: 2rem;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 2.5rem;
     transition: transform 0.2s ease;
 }
 
-.friend-request-card:hover {
+.bx.bxs-user-plus {
+    color: #FFC107; 
+}
+
+.search-section:hover {
     transform: translateY(-2px);
 }
 
-.request-profile {
-    display: flex;
-    align-items: center;
-    flex: 1;
+.input-group {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
-.request-profile img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    margin-right: 16px;
-    object-fit: cover;
+#searchInput {
+    border: 2px solid #eee;
+    padding: 0.8rem 1rem;
+    font-size: 1rem;
+    border-radius: 10px 0 0 10px;
+    transition: border-color 0.2s ease;
 }
 
-.request-info h3 {
-    font-size: 16px;
-    margin: 0;
-    color: #1a1a1a;
+#searchInput:focus {
+    border-color: #3498db;
+    box-shadow: none;
+    outline: none;
 }
 
-.request-info p {
-    font-size: 14px;
-    color: #65676b;
-    margin: 4px 0 0 0;
-}
-
-.request-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.accept-btn,
-.decline-btn {
-    padding: 8px 16px;
-    border-radius: 6px;
+#searchButton {
+    background: #3498db;
     border: none;
-    cursor: pointer;
-    font-size: 14px;
-    transition: all 0.2s ease;
+    padding: 0.8rem 1.5rem;
+    border-radius: 0 10px 10px 0;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
 }
 
-.accept-btn {
-    background: #0084ff;
-    color: white;
+#searchButton:hover {
+    background: #2980b9;
 }
 
-.accept-btn:hover {
-    background: #0074e0;
+/* Search Results */
+#searchResults {
+    margin-top: 2rem;
 }
 
-.decline-btn {
-    background: #f0f2f5;
-    color: #1a1a1a;
+#searchResults .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.decline-btn:hover {
-    background: #e4e6eb;
+#searchResults .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Friend Card */
-.friend-card {
-    display: flex;
-    align-items: center;
-    padding: 12px;
+/* Friends List */
+h2 {
+    font-size: 1.8rem;
+    color: #2c3e50;
+    margin: 2rem 0 1.5rem;
+    font-weight: 600;
+}
+
+#friendsList .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease;
+    height: 100%;
+    background: white;
+}
+
+#friendsList .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.card-text {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+/* Buttons */
+.btn {
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
     border-radius: 8px;
-    margin-bottom: 12px;
-    cursor: pointer;
     transition: all 0.2s ease;
 }
 
-.friend-card:hover {
-    background: #f0f2f5;
-}
-
-.friend-profile {
-    display: flex;
-    align-items: center;
-    flex: 1;
-}
-
-.friend-profile img {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    margin-right: 16px;
-    object-fit: cover;
-}
-
-.friend-info h3 {
-    font-size: 16px;
-    margin: 0;
-    color: #1a1a1a;
-}
-
-.friend-info .status {
-    font-size: 13px;
-    color: #65676b;
-    margin: 4px 0 0 0;
-}
-
-.status.online {
-    color: #31a24c;
-}
-
-/* Add Friend Button */
 .add-friend-btn {
-    position: fixed;
-    bottom: 80px;
-    right: 24px;
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: #0084ff;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 132, 255, 0.3);
-    transition: all 0.2s ease;
-}
-
-.add-friend-btn i {
-    font-size: 24px;
+    background: #2ecc71;
+    border: none;
 }
 
 .add-friend-btn:hover {
-    transform: scale(1.05);
-    background: #0074e0;
+    background: #27ae60;
+    transform: translateY(-1px);
 }
 
-/* Modal Customization */
-.modal-content {
-    border-radius: 12px;
+.remove-friend-btn {
+    background: #e74c3c;
+    border: none;
 }
 
-.modal-header {
-    border-bottom: none;
-    padding: 20px 24px 12px;
+.remove-friend-btn:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
 }
 
-.modal-body {
-    padding: 12px 24px;
-}
-
-.modal-footer {
-    border-top: none;
-    padding: 12px 24px 20px;
-}
-
-/* Bottom Navigation styles */
-.nav {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 60px;
-    background: #ffffff;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    border-top: 1px solid #e0e0e0;
-}
-
-.nav__link {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-decoration: none;
-    color: #666;
-    transition: color 0.2s;
-}
-
-.nav__link--active {
-    color: #0084ff;
-}
-
-.nav__icon {
-    font-size: 1.5rem;
-    margin-bottom: 2px;
-}
-
-.nav__text {
-    font-size: 0.75rem;
-}
-
-/* Responsive Design */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .friends-container {
-        padding: 16px;
-        margin: 10px;
+    .container {
+        padding: 1rem;
     }
 
-    .friend-request-card,
-    .friend-card {
-        padding: 10px;
+    h1 {
+        font-size: 2rem;
     }
 
-    .request-actions {
-        flex-direction: column;
+    .card-body {
+        padding: 1rem;
+    }
+
+    .col-md-4 {
+        margin-bottom: 1rem;
     }
 }
 
-/* Empty State */
-.empty-state {
+/* Loading and error states */
+#friendsList p, #searchResults p {
     text-align: center;
-    padding: 40px 20px;
-    color: #65676b;
+    padding: 1rem;
+    color: #666;
+    font-style: italic;
 }
 
-.empty-state i {
-    font-size: 48px;
-    margin-bottom: 16px;
-    color: #c4c4c4;
-}
-
-.empty-state p {
-    font-size: 15px;
-    margin: 0;
-}
-
-/* Add to friends.css */
-.profile-preview {
-    text-align: center;
-    padding: 20px;
-}
-
-.preview-image {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    margin-bottom: 16px;
-    border: 3px solid #ffffff;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.preview-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    margin-top: 20px;
-}
-
-.friends-filters {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    padding: 0 12px;
-}
-
-.filter-btn {
-    padding: 8px 16px;
-    border-radius: 20px;
-    border: 1px solid #e4e6eb;
-    background: white;
-    color: #65676b;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.filter-btn.active {
-    background: #0084ff;
-    color: white;
-    border-color: #0084ff;
-}
-
-.friend-status-indicator {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    position: absolute;
-    bottom: 2px;
-    right: 2px;
-    border: 2px solid white;
-}
-
-.status-online {
-    background-color: #31a24c;
-}
-
-.status-offline {
-    background-color: #65676b;
-}
-
-/* Updated Friend Request Styles */
-.friend-request-card {
-    position: relative;
-    animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
+/* Animation for new elements */
+@keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(10px);
     }
     to {
         opacity: 1;
@@ -361,54 +205,158 @@ h2 {
     }
 }
 
-.profile-image-container {
-    position: relative;
+.card {
+    animation: fadeIn 0.3s ease-out;
 }
 
-.request-time {
-    font-size: 12px;
-    color: #65676b;
-    margin-top: 2px;
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
 }
 
-.request-actions button {
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Profile Image Styling */
+.friend-profile-img {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    margin-right: 1rem;
+}
+
+.friend-profile-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Friend Card Styling */
+.friend-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.friend-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.friend-info {
+    width: calc(100% - 100px);
+}
+
+/* Profile Details Styling */
+.profile-details {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.profile-bio {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #495057;
+    margin-bottom: 1rem;
+}
+
+.hobbies-section,
+.location-section,
+.interests-section {
+    margin-top: 0.8rem;
+}
+
+.hobbies-section h6,
+.location-section h6,
+.interests-section h6 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+/* Interests Tags */
+.interests-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.interests-tags .badge {
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    border-radius: 20px;
+    background-color: #e9ecef;
+    color: #495057;
+    font-size: 0.8rem;
+}
+
+/* Card Actions */
+.card-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.message-btn {
     display: flex;
     align-items: center;
-    gap: 4px;
-    padding: 8px 16px;
-    transition: all 0.2s ease;
+    gap: 0.5rem;
 }
 
-.request-actions button i {
-    font-size: 18px;
+.message-btn i {
+    font-size: 1.2rem;
 }
 
-.accept-btn:hover {
-    background: #06b400;
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .friend-profile-img {
+        width: 60px;
+        height: 60px;
+    }
+    
+    .col-md-6 {
+        padding: 0 0.5rem;
+    }
+    
+    .card-actions {
+        flex-direction: column;
+    }
+    
+    .card-actions button {
+        width: 100%;
+    }
 }
 
-.decline-btn:hover {
-    background: #dc3545;
-    color: white;
+/* Animation for profile details */
+.profile-details {
+    animation: slideDown 0.3s ease-out;
 }
 
-/* Notification Styles */
-.alert {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    min-width: 300px;
-    animation: slideInRight 0.3s ease-out;
-}
-
-@keyframes slideInRight {
+@keyframes slideDown {
     from {
         opacity: 0;
-        transform: translateX(100%);
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }

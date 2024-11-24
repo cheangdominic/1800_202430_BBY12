@@ -4,7 +4,7 @@ let selectedAddress = "";
 
 const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
-    types: 'poi,place'
+    types: 'poi'
 });
 
 geocoder.addTo('#geocoder');

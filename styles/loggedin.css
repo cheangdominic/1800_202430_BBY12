@@ -19,20 +19,35 @@
 .bottom-navbar-icons {
     background-color: rgb(242, 241, 241);
     border: 3px solid rgb(220, 220, 220);
+    border-radius: 40px 40px 0px 0px; 
     position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    margin-left: -4.5vw;
-    margin-top: -3.5%;
+    margin-top: -3%;
     gap: 3px;
     height: 550%;
-    width: 110%;
+    width: 100%;
+}
+
+.btn.btn-custom {
+    color: white;
+    background-color: #81875B;
+}
+
+.bxs-group {
+    margin-top: 1%;
+    font-size: 250%;
+    float: left;
 }
 
 .bx.bxs-home, .bx.bxs-map-alt, .bx.bxs-plus-square, .bx.bxs-user-plus, .bx.bxs-chat {
     font-size: 250%;
+}
+
+.bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover, .bx.bxs-user-circle:hover, .bx.bxs-inbox:hover {
+    color: #81875B;
 }
 
 .bx.bxs-inbox, .bx.bxs-user-circle {
@@ -64,12 +79,16 @@
     height: 40vw;
 }
 
-.brand-text{
+.brand-text {
     position: absolute;
     text-align: center;
     width: 100%;
     margin-top: 0.5%;
     font-size: 130%;
+}
+
+.brand-text img {
+    margin-left: -25px;
 }
 
 .input-group{

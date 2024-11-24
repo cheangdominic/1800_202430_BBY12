@@ -38,6 +38,7 @@
        <!-- Link to styles of your own -->
        <link rel="stylesheet" href="./styles/loggedin.css">
        <link rel="stylesheet" href="./styles/styles.css">
+       <link rel="stylesheet" href="./styles/editpost.css">
        <link href="https://unpkg.com/boxicons@latest/css/boxicons.min.css" rel="stylesheet">
     <!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
     <!-- <link rel="stylesheet" href="./styles/style.css"> -->
@@ -56,6 +57,9 @@
     
     <div class="form">
       <h1>Edit Post</h1>
+      <div class="header-wrapper">
+        <i id='back-btn' class='bx bx-left-arrow-alt'></i>
+      </div>
 
       <div class="input-group mb-3">
         <input type="text" class="form-control" placeholder="Playdate Title" aria-label="Playdate Title">
@@ -78,7 +82,7 @@
       </div>
 
       <div class="d-grid gap-2">
-        <button class="btn btn-warning" type="button" onclick="saveEditedPlaydate()">Save Changes</button>
+        <button class="btn btn-custom" type="button" onclick="saveEditedPlaydate()">Save Changes</button>
       </div>
     </div>
     

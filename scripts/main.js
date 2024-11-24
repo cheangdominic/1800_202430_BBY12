@@ -3,6 +3,7 @@ function getNameFromAuth() {
         if (user) {
             userDisplayName = user.displayName;
             userId = user.uid;
+            userEmail = user.email;
             document.getElementById("name-goes-here").innerText = user.displayName;
             document.getElementById("email-goes-here").innerText = user.email;
         } else {
@@ -14,40 +15,130 @@ function getNameFromAuth() {
 
 getNameFromAuth();
 
-document.addEventListener("DOMContentLoaded", function () {
-    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(snapshot => {
+document.addEventListener("DOMContentLoaded", async function () {
+    const mapboxToken = 'pk.eyJ1IjoiZGNoZWFuZyIsImEiOiJjbTM3aXVka3YwZ2lpMmlwd2VndTN0NWw4In0.UNRVJNRE_fuqrK5LtRYHKg';
+
+    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(async snapshot => {
         const postContainer = document.querySelector(".postTemplate");
         postContainer.innerHTML = "";
 
-        snapshot.forEach(doc => {
+        snapshot.forEach(async doc => {
             const playdate = doc.data();
             const currentTime = new Date();
             const playdateTime = new Date(playdate.datetime);
             const post = document.createElement("div");
+
             if (currentTime < playdateTime) {
+                let mapImageURL = "";
+                let userName = "Unknown Host";
+
+                try {
+                    const userDoc = await db.collection("users").doc(playdate.userId).get();
+                    if (userDoc.exists) {
+                        userName = userDoc.data().name || "Unknown Host";
+                    }
+                } catch (error) {
+                    console.error("Error fetching host's name:", error);
+                }
+
+                if (playdate.latitude && playdate.longitude) {
+                    mapImageURL = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${playdate.longitude},${playdate.latitude},14,0/500x300?access_token=${mapboxToken}`;
+                } else {
+                    const response = await fetch(`https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(playdate.address)}.json?access_token=${mapboxToken}`);
+                    const data = await response.json();
+                    if (data.features.length > 0) {
+                        const [longitude, latitude] = data.features[0].center;
+                        mapImageURL = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${longitude},${latitude},14,0/500x300?access_token=${mapboxToken}`;
+                    }
+                }
+
                 post.classList.add("card", "mb-3");
                 post.innerHTML = `
-                <img src="./styles/images/dogparkpost1.jpg" class="card-img-top" alt="post placeholder">
+                <img src="${mapImageURL || './styles/images/default-location.jpg'}" class="card-img-top" alt="location image">
                 <div class="card-body">
                     <h5 class="card-title">${playdate.title}</h5>
+                    <p class="card-text">Hosted by: @${userName}</p>
                     <p class="card-text">${playdate.description}</p>
                     <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
-                    <button type="button" class="btn btn-warning">Join</button>
+                    <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-custom">Join</button>
+                    <div class="participants">
+                        <i id="userCount-btn" class='bx bxs-group'></i>
+                        <p id="participants">View Participants</p>
+                    </div>
                 </div>`;
+
+                const joinButton = post.querySelector("#join-btn");
+
+                const usersGoingRef = db.collection("playdates").doc(doc.id).collection("usersGoing");
+                const joinedPlaydatesRef = db.collection("users").doc(userId).collection("joinedPlaydates");
+                const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
+
+                if (!userAlreadyJoined.empty) {
+                    joinButton.textContent = "Leave";
+                    joinButton.classList.remove("btn-custom");
+                    joinButton.classList.add("btn-leave");
+                }
+
+                joinButton.addEventListener("click", async (event) => {
+                    const userAlreadyJoined = await usersGoingRef.where("UserID", "==", userId).get();
+                    const joinedPlaydate = await joinedPlaydatesRef.where("UserID", "==", userId).get();
+                    
+                    if (!userAlreadyJoined.empty) {
+                        confirm("Are you sure you want to leave this playdate?");
+                        if(confirm) {
+                            const userDoc = userAlreadyJoined.docs[0];
+                            const joinedDoc = joinedPlaydate.docs[0];
+                            const userDocId = userDoc.id;
+                            const joinedDocId = joinedDoc.id;
+                            await usersGoingRef.doc(userDocId).delete();
+                            await joinedPlaydatesRef.doc(joinedDocId).delete();
+                            joinButton.textContent = "Join";
+                            joinButton.classList.remove("btn-leave");
+                            joinButton.classList.add("btn-custom");
+                        }
+                        return;
+                    }
+                    usersGoingRef.add({
+                        Username: userDisplayName,
+                        UserID: userId,
+                        Email: userEmail
+                    })
+                        .then(() => {
+                            console.log("User added to playdate!");
+                            joinButton.textContent = "Leave";
+                            joinButton.classList.remove("btn-custom");
+                            joinButton.classList.add("btn-leave");
+                            joinedPlaydatesRef.add({
+                                title: playdate.title,
+                                description: playdate.description || "",
+                                address: playdate.address,
+                                datetime: playdate.datetime,
+                                host: userName,
+                                UserID: userId
+                            });
+                            alert("You have successfully joined this playdate!");
+                        })
+                        .catch((error) => {
+                            console.error("Error adding user to playdate:", error);
+                        });
+                });
+
+                const userCountButton = post.querySelector("#userCount-btn");
+                userCountButton.addEventListener("click", (event) => {
+                });
+
                 postContainer.appendChild(post);
-            }
-            else {
+            } else {
                 db.collection("playdates").doc(doc.id).delete()
                     .catch((error) => {
                         console.error("Error removing expired playdate: ", error);
                     });
                 db.collection("users").doc(userId).collection("userPlaydates").doc(doc.id).delete()
-                .catch((error) => {
-                    console.error("Error removing expired playdate: ", error);
-                });
+                    .catch((error) => {
+                        console.error("Error removing expired playdate: ", error);
+                    });
             }
         });
     });
 });
-

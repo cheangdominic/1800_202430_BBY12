@@ -9,13 +9,6 @@ function convertImageToBase64(imageFile, callback) {
     FR.readAsDataURL(imageFile);
 }
 
-
-document.querySelectorAll("#back-btn").forEach(button => {
-    button.addEventListener("click", (event) => {
-        redirectToPage("profile.html");
-    });
-});
-
 // Set default profile picture
 function setDefaultProfilePicture() {
     document.getElementById("userProfilePicturePreview").src = "./styles/images/defaultprofile.png";
@@ -23,85 +16,95 @@ function setDefaultProfilePicture() {
 
 // Load profile data from Firestore
 function loadProfile(userId) {
-    db.collection("users")
-        .doc(userId)
-        .collection("userProfile")
-        .doc("profile")
-        .get()
-        .then((doc) => {
-            if (doc.exists) {
-                populateProfile(doc.data());
-            } else {
-                console.log("No profile data found. Loading defaults.");
-                setDefaultProfilePicture();
-            }
-        })
-        .catch((error) => console.error("Error loading profile:", error));
+    const userRef = db.collection("users").doc(userId);
+    userRef.get().then((userDoc) => {
+        if (userDoc.exists) {
+            const name = userDoc.data().name;
+            const profileRef = userRef.collection("userProfile").doc("profile");
+            profileRef.get().then((profileDoc) => {
+                const profileData = profileDoc.exists ? profileDoc.data() : {};
+                populateProfile({ ...profileData, name });
+            });
+        } else {
+            console.log("No user data found.");
+            setDefaultProfilePicture();
+        }
+    }).catch((error) => console.error("Error loading profile:", error));
 }
 
-// Populates profile fields and gives profile picture preview
+// Populate profile fields. Handles cases where local storage photos exists and are removed.
 function populateProfile(data) {
-    document.getElementById("username").value = data.name || "";
+    const profilePicturePreview = document.getElementById("userProfilePicturePreview");
+    let profilePicture = data.profilePicture || "./styles/images/defaultprofile.png"; 
+
+    if (!data.profilePicture) {
+        localStorage.removeItem("userProfilePicture");
+    } else if (localStorage.getItem("userProfilePicture")) {
+        profilePicture = localStorage.getItem("userProfilePicture");
+    }
+
+    profilePicturePreview.src = profilePicture;
+
+    document.getElementById("username").value = data.name || "Test User";
     document.getElementById("age").value = data.age || "";
     document.getElementById("location").value = data.location || "";
     document.getElementById("interests").value = data.interests || "";
-
-    const savedPicture = localStorage.getItem("userProfilePicture");
-    const profilePicture = savedPicture || data.profilePicture || "./styles/images/defaultprofile.png";
-    document.getElementById("userProfilePicturePreview").src = profilePicture;
 }
 
-// Uploads photo and gives preview
+// Upload photo and preview
 function uploadProfilePicture() {
     const fileInput = document.getElementById("userProfilePictureInput");
-    const preview = document.getElementById("userProfilePicturePreview");
-
     fileInput.addEventListener("change", (event) => {
         const file = event.target.files[0];
         if (file) {
-            convertImageToBase64(file, (base64Image) => {
-                preview.src = base64Image;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const base64Image = e.target.result;
+                document.getElementById("userProfilePicturePreview").src = base64Image;
                 localStorage.setItem("userProfilePicture", base64Image);
-                console.log("New profile picture saved to localStorage.");
-            });
-        } else {
-            alert("No file selected.");
+            };
+            reader.readAsDataURL(file);
         }
     });
 }
 
-// Save updated profile to Firestore
+// Update profile data in Firestore
 function updateProfile(userId) {
-    const updatedData = {
+    const userRef = db.collection("users").doc(userId);
+    const profileRef = userRef.collection("userProfile").doc("profile");
+
+    const name = document.getElementById("username").value;
+    const profileData = {
         age: document.getElementById("age").value,
         location: document.getElementById("location").value,
         interests: document.getElementById("interests").value,
         profilePicture: localStorage.getItem("userProfilePicture") || "./styles/images/defaultprofile.png",
     };
 
-    db.collection("users")
-        .doc(userId)
-        .collection("userProfile")
-        .doc("profile")
-        .set(updatedData, { merge: true })
+    userRef.set({ name }, { merge: true })
+        .then(() => profileRef.set(profileData, { merge: true }))
         .then(() => {
             alert("Profile updated successfully!");
-            console.log("Profile updated.");
+            redirectToPage("profile.html");
         })
-        .catch((error) => {
-            console.error("Error updating profile:", error);
-            alert("Failed to update profile. Please try again.");
-        });
+        .catch((error) => console.error("Error updating profile:", error));
 }
 
 function updateButton(userId) {
     document.getElementById("updateProfileBtn").addEventListener("click", (e) => {
         e.preventDefault();
         updateProfile(userId);
-        redirectToPage('profile.html');
     });
 }
 
+// Redirect option
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        redirectToPage("profile.html");
+    });
+});
+
+// Does all functions
 function doAll(userId) {
     loadProfile(userId);
     uploadProfilePicture();
@@ -112,7 +115,7 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         doAll(user.uid);
     } else {
-        alert("Please log in to edit profile.");
+        alert("Please log in to edit your profile.");
         window.location.href = "login.html";
     }
 });

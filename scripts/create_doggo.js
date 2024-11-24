@@ -51,6 +51,13 @@ function submitForm(userId) {
 
 // Save dog profile to Firestore
 function saveDogProfile(userId, dogData) {
+    let profilePicture = dogData.profilePicture || "./styles/images/defaultdog.jpg";
+
+    if (!dogData.profilePicture) {
+        localStorage.removeItem("dogProfilePicture");
+    } else if (localStorage.getItem("dogProfilePicture")) {
+        profilePicture = localStorage.getItem("dogProfilePicture");
+    }
     db.collection("users")
         .doc(userId)
         .collection("dogprofiles")
@@ -64,6 +71,12 @@ function saveDogProfile(userId, dogData) {
             alert("Failed to create dog profile.");
         });
 }
+
+document.querySelectorAll("#back-btn").forEach(button => {
+    button.addEventListener("click", () => {
+        redirectToPage("profile.html");
+    });
+});
 
 // Does all functions
 function doAll(userId) {

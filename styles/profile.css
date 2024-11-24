@@ -25,8 +25,8 @@ body {
 
 /* Header Section */
 .header {
-    background-color: #ff6f61;
-    color: white;
+    background-color: transparent;
+    color: black;
     text-align: center;
     padding: 25px 0;
     font-size: 18px;
@@ -36,6 +36,10 @@ body {
     box-sizing: border-box;
     width: calc(100% + 40px); 
     margin: 0 -20px;  
+}
+
+.bx.bxs-user-circle{
+    color: #81875B;
 }
 
 /* Pet Icons */
@@ -57,11 +61,27 @@ body {
     display: inline-block;
     text-align: center;
     font-size: 18px;
-    color: #ff6f61;
+    color: #7C5235;
     line-height: 45px;
     text-decoration: none;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
     overflow: hidden;
+}
+
+.edit-btn, .delete-btn {
+    border: 3px solid #81875B;
+    background-color: #81875B;
+    color: white;
+    border-radius: 20%;
+}
+
+#back-btn {
+    margin-top: 1.2%;
+    font-size: 250%;
+    position: static;
+    z-index: 999;
+    color: black;
+    cursor: pointer;
 }
 
 .pet-icon img{
@@ -115,7 +135,7 @@ body {
 /* General btn */
 .btn {
     display: inline-block;
-    background-color: #ff6f61;
+    background-color: #81875B;
     color: white;
     border: none;
     padding: 8px 16px;
@@ -128,7 +148,7 @@ body {
 }
 
 .profile-info .btn:hover {
-    background-color: #ff7f71;
+    background-color: #81875B;
 }
 
 /* File Input Styling */
@@ -159,7 +179,7 @@ input[type="file"] {
 
 
 .return-button-container .btn {
-    background-color: #ff6f61; 
+    background-color: #81875B; 
     color: white;
     border: none;
     padding: 10px 20px;
@@ -264,7 +284,7 @@ input[type="file"] {
 }
 
 .change-picture-button {
-    background-color: #ff6f61;
+    background-color: #81875B;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -277,7 +297,7 @@ input[type="file"] {
 }
 
 .change-picture-button:hover {
-    background-color: #ff7f71;
+    background-color: #81875B;
 }
 
 .form {
@@ -497,43 +517,47 @@ input[type="file"] {
 }
 
 /* Dog Cards */
-.dog-profile-container {
-    margin: 20px 0;
-  }
-  
-  #dog-profiles {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    align-items: center;
-  }
-  
-  .dog-card {
-    width: 150px;
-    border: 1px solid #ddd;
+.dog-card {
+    background-color: #fff;
     border-radius: 8px;
-    text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     padding: 10px;
-    background-color: #f9f9f9;
-  }
-  
-  .dog-card img {
-    width: 100px;
-    height: 100px;
+    text-align: center;
+    margin: 10px;
+}
+
+.dog-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+    background-color: #f0f8ff; 
+}
+
+.dog-card img {
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     object-fit: cover;
-  }
-  
-  .dog-card h5 {
-    margin: 10px 0 5px;
-    font-size: 1rem;
+    border: 0.5px solid black;
+    margin-bottom: 10px;
+}
+
+.dog-card h5 {
+    font-size: 1.2rem;
     color: #333;
-  }
-  
-  .dog-card p {
+    margin: 5px 0;
+}
+
+.dog-card p {
     font-size: 0.9rem;
-    color: #666;
-  }
+    color: #555;
+    margin: 2px 0;
+}
+
+#updateProfileBtn {
+    background-color: #81875B;
+}
   
 
 

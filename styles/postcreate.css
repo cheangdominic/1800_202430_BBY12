@@ -1,7 +1,8 @@
-#geocoder {
-    z-index: 1;
-    margin: 20px;
+.bx.bxs-plus-square {
+    color: #81875B;
 }
-.mapboxgl-ctrl-geocoder {
-    min-width: 100%;
+
+.btn.btn-custom {
+    background-color: #81875B;
+    color: white;
 }
