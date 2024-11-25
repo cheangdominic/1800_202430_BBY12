@@ -66,15 +66,15 @@
 .checkbox-container {
     display: flex;
     align-items: center;
-    margin-bottom: 10px; /* Add space between items */
+    margin-bottom: 10px; 
 }
 
 .checkbox-container input[type="checkbox"] {
-    margin-right: 10px; /* Space between checkbox and label */
+    margin-right: 5px; 
 }
 
 .participant-entry {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     padding: 10px;
     border-bottom: 1px solid #ddd;
 }
@@ -86,8 +86,8 @@
 }
 
 .profile-image {
-    width: 50px;
-    height: 50px;
+    width: 75px;
+    height: 75px;
     border-radius: 50%;
     margin-right: 10px;
 }
