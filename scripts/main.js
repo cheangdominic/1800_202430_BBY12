@@ -26,38 +26,60 @@ document.addEventListener("DOMContentLoaded", async function () {
     const closeModalButton = document.querySelector(".close");
 
     const getDogsInfo = async (playdateId) => {
-        dogListContainer.innerHTML = ""; 
-
+        dogListContainer.innerHTML = "";
+        
         const noDogOption = document.createElement("div");
         noDogOption.classList.add("checkbox-container");
         noDogOption.innerHTML = `
             <input type="checkbox" id="no-dog" value="No dogs" />
-            <label for="no-dog">No Dogs</label>
+            <label for="no-dog">No dogs</label>
         `;
         dogListContainer.appendChild(noDogOption);
-
-        db.collection("users").doc(userId).collection("dogprofiles").get().then(snapshot => {
-            if (!snapshot.empty) {
-                snapshot.forEach(doc => {
-                    const dog = doc.data();
-                    const dogOption = document.createElement("div");
-                    dogOption.classList.add("checkbox-container");
-                    dogOption.innerHTML = `
-                        <input type="checkbox" id="${dog.dogname}" value="${dog.dogname}" />
-                        <label for="${dog.dogname}">${dog.dogname}</label>
-                    `;
-                    dogListContainer.appendChild(dogOption);
+    
+        const dogSnapshot = await db.collection("users").doc(userId).collection("dogprofiles").get();
+        if (!dogSnapshot.empty) {
+            dogSnapshot.forEach(doc => {
+                const dog = doc.data();
+                const dogOption = document.createElement("div");
+                dogOption.classList.add("checkbox-container");
+                dogOption.innerHTML = `
+                    <input type="checkbox" id="${dog.dogname}" value="${dog.dogname}" class="dog-checkbox" />
+                    <label for="${dog.dogname}">${dog.dogname}</label>
+                `;
+                dogListContainer.appendChild(dogOption);
+            });
+        } else {
+            const noDogsMessage = document.createElement("p");
+            noDogsMessage.textContent = "You don't have any dogs in your profile.";
+            dogListContainer.appendChild(noDogsMessage);
+        }
+    
+        // Added toggle for no dog
+        const noDogCheckbox = document.getElementById("no-dog");
+        const dogCheckboxes = document.querySelectorAll(".dog-checkbox");
+    
+        noDogCheckbox.addEventListener("change", () => {
+            if (noDogCheckbox.checked) {
+                dogCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = true; 
                 });
             } else {
-                const noDogsMessage = document.createElement("p");
-                noDogsMessage.textContent = "You don't have any dogs in your profile.";
-                dogListContainer.appendChild(noDogsMessage);
+                dogCheckboxes.forEach(checkbox => {
+                    checkbox.disabled = false; 
+                });
             }
-
-            dogSelectionModal.style.display = "block";
-        }).catch(error => {
-            console.error("Error fetching dogs:", error);
         });
+    
+        dogCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", () => {
+                if (Array.from(dogCheckboxes).some(cb => cb.checked)) {
+                    noDogCheckbox.disabled = true; 
+                } else {
+                    noDogCheckbox.disabled = false; 
+                }
+            });
+        });
+        dogSelectionModal.style.display = "block";
     };
 
     const postContainer = document.querySelector(".postTemplate");
