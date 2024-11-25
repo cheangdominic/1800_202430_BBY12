@@ -1,7 +1,3 @@
-let playdateId = null; 
-let userId = null; 
-let userDisplayName = null; 
-
 function getNameFromAuth() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {

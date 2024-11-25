@@ -1,12 +1,11 @@
-let playdateId = null; 
-let userId = null; 
-let userDisplayName = null; 
+let userId = "";
 
 function getNameFromAuth() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
             userDisplayName = user.displayName;
             userId = user.uid;
+            console.log(userId);
             document.getElementById("name-goes-here").innerText = user.displayName;
         } else {
             console.log("No user is logged in");
@@ -19,7 +18,6 @@ getNameFromAuth();
 
 document.addEventListener("DOMContentLoaded", async function () {
     const mapboxToken = 'pk.eyJ1IjoiZGNoZWFuZyIsImEiOiJjbTM3aXVka3YwZ2lpMmlwd2VndTN0NWw4In0.UNRVJNRE_fuqrK5LtRYHKg';
-
     const dogSelectionModal = document.getElementById("dogSelectionModal");
     const dogListContainer = document.getElementById("dogList");
     const confirmDogsButton = document.getElementById("confirmDogsButton");
@@ -194,7 +192,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    db.collection("users").doc(userId).collection("joinedPlaydates").onSnapshot(async snapshot => {
+    db.collection("users").doc(userId).collection("joinedPlaydates").onSnapshot(async snapshot => { 
         const postContainer = document.querySelector(".postTemplate");
         postContainer.innerHTML = "";
     
