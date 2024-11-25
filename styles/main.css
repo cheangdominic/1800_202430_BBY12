@@ -62,3 +62,60 @@
 .close:hover {
     color: #000;
 }
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px; /* Add space between items */
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px; /* Space between checkbox and label */
+}
+
+.participant-entry {
+    margin-bottom: 20px;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.profile-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.dog-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.dog-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    width: 150px;
+    text-align: center;
+    line-height: 0.9;
+}
+
+.dog-card p {
+margin: 5px 0;
+}
+
+.dog-card img {
+    width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
