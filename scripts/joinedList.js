@@ -194,29 +194,26 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    db.collection("playdates").orderBy("createdAt", "desc").onSnapshot(async snapshot => {
+    db.collection("users").doc(userId).collection("joinedPlaydates").onSnapshot(async snapshot => {
         const postContainer = document.querySelector(".postTemplate");
         postContainer.innerHTML = "";
-
+    
+        if (snapshot.empty) {
+            const noPlaydatesMessage = document.createElement("p");
+            noPlaydatesMessage.textContent = "You haven't joined any playdates yet.";
+            postContainer.appendChild(noPlaydatesMessage);
+            return;
+        }
+    
         snapshot.forEach(async doc => {
             const playdate = doc.data();
             const currentTime = new Date();
             const playdateTime = new Date(playdate.datetime);
             const post = document.createElement("div");
-
+    
             if (currentTime < playdateTime) {
                 let mapImageURL = "";
-                let userName = "Unknown Host";
-
-                try {
-                    const userDoc = await db.collection("users").doc(playdate.userId).get();
-                    if (userDoc.exists) {
-                        userName = userDoc.data().name || "Unknown Host";
-                    }
-                } catch (error) {
-                    console.error("Error fetching host's name:", error);
-                }
-
+    
                 if (playdate.latitude && playdate.longitude) {
                     mapImageURL = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${playdate.longitude},${playdate.latitude},14,0/500x300?access_token=${mapboxToken}`;
                 } else {
@@ -227,39 +224,31 @@ document.addEventListener("DOMContentLoaded", async function () {
                         mapImageURL = `https://api.mapbox.com/styles/v1/mapbox/streets-v11/static/${longitude},${latitude},14,0/500x300?access_token=${mapboxToken}`;
                     }
                 }
-
+    
                 post.classList.add("card", "mb-3");
                 post.innerHTML = `
                 <img src="${mapImageURL || './styles/images/default-location.jpg'}" class="card-img-top" alt="location image">
                 <div class="card-body">
                     <h5 class="card-title">${playdate.title}</h5>
-                    <p class="card-text">Hosted by: @${userName}</p>
+                    <p class="card-text">Hosted by: @${playdate.host}</p>
                     <p class="card-text">${playdate.description}</p>
                     <p class="card-text">${playdate.address}</p>
                     <p class="card-text"><small class="text-body-secondary">Scheduled for ${new Date(playdate.datetime).toLocaleString()}</small></p>
-                    <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-custom">Join</button>
+                    <button type="button" data-id="${doc.id}" id="join-btn" class="btn btn-leave">Leave</button>
                     <div class="participants">
                         <i id="userCount-btn" class='bx bxs-group'></i>
                         <p id="participants">View Participants</p>
                     </div>
                 </div>`;
                 postContainer.appendChild(post);
-
-                const usersGoingRef = db.collection("playdates").doc(doc.id).collection("participants");
-                const userJoined = await usersGoingRef.doc(userId).get();
-
-                if (userJoined.exists) {
-                    const joinButton = post.querySelector("#join-btn");
-                    joinButton.textContent = "Leave";
-                    joinButton.classList.remove("btn-custom");
-                    joinButton.classList.add("btn-leave");
-                }
             } else {
-                db.collection("playdates").doc(doc.id).delete()
-                    .catch((error) => {
-                        console.error("Error removing expired playdate: ", error);
-                    });
+                try {
+                    await db.collection("users").doc(userId).collection("joinedPlaydates").doc(doc.id).delete();
+                    console.log("Expired playdate removed from joinedPlaydates.");
+                } catch (error) {
+                    console.error("Error removing expired playdate: ", error);
+                }
             }
         });
     });
-});
+});    
