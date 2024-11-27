@@ -16,6 +16,7 @@ function getNameFromAuth() {
 
 getNameFromAuth();
 
+
 document.addEventListener("DOMContentLoaded", async function () {
     const mapboxToken = 'pk.eyJ1IjoiZGNoZWFuZyIsImEiOiJjbTM3aXVka3YwZ2lpMmlwd2VndTN0NWw4In0.UNRVJNRE_fuqrK5LtRYHKg';
     const dogSelectionModal = document.getElementById("dogSelectionModal");
@@ -192,13 +193,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
     });
 
-    db.collection("users").doc(userId).collection("joinedPlaydates").onSnapshot(async snapshot => { 
+    firebase.auth().onAuthStateChanged(async (user) => {
+    db.collection("users").doc(userId).collection("joinedPlaydates").orderBy("datetime", "asc").onSnapshot(async snapshot => { 
         const postContainer = document.querySelector(".postTemplate");
         postContainer.innerHTML = "";
     
         if (snapshot.empty) {
             const noPlaydatesMessage = document.createElement("p");
             noPlaydatesMessage.textContent = "You haven't joined any playdates yet.";
+            noPlaydatesMessage.style.marginTop = "5%";
             postContainer.appendChild(noPlaydatesMessage);
             return;
         }
@@ -248,5 +251,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 }
             }
         });
+    });
     });
 });    
