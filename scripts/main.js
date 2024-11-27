@@ -1,3 +1,7 @@
+let playdateId = null; 
+let userId = null; 
+let userDisplayName = null; 
+
 function getNameFromAuth() {
     firebase.auth().onAuthStateChanged(user => {
         if (user) {
@@ -82,31 +86,26 @@ document.addEventListener("DOMContentLoaded", async function () {
     postContainer.addEventListener("click", async (event) => {
         const joinButton = event.target.closest("#join-btn");
         if (joinButton) {
-            playdateId = joinButton.getAttribute("data-id");
-    
+            playdateId = joinButton.getAttribute("data-id"); 
+
             if (joinButton.textContent === "Leave") {
                 if (confirm("Are you sure you want to leave this playdate?")) {
-                    const playdateParticipantsRef = db.collection("playdates").doc(playdateId).collection("participants").doc(userId);
-                    const joinedPlaydatesRef = db.collection("users").doc(userId).collection("joinedPlaydates").doc(playdateId);
-    
-                    try {
-                        await playdateParticipantsRef.delete();
-                        await joinedPlaydatesRef.delete();
-                        alert("You have left the playdate.");
-
-                        joinButton.textContent = "Join";
-                        joinButton.classList.remove("btn-leave");
-                        joinButton.classList.add("btn-custom");
-                    } catch (error) {
-                        console.error("Error leaving playdate:", error);
-                    }
+                    db.collection("playdates").doc(playdateId).collection("participants").doc(userId).delete()
+                        .then(() => {
+                            alert("You have left the playdate.");
+                            joinButton.textContent = "Join";
+                            joinButton.classList.remove("btn-leave");
+                            joinButton.classList.add("btn-custom");
+                        })
+                        .catch(error => {
+                            console.error("Error leaving playdate:", error);;
+                        });
                 }
             } else {
                 await getDogsInfo(playdateId);
             }
         }
     });
-    
 
     closeModalButton.addEventListener("click", () => {
         dogSelectionModal.style.display = "none";
@@ -138,7 +137,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             dogs: selectedDogs,
             username: userDisplayName,
             userId: userId
-        }).then(async () => {
+        }).then(() => {
             alert("You have successfully joined this playdate!");
             console.log("User added to playdate!");
 
@@ -150,41 +149,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             dogSelectionModal.style.display = "none";
-
-            try {
-                const playdateDoc = await db.collection("playdates").doc(playdateId).get();
-                if (playdateDoc.exists) {
-                    const playdate = playdateDoc.data();
-            
-                    let userName = "Unknown Host";
-            
-                    try {
-                        const userDoc = await db.collection("users").doc(playdate.userId).get();
-                        if (userDoc.exists) {
-                            userName = userDoc.data().name || "Unknown Host";
-                        }
-                    } catch (error) {
-                        console.error("Error fetching host's name:", error);
-                    }
-        
-                    const joinedPlaydatesRef = db.collection("users").doc(userId).collection("joinedPlaydates");
-                    await joinedPlaydatesRef.doc(playdateId).set({
-                        title: playdate.title,
-                        description: playdate.description || "",
-                        address: playdate.address,
-                        datetime: playdate.datetime,
-                        host: userName,
-                        UserID: playdate.userId
-                    });
-            
-                    console.log("Playdate added to joinedPlaydates.");
-                } else {
-                    console.error("Playdate document does not exist.");
-                }
-            } catch (error) {
-                console.error("Error adding playdate to joinedPlaydates:", error);
-            }
-            
         }).catch(error => {
             alert("No dogs to be shown.");
         });

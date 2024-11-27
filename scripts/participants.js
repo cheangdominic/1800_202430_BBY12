@@ -66,7 +66,7 @@ function addParticipant(userProfile, userDogs) {
     dogContainer.classList.add("dog-container");
 
     if (userDogs.length === 0) {
-        dogContainer.innerHTML = "<p>No dogs.</p>";
+        dogContainer.innerHTML = "<p>Just me! :)</p>";
     } else {
         userDogs.forEach((dog) => {
             const dogCard = document.createElement("div");
