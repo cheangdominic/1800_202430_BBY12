@@ -6,3 +6,11 @@
 .login {
     margin-top: 20vh;
 }
+
+#back-btn {
+    top: 0;
+    font-size: 400%;
+    position: absolute;
+    z-index: 999;
+    cursor: pointer;
+}
