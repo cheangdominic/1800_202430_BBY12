@@ -25,6 +25,10 @@
     background-color: #81875B;
 }
 
+#save-changes-btn:hover {
+    color: black;
+}
+
 .header {
     background-color: transparent;
     color: black;

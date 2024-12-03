@@ -92,7 +92,7 @@ body {
 }
 
 .edit-btn, .delete-btn {
-    border: 3px solid #81875B;
+    border: 6px solid #81875B;
     background-color: #81875B;
     color: white;
     border-radius: 20%;
@@ -172,6 +172,14 @@ body {
 
 .profile-info .btn:hover {
     background-color: #81875B;
+}
+
+.btn:hover{
+    background-color: #81875B;
+}
+
+.edit-btn:hover, .delete-btn:hover {
+    color: black;
 }
 
 /* File Input Styling */

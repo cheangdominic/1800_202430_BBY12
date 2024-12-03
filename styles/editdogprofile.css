@@ -21,3 +21,11 @@
 .header {
     padding: 0;
 }
+
+.btn:hover {
+    color: black;
+}
+
+#change-pic-btn:hover {
+    color: black;
+}

@@ -21,3 +21,8 @@
 .dog-profile-container {
     margin-top: -50px;
 }
+
+
+.btn:hover {
+    color: black;
+}

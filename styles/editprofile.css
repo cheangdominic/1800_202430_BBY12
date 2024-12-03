@@ -17,3 +17,11 @@
 .header-wrapper {
     margin-top: -50px;
 }
+
+.change-picture-button:hover {
+    color: black;
+}
+
+#updateProfileBtn:hover {
+    color: black;
+}
