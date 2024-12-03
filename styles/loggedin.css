@@ -16,6 +16,15 @@
     z-index: 999;
 }
 
+#logout-button:hover {
+    color: black;
+}
+
+.custom-navbar {
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1030;
+}
+
 .bottom-navbar-icons {
     background-color: rgb(242, 241, 241);
     border: 3px solid rgb(220, 220, 220);
@@ -46,11 +55,11 @@
     font-size: 250%;
 }
 
-.bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover, .bx.bxs-user-circle:hover, .bx.bxs-inbox:hover {
+.bx.bxs-calendar-check:hover, .bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover, .bx.bxs-user-circle:hover {
     color: #81875B;
 }
 
-.bx.bxs-inbox, .bx.bxs-user-circle {
+.bx.bxs-calendar-check, .bx.bxs-user-circle {
     font-size: 170%;
 }
 

@@ -1,8 +1,27 @@
 #back-btn {
-    margin-top: 1.2%;
+    top: 60px;
     font-size: 250%;
-    position: absolute;
-    z-index: 999;
-    color: white;
+    position: relative;
+    color: rgb(0, 0, 0);
+    padding: 8px;
+    margin-right: 1rem;
     cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+#back-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+ }
+
+.header-wrapper {
+    margin-top: -50px;
+}
+
+.change-picture-button:hover {
+    color: black;
+}
+
+#updateProfileBtn:hover {
+    color: black;
 }

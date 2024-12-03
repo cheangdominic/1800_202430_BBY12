@@ -96,6 +96,10 @@ footer .nav-link:hover {
     color: #333;
 }
 
+.learn-more {
+    margin-top: 100px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .card-row-1, .card-row-2 {
