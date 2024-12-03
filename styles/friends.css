@@ -29,7 +29,7 @@ h1:after {
     transform: translateX(-50%);
     width: 60px;
     height: 4px;
-    background: linear-gradient(to right, #3498db, #2ecc71);
+    background: linear-gradient(to right, #81875B, #81875B);
     border-radius: 2px;
 }
 
@@ -64,13 +64,13 @@ h1:after {
 }
 
 #searchInput:focus {
-    border-color: #3498db;
+    border-color: #81875B;
     box-shadow: none;
     outline: none;
 }
 
 #searchButton {
-    background: #3498db;
+    background: #81875B;
     border: none;
     padding: 0.8rem 1.5rem;
     border-radius: 0 10px 10px 0;
@@ -79,7 +79,7 @@ h1:after {
 }
 
 #searchButton:hover {
-    background: #2980b9;
+    background: #474b33;
 }
 
 /* Search Results */
@@ -146,9 +146,33 @@ h2 {
 }
 
 .friend-requests-container {
-    max-height: 300px; /* スクロール可能な高さを設定 */
+    max-height: 300px;
     overflow-y: auto;
     padding-right: 0.5rem;
+}
+
+/* Send Friend Request button style */
+.send-request-btn {
+    background-color: #81875B !important;
+    border-color: #81875B !important;
+}
+
+.send-request-btn:hover {
+    background-color: #6a7049 !important;
+    border-color: #6a7049 !important;
+}
+
+/* Send button and Schedule button's style */
+.modal-footer .btn-primary,
+.modal-footer .btn-success {
+    background-color: #81875B !important;
+    border-color: #81875B !important;
+}
+
+.modal-footer .btn-primary:hover,
+.modal-footer .btn-success:hover {
+    background-color: #6a7049 !important;
+    border-color: #6a7049 !important;
 }
 
 /* Friend Request Card */
@@ -175,16 +199,16 @@ h2 {
 
 /* Friends List Container */
 .friends-section {
-    padding-bottom: 3rem; /* 下部に余白を追加 */
+    padding-bottom: 3rem;
 }
 
 #friendsList {
-    max-height: 800px; /* スクロール可能な高さを設定 */
+    max-height: 800px;
     overflow-y: auto;
     padding-right: 0.5rem;
 }
 
-/* スクロールバーのスタイルを改善 */
+/* scrollbar */
 .friend-requests-container::-webkit-scrollbar,
 #friendsList::-webkit-scrollbar {
     width: 6px;
@@ -207,6 +231,42 @@ h2 {
     background: #a0aec0;
 }
 
+/* Accept button style */
+.accept-request-btn,
+.btn-success {
+    background-color: #81875B !important;
+    border-color: #81875B !important;
+}
+
+.accept-request-btn:hover,
+.btn-success:hover {
+    background-color: #6a7049 !important;
+    border-color: #6a7049 !important;
+}
+
+/* Decline button style */
+.decline-request-btn,
+.btn-danger {
+    background-color: #8b423a !important;
+    border-color: #8b423a !important;
+}
+
+.decline-request-btn:hover,
+.btn-danger:hover {
+    background-color: #723530 !important;
+    border-color: #723530 !important;
+}
+
+/* Styles of Friend request's button group */
+.friend-request-card .btn-group {
+    gap: 0.5rem;
+}
+
+.friend-request-card .btn {
+    border-radius: 8px;
+    padding: 0.5rem 1.2rem;
+}
+
 /* Toast Container */
 #toastContainer {
     position: fixed;
@@ -220,11 +280,10 @@ h2 {
     min-width: 250px;
 }
 
-/* レスポンシブ対応の改善 */
 @media (max-width: 768px) {
     .friend-requests-container,
     #friendsList {
-        max-height: none; /* モバイルでは高さ制限を解除 */
+        max-height: none;
     }
 
     #friendRequestsSection {
@@ -243,7 +302,7 @@ h2 {
     }
 }
 
-/* アニメーションの追加 */
+/* animation */
 .friend-request-card {
     animation: slideIn 0.3s ease-out;
 }
@@ -295,17 +354,17 @@ h2 {
 }
 
 .add-friend-btn {
-    background: #2ecc71;
+    background: #81875B;
     border: none;
 }
 
 .add-friend-btn:hover {
-    background: #27ae60;
+    background: #81875B;
     transform: translateY(-1px);
 }
 
 .remove-friend-btn {
-    background: #e74c3c;
+    background: #8b423a;
     border: none;
 }
 
@@ -459,8 +518,31 @@ h2 {
     display: flex;
     gap: 1rem;
     margin-top: 1.5rem;
-    padding-top: 1rem;
+    padding-top: 1.5rem;
     border-top: 1px solid #eee;
+    justify-content: space-between;
+}
+
+
+.friend-action-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    flex: 1;
+    justify-content: center;
+}
+
+.friend-action-btn i {
+    font-size: 1.2rem;
+}
+
+/* Hover effects */
+.friend-action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .message-btn {
@@ -473,24 +555,48 @@ h2 {
     font-size: 1.2rem;
 }
 
-/* Responsive Adjustments */
+/* Responsive adjustments */
 @media (max-width: 768px) {
-    .friend-profile-img {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .col-md-6 {
-        padding: 0 0.5rem;
-    }
-    
     .card-actions {
         flex-direction: column;
+        gap: 0.75rem;
     }
     
-    .card-actions button {
+    .friend-action-btn {
         width: 100%;
     }
+}
+
+/* Button specific colors */
+.friend-action-btn.btn-primary {
+    background-color: #7C5235;
+    border-color: #7C5235;
+}
+
+.friend-action-btn.btn-success {
+    background-color: #81875B;
+    border-color: #81875B;
+}
+
+.friend-action-btn.btn-danger {
+    background-color: #8b423a;
+    border-color: #8b423a;
+}
+
+/* Hover state colors */
+.friend-action-btn.btn-primary:hover {
+    background-color: #7C5235;
+    border-color: #7C5235;
+}
+
+.friend-action-btn.btn-success:hover {
+    background-color: #81875B;
+    border-color: #81875B;
+}
+
+.friend-action-btn.btn-danger:hover {
+    background-color: #8b423a;
+    border-color: #8b423a;
 }
 
 /* Animation for profile details */

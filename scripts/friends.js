@@ -442,8 +442,6 @@ async function declineFriendRequest(requestId) {
     }
 }
 
-// ... 残りのコードはそのまま ...
-
 /**
  * Load and display the current user's friends list
  */
@@ -550,14 +548,18 @@ function createFriendCard(friendId, friendData, friendshipId, friendshipDate) {
                 </div>
                 
                 <div class="card-actions mt-3">
-                    <div class="btn-group">
-                        <button onclick="showMessageModal('${friendId}')" 
-                                class="btn btn-primary">Message</button>
-                        <button onclick="showParkMeetupModal('${friendId}')" 
-                                class="btn btn-success">Schedule Park Meetup</button>
-                        <button onclick="removeFriend('${friendshipId}')" 
-                                class="btn btn-danger">Remove Friend</button>
-                    </div>
+                    <button onclick="showMessageModal('${friendId}')" 
+                            class="btn btn-primary friend-action-btn">
+                        <i class='bx bx-message-rounded'></i> Message
+                    </button>
+                    <button onclick="showParkMeetupModal('${friendId}')" 
+                            class="btn btn-success friend-action-btn">
+                        <i class='bx bx-calendar'></i> Schedule Park Meetup
+                    </button>
+                    <button onclick="removeFriend('${friendshipId}')" 
+                            class="btn btn-danger friend-action-btn">
+                        <i class='bx bx-user-x'></i> Remove Friend
+                    </button>
                 </div>
             </div>
         </div>
