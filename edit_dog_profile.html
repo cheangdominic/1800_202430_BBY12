@@ -71,15 +71,30 @@
         
             <!-- Dog Age -->
             <label for="dogAgeInput">Age</label>
-            <input type="text" id="dogAgeInput" placeholder="Enter your dog's age">
+            <select class="form-select" id="dogAgeInput" placeholder="Enter your dog's age" required>
+                <option value="">Select your dog's age</option>
+                <option value="Less than 1 year old">Less than one year old</option>
+                <option value="1 year old">1 year old</option>
+                <option value="2 years old">2 years old</option>
+                <option value="3 years old">3 years old</option>
+                <option value="4 years old">4 years old</option>
+                <option value="5 years old">5 years old</option>
+                <option value="6 years old">6 years old</option>
+                <option value="7 years old">7 years old</option>
+                <option value="8 years old">8 years old</option>
+                <option value="9 years old">9 years old</option>
+                <option value="10+ years old">10+ years old</option>
+                </select>
         
             <!-- Dog Size -->
             <label for="dogSizeInput">Size</label>
             <select class="form-select" id="dogSizeInput" required>
                 <option value="">Select your dog's size</option>
-                <option value="Small">Small</option>
-                <option value="Medium">Medium</option>
-                <option value="Large">Large</option>
+                  <option value="Miniature">Miniature</option>
+                  <option value="Small">Small</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Large">Large</option>
+                  <option value="Very Large">Very Large</option>
               </select>
         
             <!-- Dog Breed -->
@@ -87,7 +102,7 @@
             <input type="text" id="dogBreedInput" placeholder="Enter your dog's breed">
 
             <div class="update-button">
-                <button id="updateDogProfileBtn" class="btn btn-dark">Update</button>
+                <button id="updateDogProfileBtn" class="btn">Update</button>
                 <a id="returnDogProfileBtn" class="btn btn-secondary">Return to Dog Profile</a>
             </div>
         </div>
