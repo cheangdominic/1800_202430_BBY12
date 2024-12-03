@@ -219,12 +219,8 @@ function createFileAttachment(url, fileName) {
     `;
 }
 
-// Send message
+// Modify the sendMessage function
 async function sendMessage() {
-    if (event && event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-    }
-
     const messageInput = document.getElementById("messageInput");
     const message = messageInput.value.trim();
     
@@ -236,6 +232,11 @@ async function sendMessage() {
     }
     
     try {
+        // Disable input and button while sending
+        messageInput.disabled = true;
+        const sendButton = document.getElementById("sendButton");
+        if (sendButton) sendButton.disabled = true;
+        
         // Add message to Firestore
         await db.collection("messages").add({
             text: message,
@@ -253,6 +254,12 @@ async function sendMessage() {
     } catch (error) {
         console.error("Error sending message:", error);
         alert("Failed to send message. Please try again.");
+    } finally {
+        // Re-enable input and button
+        messageInput.disabled = false;
+        const sendButton = document.getElementById("sendButton");
+        if (sendButton) sendButton.disabled = false;
+        messageInput.focus();
     }
 }
 
@@ -315,7 +322,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     
+    // Remove the old event listeners first
     if (messageInput) {
+        const oldKeyHandler = messageInput.onkeypress;
+        if (oldKeyHandler) {
+            messageInput.removeEventListener('keypress', oldKeyHandler);
+        }
+        
+        // Add new event listener
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -324,40 +338,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Remove old click handler
     if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
-    }
-
-    // Emoji picker toggle
-    const emojiButton = document.getElementById('emojiButton');
-    if (emojiButton) {
-        emojiButton.addEventListener('click', function() {
-            const picker = document.getElementById('emojiPicker');
-            if (picker) {
-                picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-            }
+        const oldClickHandler = sendButton.onclick;
+        if (oldClickHandler) {
+            sendButton.removeEventListener('click', oldClickHandler);
+        }
+        
+        // Add new click handler
+        sendButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            sendMessage();
         });
     }
-    
-    // Close emoji picker when clicking outside
-    document.addEventListener('click', (e) => {
-        const picker = document.getElementById('emojiPicker');
-        const emojiButton = document.getElementById('emojiButton');
-        if (picker && emojiButton && !picker.contains(e.target) && !emojiButton.contains(e.target)) {
-            picker.style.display = 'none';
-        }
-    });
 
-    // File upload handlers
-    const imageUpload = document.getElementById('imageUpload');
-    const documentUpload = document.getElementById('documentUpload');
-    
-    if (imageUpload) {
-        imageUpload.addEventListener('change', handleFileUpload);
-    }
-    if (documentUpload) {
-        documentUpload.addEventListener('change', handleFileUpload);
-    }
+    // Remove onclick attribute from send button in HTML
+    sendButton?.removeAttribute('onclick');
+
+    // Rest of the event listeners...
 });
 
 // Make functions globally available
