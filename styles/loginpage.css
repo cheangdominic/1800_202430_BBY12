@@ -8,9 +8,20 @@
 }
 
 #back-btn {
-    top: 0;
-    font-size: 400%;
-    position: absolute;
+    margin-left: 1%;
+    margin-top: 1%;
+    font-size: 250%;
+    position: relative;
+    color: rgb(0, 0, 0);
+    padding: 8px;
     z-index: 999;
+    margin-right: 1rem;
     cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
 }
+
+#back-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color:#81875B;
+ }
