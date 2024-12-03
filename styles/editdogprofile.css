@@ -1,8 +1,15 @@
 #back-btn {
-    margin-top: 1.2%;
+    top: 60px;
     font-size: 250%;
-    position: absolute;
-    z-index: 999;
-    color: white;
+    position: relative;
+    color: rgb(0, 0, 0);
     cursor: pointer;
+}
+
+.header-wrapper {
+    margin-top: -50px;
+}
+
+.header {
+    padding: 0;
 }

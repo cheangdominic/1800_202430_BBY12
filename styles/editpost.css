@@ -1,13 +1,30 @@
 #back-btn {
-    margin-top: -6.5%;
+    top: 60px;
     font-size: 250%;
-    position: absolute;
-    z-index: 999;
-    color: black;
+    position: relative;
+    color: rgb(0, 0, 0);
     cursor: pointer;
+}
+
+.header-wrapper {
+    margin-top: -80px;
 }
 
 .btn.btn-custom {
     color: white;
     background-color: #81875B;
+}
+
+.header {
+    background-color: transparent;
+    color: black;
+    text-align: center;
+    padding: 25px 0;
+    font-size: 20px;
+    font-weight: bold;
+    position: relative;
+    width: 100%;
+    box-sizing: border-box;
+    width: calc(100% + 40px); 
+    margin: 0 -20px;  
 }
