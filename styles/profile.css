@@ -29,6 +29,23 @@ body {
     padding-bottom: 100px;;
 }
 
+#back-btn {
+    top: 40px;
+    font-size: 250%;
+    position: relative;
+    color: rgb(0, 0, 0);
+    padding: 8px;
+    margin-right: 1rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+#back-btn:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    color:#81875B;
+ }
+
 /* Header Section */
 .header {
     background-color: transparent;
