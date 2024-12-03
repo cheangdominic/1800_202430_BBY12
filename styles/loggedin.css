@@ -46,11 +46,11 @@
     font-size: 250%;
 }
 
-.bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover, .bx.bxs-user-circle:hover, .bx.bxs-inbox:hover {
+.bx.bxs-calendar-check:hover, .bx.bxs-home:hover, .bx.bxs-map-alt:hover, .bx.bxs-plus-square:hover, .bx.bxs-user-plus:hover, .bx.bxs-chat:hover, .bx.bxs-user-circle:hover {
     color: #81875B;
 }
 
-.bx.bxs-inbox, .bx.bxs-user-circle {
+.bx.bxs-calendar-check, .bx.bxs-user-circle {
     font-size: 170%;
 }
 
