@@ -416,6 +416,23 @@ input[type="file"] {
 
 
 /* Container for Doggo Picture */
+
+#dog-name {
+    font-size: 1.2rem; 
+    text-align: center; 
+    margin-top: 100px; 
+}
+
+#dog-picture {
+    width: 400px;
+    height: 400px; 
+    object-fit: cover;
+    margin: 20px auto; 
+    display: block; 
+    border-radius: 50%; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
 .dog-profile-pic-container {
     display: flex;
     align-items: center;
@@ -424,6 +441,11 @@ input[type="file"] {
     gap: 15px; 
     margin-top: 20px;
     margin-bottom: 20px;
+}
+
+.container p {
+    margin: 5px 0;
+    line-height: 1.2;
 }
 
 /* Image Gallery Section */
@@ -578,8 +600,41 @@ input[type="file"] {
 #updateProfileBtn {
     background-color: #81875B;
 }
-  
+ 
+#updateDogProfileBtn {
+    background-color: #81875B;
+}
 
+/* Text Fields */
+
+input[type="text"] {
+    text-align: left; 
+    font-size: 1rem; 
+    padding: 8px; 
+}
+
+input::placeholder {
+    text-align: left;
+    color: #999; 
+}
+
+/* Adjust the form label */
+label.form-label {
+    margin-bottom: 5px !important; 
+    margin-top: 0 !important; 
+    display: block; 
+    font-size: 1rem; 
+}
+
+.mb-3 {
+    margin-bottom: 10px !important; 
+}
+
+input.form-control {
+    margin-top: 0 !important; 
+    padding: 8px; 
+    font-size: 1rem; 
+}
 
 /* Responsive Styles */
 /* TODO: Add media queries here */
