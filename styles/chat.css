@@ -15,16 +15,20 @@ body {
     padding-top: 60px;
 }
 
+.bx.bxs-chat {
+    color: #81875B;
+}
+
 /* Header styles */
 .header-container {
     position: fixed;
-    top: 60px;
+    top: 50px;
     left: 0;
     right: 0;
     display: flex;
     align-items: center;
     padding: 1rem;
-    background: #81875B;
+    background: rgb(129, 135, 91);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     z-index: 1000;
 }
@@ -113,7 +117,7 @@ body {
 }
 
 .message_right .message_content {
-    background-color: #0084ff;
+    background-color: #81875B;
     color: #fff;
     border-bottom-right-radius: 4px;
 }
@@ -170,7 +174,7 @@ body {
     border: none;
     border-radius: 50%;
     background: transparent;
-    color: #0084ff;
+    color: #81875B;
     display: flex;
     align-items: center;
     justify-content: center;
