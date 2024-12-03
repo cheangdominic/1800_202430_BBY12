@@ -771,7 +771,7 @@ function loadNearbyParks() {
         option.textContent = park.name;
         parkSelect.appendChild(option);
     });
-}
+}   
 
 /**
  * Schedule a park meetup with a friend
