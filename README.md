@@ -8,7 +8,7 @@ This browser based web application to ...
 List team members and/or short bio's here... 
 * Hi! My name is Aaron! I am a former consultant, former chef, current CST student. 
 * Hello, my name is Dominic Cheang and I am excited to learn!
-* Hi, my name is Jun!
+* Hi, my name is Jun Morimoto! I would love to explore our journy building codes as a team. 
 * Hi, my name is Trung!
 	
 ## 3. Technologies and Resources Used
