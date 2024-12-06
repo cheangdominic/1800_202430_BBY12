@@ -1,50 +1,55 @@
 console.log("editprofile.js loaded");
 
 // Convert image to Base64
-function convertImageToBase64(imageFile, callback) {
-    const FR = new FileReader(); // https://onlinewebtutorblog.com/convert-image-to-the-base64-string-using-javascript/
-    FR.onload = (event) => {
-        callback(event.target.result);
+function convertImageToBase64(imageFile, callback) { // https://onlinewebtutorblog.com/convert-image-to-the-base64-string-using-javascript/
+    const FR = new FileReader(); // Creates a FileReader instance to read files
+    FR.onload = (event) => { // if the file is read
+        callback(event.target.result); // callback function passed as an argument that will be called when the image is converted
     };
-    FR.readAsDataURL(imageFile);
+    FR.readAsDataURL(imageFile); // reads the image as a URL
 }
 
 // Set default profile picture
 function setDefaultProfilePicture() {
-    document.getElementById("userProfilePicturePreview").src = "./styles/images/defaultprofile.png";
+    document.getElementById("userProfilePicturePreview").src = "./styles/images/defaultprofile.png"; // sets the user profile picture to a default image
 }
 
 // Load profile data from Firestore
 function loadProfile(userId) {
-    const userRef = db.collection("users").doc(userId);
-    userRef.get().then((userDoc) => {
-        if (userDoc.exists) {
-            const name = userDoc.data().name;
-            const profileRef = userRef.collection("userProfile").doc("profile");
-            profileRef.get().then((profileDoc) => {
-                const profileData = profileDoc.exists ? profileDoc.data() : {};
-                populateProfile({ ...profileData, name });
-            });
-        } else {
-            console.log("No user data found.");
-            setDefaultProfilePicture();
-        }
-    }).catch((error) => console.error("Error loading profile:", error));
+    const userRef = db.collection("users").doc(userId); // Reference to the user's document
+    userRef.get()
+        .then((userDoc) => {
+            if (userDoc.exists) { // Check if the user's document exists
+                const name = userDoc.data().name; // Get the user's name
+                const profileRef = userRef.collection("userProfile").doc("profile"); // References the user's profile subdocument
+                profileRef.get()
+                    .then((profileDoc) => {
+                        const profileData = profileDoc.exists ? profileDoc.data() : {}; // Gets profile data if it exists
+                        populateProfile({ ...profileData, name }); // Populates the profile page with the profile data
+                    });
+            } else {
+                console.log("No user data found."); 
+                setDefaultProfilePicture(); // Calls function to set the default profile picture
+            }
+        })
+        .catch((error) => console.error("Error loading profile:", error)); // Log any errors encountered
 }
 
 // Populate profile fields. Handles cases where local storage photos exists and are removed.
 function populateProfile(data) {
-    const profilePicturePreview = document.getElementById("userProfilePicturePreview");
-    let profilePicture = data.profilePicture || "./styles/images/defaultprofile.png"; 
+    const profilePicturePreview = document.getElementById("userProfilePicturePreview"); // Selects the profile picture preview element
+    let profilePicture = data.profilePicture || "./styles/images/defaultprofile.png"; // Uses the user uploaded image or uses the default image
 
+    // Manage localStorage for the profile picture
     if (!data.profilePicture) {
-        localStorage.removeItem("userProfilePicture");
+        localStorage.removeItem("userProfilePicture"); // Remove cached picture if exists
     } else if (localStorage.getItem("userProfilePicture")) {
-        profilePicture = localStorage.getItem("userProfilePicture");
+        profilePicture = localStorage.getItem("userProfilePicture"); // Use the cached picture if exists
     }
 
-    profilePicturePreview.src = profilePicture;
+    profilePicturePreview.src = profilePicture; // updates the preview image in the UI
 
+    // Populates the user's information from the db or uses the default
     document.getElementById("username").value = data.name || "Test User";
     document.getElementById("age").value = data.age || "";
     document.getElementById("location").value = data.location || "";
@@ -70,26 +75,27 @@ function uploadProfilePicture() {
 
 // Update profile data in Firestore
 function updateProfile(userId) {
-    const userRef = db.collection("users").doc(userId);
-    const profileRef = userRef.collection("userProfile").doc("profile");
+    const userRef = db.collection("users").doc(userId); // References the user document
+    const profileRef = userRef.collection("userProfile").doc("profile"); // References the user's subdocument for profiles
 
-    const name = document.getElementById("username").value;
+    const name = document.getElementById("username").value; // Gets the updated name
     const profileData = {
-        age: document.getElementById("age").value,
-        location: document.getElementById("location").value,
-        interests: document.getElementById("interests").value,
-        profilePicture: localStorage.getItem("userProfilePicture") || "./styles/images/defaultprofile.png",
+        age: document.getElementById("age").value, // Gets the updated age
+        location: document.getElementById("location").value, // Gets the updated location
+        interests: document.getElementById("interests").value, // Gets the updated interests
+        profilePicture: localStorage.getItem("userProfilePicture") || "./styles/images/defaultprofile.png", // Use the local storage imagee or the default image
     };
 
-    userRef.set({ name }, { merge: true })
-        .then(() => profileRef.set(profileData, { merge: true }))
+    userRef.set({ name }, { merge: true }) // Updates the user's document with the new name
+        .then(() => profileRef.set(profileData, { merge: true })) // Updates the profile subdocument 
         .then(() => {
-            alert("Profile updated successfully!");
-            redirectToPage("profile.html");
+            alert("Profile updated successfully!"); 
+            redirectToPage("profile.html"); // Redirects to the main profile page
         })
-        .catch((error) => console.error("Error updating profile:", error));
+        .catch((error) => console.error("Error updating profile:", error)); 
 }
 
+// Event listener for the update button
 function updateButton(userId) {
     document.getElementById("updateProfileBtn").addEventListener("click", (e) => {
         e.preventDefault();
@@ -97,7 +103,7 @@ function updateButton(userId) {
     });
 }
 
-// Redirect option
+// Event listener for the back button
 document.querySelectorAll("#back-btn").forEach(button => {
     button.addEventListener("click", () => {
         redirectToPage("profile.html");
@@ -111,6 +117,7 @@ function doAll(userId) {
     updateButton(userId);
 }
 
+// Authenticates the user before performing all functions
 auth.onAuthStateChanged((user) => {
     if (user) {
         doAll(user.uid);
