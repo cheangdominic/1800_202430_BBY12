@@ -20,6 +20,7 @@ function logout() {
   });
 }
 
+//Function to easily redirect to a page
 function redirectToPage(page) {
   window.location.href = page;
 }
