@@ -1,21 +1,31 @@
-// Initialize Firebase and load skeleton
+/**
+ * Initialize Firebase and load page skeleton
+ * Sets up the basic page structure and navigation
+ */
 function loadSkeleton() {
     $('#navbarPlaceholder').load('./text/nav.html');
     $('#footerPlaceholder').load('./text/footer.html');
 }
-loadSkeleton();
+loadSkeleton(); 
 
+// Global variables
 let currentUser;
 const MESSAGE_LIMIT = 50;
 
-// Emoji data structure
+/**
+ * Emoji Data Structure
+ * Defines categories and emoji content for the picker
+ */
 const emojiCategories = {
     smileys: ['😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '😉', '😌', '😍', '🥰', '😘'],
     animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸'],
     hearts: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💕', '💞', '💓', '💗', '💖']
 };
 
-// Initialize emoji picker with categories
+/**
+ * Initialize Emoji Picker
+ * Creates and populates the emoji selector interface
+ */
 function initializeEmojiPicker() {
     const emojiPicker = document.getElementById('emojiPicker');
     if (!emojiPicker) return;
@@ -60,7 +70,10 @@ function addEmojiToMessage(emoji) {
     }
 }
 
-/// Function to load messages
+/**
+ * Message Loading and Display
+ * Handles real-time message updates and rendering
+ */
 function loadMessages() {
     db.collection("messages")
         .orderBy("timestamp")
@@ -219,12 +232,11 @@ function createFileAttachment(url, fileName) {
     `;
 }
 
-// Send message
+/**
+ * Message Sending Function
+ * Handles the sending of new messages
+ */
 async function sendMessage() {
-    if (event && event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-    }
-
     const messageInput = document.getElementById("messageInput");
     const message = messageInput.value.trim();
     
@@ -236,6 +248,11 @@ async function sendMessage() {
     }
     
     try {
+        // Disable input and button while sending
+        messageInput.disabled = true;
+        const sendButton = document.getElementById("sendButton");
+        if (sendButton) sendButton.disabled = true;
+        
         // Add message to Firestore
         await db.collection("messages").add({
             text: message,
@@ -253,10 +270,20 @@ async function sendMessage() {
     } catch (error) {
         console.error("Error sending message:", error);
         alert("Failed to send message. Please try again.");
+    } finally {
+        // Re-enable input and button
+        messageInput.disabled = false;
+        const sendButton = document.getElementById("sendButton");
+        if (sendButton) sendButton.disabled = false;
+        messageInput.focus();
     }
 }
 
-// Handle file uploads
+/**
+ * File Upload Handler
+ * Manages file selection and upload process
+ * @param {Event} event - The file input change event
+ */
 async function handleFileUpload(event) {
     event.preventDefault();
     const file = event.target.files[0];
@@ -296,7 +323,12 @@ async function handleFileUpload(event) {
     }
 }
 
-// Escape HTML to prevent XSS
+/**
+ * Security Function
+ * Prevents XSS attacks by escaping HTML
+ * @param {string} unsafe - Raw text input
+ * @returns {string} - Sanitized text
+ */
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') return '';
     return unsafe
@@ -307,7 +339,10 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// Event listeners
+/**
+ * Event Listeners and Initialization
+ * Sets up page interactivity and user authentication
+ */
 document.addEventListener('DOMContentLoaded', () => {
     initializeEmojiPicker();
     
@@ -315,7 +350,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageInput = document.getElementById('messageInput');
     const sendButton = document.getElementById('sendButton');
     
+    // Remove the old event listeners first
     if (messageInput) {
+        const oldKeyHandler = messageInput.onkeypress;
+        if (oldKeyHandler) {
+            messageInput.removeEventListener('keypress', oldKeyHandler);
+        }
+        
+        // Add new event listener
         messageInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -324,40 +366,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
+    // Remove old click handler
     if (sendButton) {
-        sendButton.addEventListener('click', sendMessage);
-    }
-
-    // Emoji picker toggle
-    const emojiButton = document.getElementById('emojiButton');
-    if (emojiButton) {
-        emojiButton.addEventListener('click', function() {
-            const picker = document.getElementById('emojiPicker');
-            if (picker) {
-                picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-            }
+        const oldClickHandler = sendButton.onclick;
+        if (oldClickHandler) {
+            sendButton.removeEventListener('click', oldClickHandler);
+        }
+        
+        // Add new click handler
+        sendButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            sendMessage();
         });
     }
-    
-    // Close emoji picker when clicking outside
-    document.addEventListener('click', (e) => {
-        const picker = document.getElementById('emojiPicker');
-        const emojiButton = document.getElementById('emojiButton');
-        if (picker && emojiButton && !picker.contains(e.target) && !emojiButton.contains(e.target)) {
-            picker.style.display = 'none';
-        }
-    });
 
-    // File upload handlers
-    const imageUpload = document.getElementById('imageUpload');
-    const documentUpload = document.getElementById('documentUpload');
-    
-    if (imageUpload) {
-        imageUpload.addEventListener('change', handleFileUpload);
-    }
-    if (documentUpload) {
-        documentUpload.addEventListener('change', handleFileUpload);
-    }
+    // Remove onclick attribute from send button in HTML
+    sendButton?.removeAttribute('onclick');
+
+    // Rest of the event listeners...
 });
 
 // Make functions globally available

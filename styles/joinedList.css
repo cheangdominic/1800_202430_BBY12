@@ -26,6 +26,11 @@
     background-color: rgba(0, 0, 0, 0.5);
 }
 
+h1 {
+    margin-top: 2%;
+    text-align: center;
+}
+
 .modal-content {
     background-color: #fff;
     margin: 10% auto;

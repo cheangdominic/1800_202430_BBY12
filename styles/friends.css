@@ -1,5 +1,9 @@
-/* Base styles */
-body {
+/* 
+ * Base Styles
+ * Sets foundational styles for the entire application
+ * Includes background colors, typography, and container sizing
+ */
+ body {
     background-color: #f8f9fa;
     color: #333;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -11,7 +15,11 @@ body {
     padding: 2rem 1rem;
 }
 
-/* Page title */
+/* 
+ * Page Title Styles
+ * Defines appearance of main headings
+ * Includes decorative underline effect
+ */
 h1 {
     font-size: 2.5rem;
     font-weight: 700;
@@ -33,7 +41,11 @@ h1:after {
     border-radius: 2px;
 }
 
-/* Search section */
+/* 
+ * Search Section Styles
+ * Styles for the user search functionality
+ * Includes container, input field, and button styles
+ */
 .search-section {
     background: white;
     padding: 2rem;
@@ -47,6 +59,7 @@ h1:after {
     color: #81875B;
 }
 
+/* Hover effect for search section */
 .search-section:hover {
     transform: translateY(-2px);
 }
@@ -55,6 +68,7 @@ h1:after {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
 }
 
+/* Search input field styles */
 #searchInput {
     border: 2px solid #eee;
     padding: 0.8rem 1rem;
@@ -69,6 +83,7 @@ h1:after {
     outline: none;
 }
 
+/* Search button styles */
 #searchButton {
     background: #81875B;
     border: none;
@@ -82,7 +97,10 @@ h1:after {
     background: #474b33;
 }
 
-/* Search Results */
+/* 
+ * Search Results Styles
+ * Defines appearance of user search results
+ */
 #searchResults {
     margin-top: 2rem;
 }
@@ -100,13 +118,19 @@ h1:after {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Main content scrollable container */
+/* 
+ * Main Content Container Styles
+ * Defines layout for the main content area
+ */
 .main-content {
     min-height: 100vh;
     padding-bottom: 4rem;
 }
 
-/* Friends List */
+/* 
+ * Friends List Styles
+ * Styles for the friends list section
+ */
 h2 {
     font-size: 1.8rem;
     color: #2c3e50;
@@ -128,7 +152,10 @@ h2 {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
 }
 
-/* Friend Requests Section */
+/* 
+ * Friend Requests Section Styles
+ * Styles for pending friend requests display
+ */
 #friendRequestsSection {
     background: white;
     border-radius: 15px;
@@ -151,7 +178,10 @@ h2 {
     padding-right: 0.5rem;
 }
 
-/* Send Friend Request button style */
+/* 
+ * Button Styles
+ * Defines appearances for various action buttons
+ */
 .send-request-btn {
     background-color: #81875B !important;
     border-color: #81875B !important;
@@ -162,7 +192,7 @@ h2 {
     border-color: #6a7049 !important;
 }
 
-/* Send button and Schedule button's style */
+/* Modal button styles */
 .modal-footer .btn-primary,
 .modal-footer .btn-success {
     background-color: #81875B !important;
@@ -175,7 +205,10 @@ h2 {
     border-color: #6a7049 !important;
 }
 
-/* Friend Request Card */
+/* 
+ * Friend Request Card Styles
+ * Defines appearance of individual friend request cards
+ */
 .friend-request-card {
     border: none !important;
     border-radius: 12px;
@@ -516,27 +549,29 @@ h2 {
 /* Card Actions */
 .card-actions {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     margin-top: 1.5rem;
     padding-top: 1.5rem;
     border-top: 1px solid #eee;
-    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 
 .friend-action-btn {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 0.5rem;
-    padding: 0.75rem 1.25rem;
+    padding: 0.75rem 1rem; /* Reduced horizontal padding */
     font-weight: 500;
     transition: all 0.2s ease;
-    flex: 1;
-    justify-content: center;
+    flex: 1 1 auto; /* Allow buttons to grow and shrink */
+    min-width: 100%; /* Full width on mobile */
+    font-size: 0.9rem; /* Slightly smaller font size */
 }
 
 .friend-action-btn i {
-    font-size: 1.2rem;
+    font-size: 1.1rem
 }
 
 /* Hover effects */
@@ -557,17 +592,18 @@ h2 {
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .card-actions {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
-    
     .friend-action-btn {
-        width: 100%;
+        min-width: auto; 
+        padding: 0.75rem 1.25rem;
+        font-size: 1rem;
+    }
+
+    .friend-action-btn i {
+        font-size: 1.2rem;
     }
 }
 
-/* Button specific colors */
+/* Button specific colors (keep existing colors) */
 .friend-action-btn.btn-primary {
     background-color: #7C5235;
     border-color: #7C5235;
@@ -583,7 +619,7 @@ h2 {
     border-color: #8b423a;
 }
 
-/* Hover state colors */
+/* Hover state colors (keep existing colors) */
 .friend-action-btn.btn-primary:hover {
     background-color: #7C5235;
     border-color: #7C5235;

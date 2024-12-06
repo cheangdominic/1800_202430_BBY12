@@ -1,0 +1,70 @@
+// Firestore rules
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Base rule with expiration date
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2025, 2, 3);
+    }
+
+    // Friend requests specific rules
+    match /friendRequests/{request} {
+      allow read: if request.time < timestamp.date(2025, 2, 3);
+      allow create: if request.time < timestamp.date(2025, 2, 3)
+                   && request.resource.data.from == request.auth.uid;
+      allow update: if request.time < timestamp.date(2025, 2, 3)
+                   && (resource.data.to == request.auth.uid 
+                   || resource.data.from == request.auth.uid);
+    }
+
+    // Friends collection rules
+    match /friends/{friendship} {
+      allow read: if request.time < timestamp.date(2025, 2, 3);
+      allow create: if request.time < timestamp.date(2025, 2, 3)
+                   && request.resource.data.users.hasAny([request.auth.uid]);
+      allow delete: if request.time < timestamp.date(2025, 2, 3)
+                   && resource.data.users.hasAny([request.auth.uid]);
+    }
+
+    // User status rules
+    match /status/{userId} {
+      allow read: if request.time < timestamp.date(2025, 2, 3);
+      allow write: if request.time < timestamp.date(2025, 2, 3)
+                   && request.auth.uid == userId;
+    }
+
+    // Profile rules
+    match /profiles/{userId} {
+      allow read: if request.time < timestamp.date(2025, 2, 3);
+      allow write: if request.time < timestamp.date(2025, 2, 3)
+                   && request.auth.uid == userId;
+    }
+
+    // Messages rules
+    match /messages/{messageId} {
+      allow read: if request.time < timestamp.date(2025, 2, 3);
+      allow create: if request.time < timestamp.date(2025, 2, 3)
+                   && request.auth.uid != null;
+      allow delete: if request.time < timestamp.date(2025, 2, 3)
+                   && request.auth.uid == resource.data.userId;
+    }
+  }
+}
+
+// Storage rules
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /uploads/{userId}/{fileName} {
+      allow read: if request.time < timestamp.date(2025, 2, 3);
+      allow write: if request.time < timestamp.date(2025, 2, 3)
+                   && request.auth != null
+                   && request.auth.uid == userId
+                   && request.resource.size < 5 * 1024 * 1024 // 5MB
+                   && (request.resource.contentType.matches('image/.*') 
+                       || request.resource.contentType.matches('application/pdf')
+                       || request.resource.contentType.matches('application/msword')
+                       || request.resource.contentType.matches('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                       || request.resource.contentType.matches('text/plain'));
+    }
+  }
+}
