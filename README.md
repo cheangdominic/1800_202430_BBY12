@@ -16,6 +16,7 @@ List technologies (with version numbers), API's, icons, fonts, images, media or 
 * Bootstrap 5.0 (Frontend library)
 * Firebase 8.0 (BAAS - Backend as a Service)
 * MapBox v3.7.0 (API)
+* Javascript API for filereader; image conversion to base64 strings
 
 ## 4. Complete setup/installion/usage
 State what a user needs to do when they come to your project.  How do others start using your code or application?
