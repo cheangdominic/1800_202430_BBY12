@@ -6,7 +6,7 @@ UpDog is a web-based mobile app designed to create meaningful connections betwee
 ## 2. Names of Contributors
 List team members and/or short bio's here... 
 * Hi! My name is Aaron! I am a former consultant, former chef, current CST student. 
-* Hello, my name is Dominic Cheang and I am excited to learn!
+* Hi, my name is Dominic Cheang! I am a current CST student and am coming straight out of highschool.
 * Hi, my name is Jun Morimoto! I would love to explore our journy building codes as a team. 
 * Hi, my name is Trung!
 	
