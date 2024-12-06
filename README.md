@@ -1,4 +1,5 @@
 # Project Title
+UpDog
 
 ## 1. Project Description
 UpDog is a web-based mobile app designed to create meaningful connections between humans and dogs. We want to enable our users to synchronise their schedules with each other and build a community with an emphasis on the dog’s well being. The project's key features include profile management, playdate scheduling, friends system, and a community chat.
