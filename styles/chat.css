@@ -425,7 +425,10 @@ body {
     }
 }
 
-/* 画像メッセージのスタイル */
+/* 
+ * Image Message Styles
+ * Handles display of image attachments in chat
+ */
 .message-image {
     max-width: 200px;
     max-height: 200px;
@@ -434,7 +437,10 @@ body {
     margin: 5px 0;
 }
 
-/* イメージプレビューモーダルのスタイル */
+/* 
+ * Image Preview Modal Styles
+ * Modal for displaying full-size images
+ */
 .image-preview-modal {
     display: none;
     position: fixed;
@@ -463,7 +469,10 @@ body {
     cursor: pointer;
 }
 
-/* アップロードボタンのスタイル */
+/* 
+ * File Upload Styles
+ * Styles for the file upload interface and indicators
+ */
 .upload-option {
     display: flex;
     align-items: center;

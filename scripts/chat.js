@@ -1,21 +1,31 @@
-// Initialize Firebase and load skeleton
+/**
+ * Initialize Firebase and load page skeleton
+ * Sets up the basic page structure and navigation
+ */
 function loadSkeleton() {
     $('#navbarPlaceholder').load('./text/nav.html');
     $('#footerPlaceholder').load('./text/footer.html');
 }
-loadSkeleton();
+loadSkeleton(); 
 
+// Global variables
 let currentUser;
 const MESSAGE_LIMIT = 50;
 
-// Emoji data structure
+/**
+ * Emoji Data Structure
+ * Defines categories and emoji content for the picker
+ */
 const emojiCategories = {
     smileys: ['😀', '😃', '😄', '😁', '😅', '😂', '🤣', '😊', '😇', '🙂', '😉', '😌', '😍', '🥰', '😘'],
     animals: ['🐶', '🐱', '🐭', '🐹', '🐰', '🦊', '🐻', '🐼', '🐨', '🐯', '🦁', '🐮', '🐷', '🐸'],
     hearts: ['❤️', '🧡', '💛', '💚', '💙', '💜', '🖤', '🤍', '🤎', '💕', '💞', '💓', '💗', '💖']
 };
 
-// Initialize emoji picker with categories
+/**
+ * Initialize Emoji Picker
+ * Creates and populates the emoji selector interface
+ */
 function initializeEmojiPicker() {
     const emojiPicker = document.getElementById('emojiPicker');
     if (!emojiPicker) return;
@@ -60,7 +70,10 @@ function addEmojiToMessage(emoji) {
     }
 }
 
-/// Function to load messages
+/**
+ * Message Loading and Display
+ * Handles real-time message updates and rendering
+ */
 function loadMessages() {
     db.collection("messages")
         .orderBy("timestamp")
@@ -219,7 +232,10 @@ function createFileAttachment(url, fileName) {
     `;
 }
 
-// Modify the sendMessage function
+/**
+ * Message Sending Function
+ * Handles the sending of new messages
+ */
 async function sendMessage() {
     const messageInput = document.getElementById("messageInput");
     const message = messageInput.value.trim();
@@ -263,7 +279,11 @@ async function sendMessage() {
     }
 }
 
-// Handle file uploads
+/**
+ * File Upload Handler
+ * Manages file selection and upload process
+ * @param {Event} event - The file input change event
+ */
 async function handleFileUpload(event) {
     event.preventDefault();
     const file = event.target.files[0];
@@ -303,7 +323,12 @@ async function handleFileUpload(event) {
     }
 }
 
-// Escape HTML to prevent XSS
+/**
+ * Security Function
+ * Prevents XSS attacks by escaping HTML
+ * @param {string} unsafe - Raw text input
+ * @returns {string} - Sanitized text
+ */
 function escapeHtml(unsafe) {
     if (typeof unsafe !== 'string') return '';
     return unsafe
@@ -314,7 +339,10 @@ function escapeHtml(unsafe) {
         .replace(/'/g, "&#039;");
 }
 
-// Event listeners
+/**
+ * Event Listeners and Initialization
+ * Sets up page interactivity and user authentication
+ */
 document.addEventListener('DOMContentLoaded', () => {
     initializeEmojiPicker();
     

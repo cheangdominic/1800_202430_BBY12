@@ -43,82 +43,93 @@
 </head>
 
 <body>
-
+    <!-- Dynamic navigation bar placeholder -->
     <nav id="navbarPlaceholder"></nav>
 
-    
-
-        <!-- Main container -->
-        <div class="container">
-            <!-- Back button and header -->
-            <div class="header-container">
-                <div class="back-button" onclick="history.back()">
+    <!-- 
+    Main Chat Container
+    - Header with back navigation
+    - Message display area
+       - Input area with file upload and emoji support
+    -->
+    <div class="container">
+            <!-- Header section with back button -->
+        <div class="header-container">\
+            <!-- Back navigation -->
+            <div class="back-button" onclick="history.back()">
                     <i class='bx bx-arrow-back'></i>
-                </div>
-                <div class="header">
-                    <h1>Community Chat</h1>
-                </div>
             </div>
-    
-            <!-- Message container -->
-            <div class="message-container" id="messageContainer">
-                <!-- Messages will be dynamically inserted here -->
-                <div class="loading-message">
-                    <div class="loading-dots">
-                        <span></span>
-                        <span></span>
-                        <span></span>
-                    </div>
-                    Loading messages...
-                </div>
-            </div>
-    
-            <!-- Chat input area -->
-            <div class="input-container">
-                <!-- File upload options -->
-                <div class="upload-option">
-                    <label>
-                        <i class='bx bx-image'></i>
-                        <input type="file" 
-                               id="imageUpload" 
-                               accept="image/*" 
-                               style="display: none;">
-                    </label>
-                </div>
-    
-                <!-- Emoji button -->
-                <button type="button" class="emoji-btn" id="emojiButton" title="Add emoji">
-                    <i class='bx bx-smile'></i>
-                </button>
-    
-                <!-- Message input -->
-                <input type="text" id="messageInput" placeholder="Message..." autocomplete="off">
-    
-                <!-- Send button -->
-                <button onclick="sendMessage()" id="sendButton" title="Send message">
-                    <i class='bx bxs-send'></i>
-                </button>
-            </div>
-    
-            <!-- Emoji picker -->
-            <div class="emoji-picker" id="emojiPicker" style="display: none;">
-                <!-- Emoji categories will be dynamically inserted here -->
-            </div>
-    
-            <!-- Image preview modal -->
-            <div class="image-preview-modal" id="imagePreviewModal">
-                <div class="modal-close-btn">
-                    <i class='bx bx-x'></i>
-                </div>
-                <img class="image-preview-content" id="previewImage" src="" alt="Preview">
+            <div class="header">
+                <h1>Community Chat</h1>
             </div>
         </div>
+    
+        <!-- 
+        Message Display Area
+        - Shows chat messages with timestamps
+        - Supports text and media content
+        - Includes loading indicator
+        -->
+        <div class="message-container" id="messageContainer">
+            <!-- Messages will be dynamically inserted here -->
+            <div class="loading-message">
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                Loading messages...
+            </div>
+        </div>
+        
+        <!-- 
+            Chat Input Section
+            - File upload functionality
+            - Emoji picker integration
+            - Message input field
+            - Send button
+        -->
+        <div class="input-container">
+            <!-- File upload interface -->
+            <div class="upload-option">
+                <label>
+                    <i class='bx bx-image'></i>
+                    <input type="file" 
+                            id="imageUpload" 
+                            accept="image/*" 
+                            style="display: none;">
+                </label>
+            </div>
+    
+            <!-- Emoji selector button -->
+            <button type="button" class="emoji-btn" id="emojiButton" title="Add emoji">
+                <i class='bx bx-smile'></i>
+            </button>
+    
+            <!-- Message input field -->
+            <input type="text" id="messageInput" placeholder="Message..." autocomplete="off">
+    
+            <!-- Send message button -->
+            <button onclick="sendMessage()" id="sendButton" title="Send message">
+                <i class='bx bxs-send'></i>
+            </button>
+        </div>
+    
+        <!-- Emoji picker panel -->
+        <div class="emoji-picker" id="emojiPicker" style="display: none;"></div>
+    
+        <!-- Image preview modal -->
+        <div class="image-preview-modal" id="imagePreviewModal">
+            <div class="modal-close-btn">
+                <i class='bx bx-x'></i>
+            </div>
+            <img class="image-preview-content" id="previewImage" src="" alt="Preview">
+        </div>
+    </div>
 
-        <!-- the body of your page goes here -->
-        <nav id="bottomNavbarPlaceholder"></nav>
-
-        <!-- our own footer goes here-->
-        <nav id="footerPlaceholder"></nav>  
+    <!-- Bottom navigation and footer -->
+    <nav id="bottomNavbarPlaceholder"></nav>
+    <nav id="footerPlaceholder"></nav>
     
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
