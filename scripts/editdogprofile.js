@@ -1,19 +1,19 @@
-console.log("editDogProfile.js loaded");
+console.log("editDogProfile.js loaded"); // console log to ensure script has loaded
 
 // Convert image to Base64
-function convertImageToBase64(imageFile, callback) {
-    const FR = new FileReader();
-    FR.onload = (event) => {
-        callback(event.target.result);
+function convertImageToBase64(imageFile, callback) { // https://onlinewebtutorblog.com/convert-image-to-the-base64-string-using-javascript/
+    const FR = new FileReader(); // Creates a FileReader instance to read files
+    FR.onload = (event) => { // if the file is read
+        callback(event.target.result); // callback function passed as an argument that will be called when the image is converted
     };
-    FR.readAsDataURL(imageFile);
+    FR.readAsDataURL(imageFile); // reads the image as a URL
 }
 
 // Redirect if dogID is not found
 function validateDogID(dogID) {
-    if (!dogID) {
-        alert("No dog ID provided in the URL.");
-        window.location.href = "profile.html";
+    if (!dogID) { //checks if dog ID is missing
+        alert("No dog ID provided in the URL."); // alerts user 
+        window.location.href = "profile.html"; // redirects to main profile page if no dog found
     }
 }
 
@@ -25,9 +25,9 @@ function loadDogProfile(userId, dogID) {
         .doc(dogID)
         .get()
         .then((doc) => {
-            if (doc.exists) {
+            if (doc.exists) { // checks if dog profile document exists
                 populateDogProfile(doc.data(), dogID);
-            } else {
+            } else { // gives appropriate warnings and redirects
                 console.error("No dog profile found in Firestore.");
                 alert("Dog profile not found.");
                 window.location.href = "profile.html";
@@ -41,9 +41,9 @@ function loadDogProfile(userId, dogID) {
 
 // Populate the UI with dog profile data
 function populateDogProfile(data, dogID) {
-    const dogPicturePreview = document.getElementById("dogProfilePicturePreview");
-    const localStorageKey = `dogProfilePicture_${dogID}`;
-    let profilePicture = data.profilePicture || "./styles/images/defaultdog.jpg";
+    const dogPicturePreview = document.getElementById("dogProfilePicturePreview"); // Selects the image preview element
+    const localStorageKey = `dogProfilePicture_${dogID}`; // Gives a unique localStorage key for the profile picture
+    let profilePicture = data.profilePicture || "./styles/images/defaultdog.jpg"; // Uses the uploaded picture or a default image
 
     if (!data.profilePicture) {
         localStorage.removeItem(localStorageKey);
@@ -51,29 +51,30 @@ function populateDogProfile(data, dogID) {
         profilePicture = localStorage.getItem(localStorageKey);
     }
 
-    dogPicturePreview.src = profilePicture;
+    dogPicturePreview.src = profilePicture; // updates the preview image 
 
+    // Populates the input fields with dog profile data. Or blank if none given
     document.getElementById("dogNameInput").value = data.dogname || "";
     document.getElementById("dogAgeInput").value = data.age || "";
     document.getElementById("dogSizeInput").value = data.size || "";
     document.getElementById("dogBreedInput").value = data.breed || "";
-    document.getElementById("returnDogProfileBtn").href = `dog_profile.html?dogID=${dogID}`;
+    document.getElementById("returnDogProfileBtn").href = `dog_profile.html?dogID=${dogID}`; // returns to the appropriate dog profile by ID/URL
 }
 
 // Upload profile picture and previews
 function uploadProfilePicture(dogID) {
-    const fileInput = document.getElementById("dogProfilePictureInput");
-    const localStorageKey = `dogProfilePicture_${dogID}`;
-    fileInput.addEventListener("change", (event) => {
-        const file = event.target.files[0];
+    const fileInput = document.getElementById("dogProfilePictureInput"); // Selects the file input element
+    const localStorageKey = `dogProfilePicture_${dogID}`; // Gives a unique key for caching the profile picture
+    fileInput.addEventListener("change", (event) => { // Event listener for user file input
+        const file = event.target.files[0]; // Get the selected file
         if (file) {
-            const FR = new FileReader();
-            FR.onload = (e) => {
-                const base64Image = e.target.result;
-                document.getElementById("dogProfilePicturePreview").src = base64Image;
-                localStorage.setItem(localStorageKey, base64Image);
+            const FR = new FileReader(); // Create a FileReader instance
+            FR.onload = (e) => { // When the file is read..
+                const base64Image = e.target.result; // Gets the Base64 string
+                document.getElementById("dogProfilePicturePreview").src = base64Image; // Update the preview image on page
+                localStorage.setItem(localStorageKey, base64Image); // Stores the Base64 string in localStorage
             };
-            FR.readAsDataURL(file);
+            FR.readAsDataURL(file); // Reads the file as a Base64 string URL
         }
     });
 }
@@ -93,7 +94,7 @@ function updateDogProfile(userId, dogID) {
         .doc(userId)
         .collection("dogprofiles")
         .doc(dogID)
-        .set(updatedData, { merge: true })
+        .set(updatedData, { merge: true }) // Updates the database with the new information
         .then(() => {
             alert("Dog profile updated successfully!");
             window.location.href = `dog_profile.html?dogID=${dogID}`;
@@ -104,9 +105,9 @@ function updateDogProfile(userId, dogID) {
         });
 }
 
-// Update button
+// Update button event listener
 function updateButton(userId, dogID) {
-    const updateBtn = document.getElementById("updateDogProfileBtn"); 
+    const updateBtn = document.getElementById("updateDogProfileBtn");
     if (updateBtn) {
         updateBtn.addEventListener("click", (event) => {
             event.preventDefault();
@@ -135,18 +136,19 @@ function backButton(dogID) {
 
 // Does all functions
 function doAll(userId, dogID) {
-    validateDogID(dogID);
-    loadDogProfile(userId, dogID);
-    uploadProfilePicture(dogID);
-    updateButton(userId, dogID); 
-    backButton(dogID); 
+    validateDogID(dogID); // validates dog ID
+    loadDogProfile(userId, dogID); // loads dog's profile data from db
+    uploadProfilePicture(dogID); // function for uploading profiles
+    updateButton(userId, dogID); // enables the update button function
+    backButton(dogID); // enables the back button function
 }
 
+// Authenticates users
 auth.onAuthStateChanged((user) => {
     if (user) {
         const urlParams = new URLSearchParams(window.location.search);
         const dogID = urlParams.get("dogID");
-        doAll(user.uid, dogID); 
+        doAll(user.uid, dogID);
     } else {
         alert("Please log in to edit your dog profile.");
         window.location.href = "login.html";
