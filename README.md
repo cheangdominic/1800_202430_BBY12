@@ -33,8 +33,8 @@ Here are some known bugs:
 
 ## 6. Features for Future
 What we'd like to build in the future:
-* ...
-* ...
+* Public profiles to view when clicking participants that joined playdates. 
+* Filters for playdates: Locations, dog sizes, ages, etc. 
 * ...
 	
 ## 7. Contents of Folder
