@@ -72,7 +72,24 @@ It has the following subfolders and files:
     /autoaddress.js          # Geocoder auto address selection
     /chat.js                 # Chat feature
     /create_doggo.js         # Creating a dog
-    /dateofplaydate.js       # The min and max of selected date for playdate creation 
+    /dateofplaydate.js       # The min and max of selected date for playdate creation
+    /dogprofile.js           # Dog profiles
+    /editdogprofile.js       # Editting dog profiles
+    /editpost.js             # Editing of playdates
+    /editprofile.js          # Editing of profiles
+    /firebaseAPI_UpDog.js    # API set up for firebase
+    /friends.js              # Friends feature
+    /joinedList.js           # List of joined playdates
+    /login.js                # Login
+    /main.js                 # Population of playdates and main page
+    /map.js                  # Map interaction with MapBox
+    /participants.js         # Playdate participants
+    /playdates.js            # Saving playdates and deleting expired playdates
+    /profile.js              # Population of profiles
+    /publicprofile.js        # Population of public profiles
+    /script.js               # Helper functions
+    /skeleton.js             # Framework of navbars etc.
+    /welcomealert.js         # Welcome greeting
 ├── styles                   # Folder for styles
     /blah.css                # 
 
