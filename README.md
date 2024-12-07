@@ -41,15 +41,38 @@ Content of the project folder:
 ```
  Top level of project folder: 
 ├── .gitignore               # Git ignore file
+├── 404.html                 # 404 error HTML file, shown when file is not able to be shown
+├── chat.html		     # chat HTML file, page where users chat to eachother
+├── create_doggo.html        # add dog HTML file, page where users can add their own dog
+├── dog_profile.html         # dog profile HTML file, the base page for a user's dog's profile
+├── edit_profile.html        # edit dog profile HTML file, the base page for when a user edits their profile
+├── FAQ.html                 
+├── firebase.json            # 
+├── firebase.indexes.json
+├── firestore.rules
+├── friends.html             # friends HTML file, the page to show a user's added friends and friend requests
+├── inbox.html               # joined playdates HTML file, displays the playdates a user has joined
 ├── index.html               # landing HTML file, this is what users see when you come to url
-└── README.md
+├── login.html               # login HTML file, this is what users see when they want to login
+├── main.html          	     # main page HTML file, what users see when they login
+├── maps.html                # map page HTML file, displays the map UI
+├── navigation_info.html     # article page HTML file, information about our apps ability to make park navigation easier
+├── playdates_info.html      # article page HTML file, information about our playdate feature
+├── profile.html             # profile HTML file, base page for a user's profile
+├── public_profile.html      # public profile HTML file, base page for a user's public profile
+├── README.md
+└── socializing_info.html    # article page HTML file, information about socializing on our app
 
 It has the following subfolders and files:
 ├── .git                     # Folder for git repo
 ├── images                   # Folder for images
     /blah.jpg                # Acknowledge source
 ├── scripts                  # Folder for scripts
-    /blah.js                 # 
+    /authentication.js       # Firebae authentication
+    /autoaddress.js          # Geocoder auto address selection
+    /chat.js                 # Chat feature
+    /create_doggo.js         # Creating a dog
+    /dateofplaydate.js       # The min and max of selected date for playdate creation 
 ├── styles                   # Folder for styles
     /blah.css                # 
 
