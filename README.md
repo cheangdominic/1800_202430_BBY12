@@ -91,7 +91,24 @@ It has the following subfolders and files:
     /skeleton.js             # Framework of navbars etc.
     /welcomealert.js         # Welcome greeting
 ├── styles                   # Folder for styles
-    /blah.css                # 
+    /chat.css               #
+    /color.css
+    /dogprofile.css
+    /editdogprofile.css
+    /editpost.css
+    /editprofile.css
+    /friends.css
+    /inbox.css
+    /joinedList.css
+    /loggedin.css
+    /loggedout.css
+    /loginpage.css
+    /main.css
+    /map.css
+    /postcreate.css
+    /profile.css
+    /publicprofile.css
+    /styles.css
 
 
 
